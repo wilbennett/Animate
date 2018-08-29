@@ -1,0 +1,58 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: auto
+}
+
+canvas {
+    background-color: darkkhaki;
+}
+
+.settingsContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.settings[name]::before {
+    content: attr(name);
+    background-color: teal;
+    color: cyan;
+    padding: 4px;
+}
+
+.settings {
+    display: flex;
+    margin: 1px 1px 1px 1px;
+}
+
+:not(label) > label {
+    border: 1px solid black;
+    padding: 1px 1px 0px 1px;
+    margin: 1px 1px 1px 1px;
+}
+
+label span {
+    background-color: slategrey;
+    color: white;
+}
+
+.nw {
+    white-space: nowrap;
+}
+
+.autohide {
+    display: none;
+}
+
+input:checked ~ .autohide {
+    display: inline;
+}
+
+.debug {
+    display: grid;
+    grid-template-columns: 200px 400px
+}

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "alwaysStrict": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "allowJs": true,
+    "outDir": "wwwroot/scripts",
+    "target": "es5",
+    "module": "none"
+  },
+  "include": [
+    "Client"
+  ],
+  "compileOnSave": true
+}
