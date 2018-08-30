@@ -1,7 +1,8 @@
 "use strict";
 var App = /** @class */ (function () {
-    function App(canvas, _settings) {
+    function App(_canvas, _settings) {
         var _this = this;
+        this._canvas = _canvas;
         this._settings = _settings;
         this.ONE_SECOND = 1000;
         this._stopped = false;
@@ -13,6 +14,8 @@ var App = /** @class */ (function () {
         this._nextFPSUpdate = 0;
         this._rafHandle = -1;
         this._timeoutHandle = -1;
+        this._deltaUpdateCounter = 0;
+        this._maxDeltaUpdateShown = 0;
         this._boundHandleSettingsChanged = this.handleSettingsChanged.bind(this);
         this._skipped = 0;
         this._deltaUpdate = 0;
@@ -40,20 +43,24 @@ var App = /** @class */ (function () {
             _this._lastFrameTimeAdjusted = _this._lastFrameTime - (elapsedTimeAdjusted % _this._timeStep);
             var updateTime = 0;
             var deltaUpdates = 0;
+            var deltaUpdatesRaw = 0;
             //*
             // Simulate the total elapsed time in timestep increments.
             // If exceeds inactive cutoff updates, assume user had tabbed away.  Continue where left off.
-            if (_this._settings.App.pauseInactive && _this._timeStepDelta > _this._maxTimeStepDelta)
+            if (_this._settings.App.pauseInactive && _this._timeStepDelta > _this._maxTimeStepDelta) {
+                deltaUpdatesRaw = Math.floor(_this._timeStepDelta / _this._timeStep) - 1;
                 _this._timeStepDelta = _this._timeStep;
+            }
             if (_this._settings.App.fixedTimeStep) {
                 while (_this._timeStepDelta >= _this._timeStep) {
                     var startTime = performance.now();
                     _this._game.update(_this._frame, timestamp, 1);
                     updateTime = performance.now() - startTime;
                     _this._timeStepDelta -= _this._timeStep;
-                    _this._deltaUpdate++;
                     deltaUpdates++;
                 }
+                _this._deltaUpdate += deltaUpdates;
+                deltaUpdatesRaw += deltaUpdates;
                 if (_this._settings.App.interpolate) {
                     var startTime = performance.now();
                     _this._game.update(_this._frame, timestamp, _this._timeStepDelta / _this._timeStep);
@@ -70,6 +77,10 @@ var App = /** @class */ (function () {
             }
             if (deltaUpdates > _this._maxDeltaUpdate)
                 _this._maxDeltaUpdate = deltaUpdates;
+            if (deltaUpdatesRaw > 2 && (deltaUpdatesRaw > _this._maxDeltaUpdateShown || _this._deltaUpdateCounter <= 0)) {
+                _this._maxDeltaUpdateShown = deltaUpdatesRaw;
+                _this._deltaUpdateCounter = _this._targetFPS * 5;
+            }
             _this._game.render(_this._frame);
             if (timestamp >= _this._nextFPSUpdate) {
                 _this._framesPerSecond = _this.ema(_this._framesLastSecond, _this._framesPerSecond);
@@ -80,10 +91,11 @@ var App = /** @class */ (function () {
             }
             _this._framesLastSecond++;
             _this._frame++;
+            _this.showMaxDeltaUpdates();
             _this.showStats();
         };
-        this._game = new Game(canvas, this._settings);
-        this._ctx = canvas.getContext("2d");
+        this._game = new Game(_canvas, this._settings);
+        this._ctx = _canvas.getContext("2d");
         this._lastFrameTime = performance.now();
         this._settings.addEventListener("change", this._boundHandleSettingsChanged);
         this.handleSettingsChanged();
@@ -118,7 +130,6 @@ var App = /** @class */ (function () {
         this._emaWeight = 2 / (this._statAvgPeriod + 1);
         this._emaWeight2 = 1 - this._emaWeight;
         log("FPS = " + this._targetFPS + " ---> time step: " + this._timeStep.toFixed(2));
-        this._game.handleSettingsChanged();
     };
     App.prototype.requestFrame = function () {
         var _this = this;
@@ -143,6 +154,24 @@ var App = /** @class */ (function () {
             return;
         this._ctx.strokeText(msg, 0, this._statY);
         this._statY += 20;
+    };
+    App.prototype.showMaxDeltaUpdates = function () {
+        if (this._deltaUpdateCounter <= 0)
+            return;
+        this._deltaUpdateCounter--;
+        var ctx = this._ctx;
+        ctx.save();
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 20;
+        ctx.beginPath();
+        ctx.strokeRect(0, 0, this._canvas.width, this._canvas.height);
+        ctx.closePath();
+        ctx.font = "20px Arial";
+        ctx.strokeStyle = "black";
+        ctx.textAlign = "center";
+        ctx.lineWidth = 1;
+        ctx.strokeText(this._maxDeltaUpdateShown.toFixed(0), this._canvas.width / 2, 20);
+        ctx.restore();
     };
     App.prototype.showStats = function () {
         this._ctx.save();

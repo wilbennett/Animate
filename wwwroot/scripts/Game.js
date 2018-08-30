@@ -1,60 +1,63 @@
 "use strict";
 var Game = /** @class */ (function () {
-    function Game(canvas, _settings) {
+    function Game(_canvas, _settings) {
         var _this = this;
-        this.canvas = canvas;
+        this._canvas = _canvas;
         this._settings = _settings;
-        this.height = window.innerHeight;
-        this.width = window.innerWidth;
-        this.balls = [];
-        this.ballsToRemove = [];
-        this.viewportDeltaX = 2;
-        this.viewportDeltaY = 0;
-        this.backgroundOffset = 0;
-        this.backgroundDelta = 0.002;
-        this.addBallToRemove = function (ball) { return _this.ballsToRemove.push(ball); };
-        this.ctx = this.canvas.getContext("2d");
-        this.height = this.canvas.height;
-        this.width = this.canvas.width;
-        var ctx = this.ctx;
-        var width = this.width;
-        var height = this.height;
+        this._height = window.innerHeight;
+        this._width = window.innerWidth;
+        this._balls = [];
+        this._ballsToRemove = [];
+        this._viewportDeltaX = 2;
+        this._viewportDeltaY = 0;
+        this._backgroundOffset = 0;
+        this._backgroundDelta = 0.002;
+        this._boundHandleSettingsChanged = this.handleSettingsChanged.bind(this);
+        this.addBallToRemove = function (ball) { return _this._ballsToRemove.push(ball); };
+        this._ctx = this._canvas.getContext("2d");
+        this._height = this._canvas.height;
+        this._width = this._canvas.width;
+        var ctx = this._ctx;
+        var width = this._width;
+        var height = this._height;
         var orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
         var worldWidth = _settings.World.wide ? width * 1.5 : width;
         var worldHeight = _settings.World.tall ? height * 1.5 : height;
-        this.world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, width, height);
-        var world = this.world;
-        this.canvasMouse = new MouseTracker(this.canvas);
-        this.output = document.getElementById("output");
-        this.friction = new Friction();
-        this.gravity = new Gravity(world.orientation, 0.3);
-        this.liquid = new Liquid(new Vector(world.minX, world.offsetAbove(world.minY, 200)), 0.05, world.width / 8, 90);
-        this.radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
-        world.addCharacter(this.liquid);
-        world.addCharacter(this.radar);
-        this.leftFan = this.createFan(world.left, this._settings.LeftFan);
-        this.rightFan = this.createFan(world.right, this._settings.RightFan);
-        world.addCharacter(this.leftFan);
-        world.addCharacter(this.rightFan);
+        this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, width, height);
+        var world = this._world;
+        this._canvasMouse = new MouseTracker(this._canvas);
+        this._output = document.getElementById("output");
+        this._friction = new Friction();
+        this._gravity = new Gravity(world.orientation, 0.3);
+        this._liquid = new Liquid(new Vector(world.minX, world.offsetAbove(world.minY, 200)), 0.05, world.width / 8, 90);
+        this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
+        world.addCharacter(this._liquid);
+        world.addCharacter(this._radar);
+        this._leftFan = this.createFan(world.left, this._settings.LeftFan);
+        this._rightFan = this.createFan(world.right, this._settings.RightFan);
+        world.addCharacter(this._leftFan);
+        world.addCharacter(this._rightFan);
+        this._settings.addEventListener("change", this._boundHandleSettingsChanged);
+        this.handleSettingsChanged();
     }
     Game.prototype.handleSettingsChanged = function () {
         log("Game settings changed");
-        if (Math.abs(this.viewportDeltaX) !== Math.abs(this._settings.Viewport.deltaX)) {
-            var mult = this.viewportDeltaX >= 0 ? 1 : -1;
-            this.viewportDeltaX = this._settings.Viewport.deltaX * mult;
+        if (Math.abs(this._viewportDeltaX) !== Math.abs(this._settings.Viewport.deltaX)) {
+            var mult = this._viewportDeltaX >= 0 ? 1 : -1;
+            this._viewportDeltaX = this._settings.Viewport.deltaX * mult;
         }
-        if (Math.abs(this.viewportDeltaY) !== Math.abs(this._settings.Viewport.deltaY)) {
-            var mult = this.viewportDeltaY >= 0 ? 1 : -1;
-            this.viewportDeltaY = this._settings.Viewport.deltaY * mult;
+        if (Math.abs(this._viewportDeltaY) !== Math.abs(this._settings.Viewport.deltaY)) {
+            var mult = this._viewportDeltaY >= 0 ? 1 : -1;
+            this._viewportDeltaY = this._settings.Viewport.deltaY * mult;
         }
-        this.backColorStart = this._settings.World.backColorStart || "blue";
-        this.backColorEnd = this._settings.World.backColorEnd || "lightgreen";
+        this._backColorStart = this._settings.World.backColorStart || "blue";
+        this._backColorEnd = this._settings.World.backColorEnd || "lightgreen";
         this.createBackgroundGradient();
-        this.updateFan(this.leftFan, this._settings.LeftFan);
-        this.updateFan(this.rightFan, this._settings.RightFan);
+        this.updateFan(this._leftFan, this._settings.LeftFan);
+        this.updateFan(this._rightFan, this._settings.RightFan);
     };
     Game.prototype.createFan = function (x, settings) {
-        var world = this.world;
+        var world = this._world;
         var fanPos = settings.position;
         var fanAngle = settings.angle;
         var fanRadius = settings.strength;
@@ -68,71 +71,71 @@ var Game = /** @class */ (function () {
             var radius = mass * 5;
             var color = MathEx.random(colors);
             //color = "blue";
-            var startY = this.world.viewport.topOffset(radius);
-            var ball = new Ball(radius, color, new Vector(MathEx.random(radius, this.width - radius * 2), startY), new Vector(MathEx.random(0, 5), 0), new Vector(0, 0.00), mass * mass, 50, this.gravity.gravityConst, this.world, this.addBallToRemove);
-            ball.addUniversalForce(this.gravity);
-            ball.addUniversalForce(this.friction);
+            var startY = this._world.viewport.topOffset(radius);
+            var ball = new Ball(radius, color, new Vector(MathEx.random(radius, this._width - radius * 2), startY), new Vector(MathEx.random(0, 5), 0), Vector.empty, mass * mass, 50, this._gravity.gravityConst, this._world, this.addBallToRemove);
+            ball.addUniversalForce(this._gravity);
+            ball.addUniversalForce(this._friction);
             ball.frictionCoeffecient = this._settings.Balls.frictionCoeffecient * (ball.radius * ball.radius / 2);
-            this.balls[i] = ball;
-            this.world.addCharacter(ball);
+            this._balls[i] = ball;
+            this._world.addCharacter(ball);
         }
     };
     Game.prototype.removeBall = function (ball) {
-        this.world.removeCharacter(ball);
-        var index = this.balls.indexOf(ball);
+        this._world.removeCharacter(ball);
+        var index = this._balls.indexOf(ball);
         if (index >= 0)
-            this.balls.splice(index, 1);
+            this._balls.splice(index, 1);
     };
     Game.prototype.processBallsToRemove = function () {
         var _this = this;
-        this.ballsToRemove.forEach(function (ball) { return _this.removeBall(ball); }, this);
-        this.ballsToRemove = [];
+        this._ballsToRemove.forEach(function (ball) { return _this.removeBall(ball); }, this);
+        this._ballsToRemove = [];
     };
     Game.prototype.updateViewport = function () {
-        var world = this.world;
+        var world = this._world;
         if (this._settings.Viewport.movement === "Horizontal") {
-            if (!world.moveViewportHorizontal(this.viewportDeltaX)) {
-                this.viewportDeltaX = -this.viewportDeltaX;
+            if (!world.moveViewportHorizontal(this._viewportDeltaX)) {
+                this._viewportDeltaX = -this._viewportDeltaX;
             }
         }
         else if (this._settings.Viewport.movement === "Vertical") {
-            if (!world.moveViewportVertical(this.viewportDeltaY)) {
-                this.viewportDeltaY = -this.viewportDeltaY;
+            if (!world.moveViewportVertical(this._viewportDeltaY)) {
+                this._viewportDeltaY = -this._viewportDeltaY;
             }
         }
         else if (this._settings.Viewport.movement === "Rotate") {
-            world.centerViewportAt(this.radar.armPos.x, this.radar.armPos.y);
+            world.centerViewportAt(this._radar.armPos.x, this._radar.armPos.y);
         }
     };
     Game.prototype.createBackgroundGradient = function () {
-        var ctx = this.ctx;
-        var world = this.world;
+        var ctx = this._ctx;
+        var world = this._world;
         var viewport = world.viewport;
         var center = world.center;
         viewport.applyTransform();
-        this.backgroundOffset += this.backgroundDelta;
-        if (this.backgroundOffset < 0.6) {
-            this.backgroundOffset = 0.6;
-            this.backgroundDelta = -this.backgroundDelta;
+        this._backgroundOffset += this._backgroundDelta;
+        if (this._backgroundOffset < 0.6) {
+            this._backgroundOffset = 0.6;
+            this._backgroundDelta = -this._backgroundDelta;
         }
-        if (this.backgroundOffset > 1) {
-            this.backgroundOffset = 1;
-            this.backgroundDelta = -this.backgroundDelta;
+        if (this._backgroundOffset > 1) {
+            this._backgroundOffset = 1;
+            this._backgroundDelta = -this._backgroundDelta;
         }
         //this.backgroundGradient = ctx.createLinearGradient(0, 0, world.width, world.height);
-        this.backgroundGradient = ctx.createRadialGradient(center.x, center.y, 2, center.x, center.y, world.width / 2);
-        this.backgroundGradient.addColorStop(0, this.backColorStart);
-        this.backgroundGradient.addColorStop(this.backgroundOffset, this.backColorEnd);
+        this._backgroundGradient = ctx.createRadialGradient(center.x, center.y, 2, center.x, center.y, world.width / 2);
+        this._backgroundGradient.addColorStop(0, this._backColorStart);
+        this._backgroundGradient.addColorStop(this._backgroundOffset, this._backColorEnd);
         //this.backgroundGradient.addColorStop(1, this.paintedBackStart);
         viewport.restoreTransform();
     };
     Game.prototype.paintBackground = function () {
-        var ctx = this.ctx;
-        var world = this.world;
+        var ctx = this._ctx;
+        var world = this._world;
         var viewport = world.viewport;
         var center = world.center;
         viewport.applyTransform();
-        ctx.fillStyle = this.backgroundGradient;
+        ctx.fillStyle = this._backgroundGradient;
         var bounds = viewport;
         ctx.beginPath();
         ctx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -146,7 +149,7 @@ var Game = /** @class */ (function () {
         viewport.restoreTransform();
     };
     Game.prototype.updateFan = function (fan, settings) {
-        var world = this.world;
+        var world = this._world;
         var fanPos = settings.position;
         var fanAngle = settings.angle;
         var fanRadius = settings.strength;
@@ -155,37 +158,37 @@ var Game = /** @class */ (function () {
         fan.strength = fanRadius;
     };
     Game.prototype.paintRadarAngle = function () {
-        var ctx = this.ctx;
-        var viewport = this.world.viewport;
+        var ctx = this._ctx;
+        var viewport = this._world.viewport;
         ctx.save();
         ctx.font = "20px Arial";
         ctx.fillStyle = "black";
         ctx.strokeStyle = "black";
         ctx.textAlign = "center";
-        var _a = viewport.toScreen(this.radar.position.x, this.radar.position.y), radarX = _a[0], radarY = _a[1];
-        ctx.fillText(this.radar.degrees.toFixed(0).toString(), radarX, radarY);
+        var _a = viewport.toScreen(this._radar.position.x, this._radar.position.y), radarX = _a[0], radarY = _a[1];
+        ctx.fillText(this._radar.degrees.toFixed(0).toString(), radarX, radarY);
         ctx.restore();
     };
     Game.prototype.update = function (frame, timestamp, delta) {
         this.updateViewport();
         this.createBackgroundGradient();
-        this.liquid.position.x = this.radar.armPos.x - this.liquid.bounds.width / 2;
-        this.liquid.position.y = this.radar.armPos.y - this.liquid.bounds.height / 2;
-        if (this.balls.length === 0)
+        this._liquid.position.x = this._radar.armPos.x - this._liquid.bounds.width / 2;
+        this._liquid.position.y = this._radar.armPos.y - this._liquid.bounds.height / 2;
+        if (this._balls.length === 0)
             this.createRandomBalls();
-        this.world.update(frame, timestamp, delta);
+        this._world.update(frame, timestamp, delta);
         this.processBallsToRemove();
     };
     Game.prototype.render = function (frame) {
         this.paintBackground();
         this.paintRadarAngle();
-        var world = this.world;
+        var world = this._world;
         var viewport = world.viewport;
-        this.world.render(frame);
-        if (this.balls.length === 0)
+        this._world.render(frame);
+        if (this._balls.length === 0)
             return;
         //let ball = this.balls[0];
-        this.output.innerHTML = "(" + this.canvasMouse.x + ", " + this.canvasMouse.y + ") <br/>" +
+        this._output.innerHTML = "(" + this._canvasMouse.x + ", " + this._canvasMouse.y + ") <br/>" +
             "world: " + world + "<br/>" +
             "viewport: " + viewport + "<br/>" +
             "viewport top: " + viewport.top.toFixed(0) + "<br/>" +
@@ -198,10 +201,11 @@ var Game = /** @class */ (function () {
             //"velocity radians: " + ball.velocity.radians.toFixed(3) + "<br/>" +
             //"velocity angle: " + ball.velocity.degrees.toFixed(1) + "<br/>" +
             //"rotate velocity: " + ball.rotateVelocity.toFixed(2) + "<br/>" +
-            "gravity: " + this.gravity.gravityConst.toFixed(3) + "<br/>" +
+            "gravity: " + this._gravity.gravityConst.toFixed(3) + "<br/>" +
             "";
     };
     Game.prototype.stop = function () {
+        this._settings.removeEventListener("change", this._boundHandleSettingsChanged);
     };
     return Game;
 }());

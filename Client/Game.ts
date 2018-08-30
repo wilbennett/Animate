@@ -1,80 +1,84 @@
 ﻿class Game {
-    private ctx: CanvasRenderingContext2D;
-    private height: number = window.innerHeight;
-    private width: number = window.innerWidth;
-    private canvasMouse: MouseTracker;
-    private output: HTMLOutputElement;
-    private gravity: Gravity;
-    private friction: Force;
-    private liquid: Liquid;
-    private radar: Radar;
-    private leftFan: Wind;
-    private rightFan: Wind;
-    private world: World2D;
-    private balls: Ball[] = [];
-    private ballsToRemove: Ball[] = [];
-    private backgroundGradient: CanvasGradient;
-    private backColorStart: string;
-    private backColorEnd: string;
-    private viewportDeltaX = 2;
-    private viewportDeltaY = 0;
-    private backgroundOffset = 0;
-    private backgroundDelta = 0.002;
+    private _ctx: CanvasRenderingContext2D;
+    private _height: number = window.innerHeight;
+    private _width: number = window.innerWidth;
+    private _canvasMouse: MouseTracker;
+    private _output: HTMLOutputElement;
+    private _gravity: Gravity;
+    private _friction: Force;
+    private _liquid: Liquid;
+    private _radar: Radar;
+    private _leftFan: Wind;
+    private _rightFan: Wind;
+    private _world: World2D;
+    private _balls: Ball[] = [];
+    private _ballsToRemove: Ball[] = [];
+    private _backgroundGradient: CanvasGradient;
+    private _backColorStart: string;
+    private _backColorEnd: string;
+    private _viewportDeltaX = 2;
+    private _viewportDeltaY = 0;
+    private _backgroundOffset = 0;
+    private _backgroundDelta = 0.002;
+    private _boundHandleSettingsChanged = this.handleSettingsChanged.bind(this);
 
-    constructor(private canvas: HTMLCanvasElement, private _settings: Dynamic) {
-        this.ctx = <CanvasRenderingContext2D>this.canvas.getContext("2d");
-        this.height = this.canvas.height;
-        this.width = this.canvas.width;
-        const ctx = this.ctx;
-        const width = this.width;
-        const height = this.height;
+    constructor(private _canvas: HTMLCanvasElement, private _settings: Dynamic) {
+        this._ctx = <CanvasRenderingContext2D>this._canvas.getContext("2d");
+        this._height = this._canvas.height;
+        this._width = this._canvas.width;
+        const ctx = this._ctx;
+        const width = this._width;
+        const height = this._height;
 
         const orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
         const worldWidth = _settings.World.wide ? width * 1.5 : width;
         const worldHeight = _settings.World.tall ? height * 1.5 : height;
-        this.world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, width, height);
+        this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, width, height);
 
-        const world = this.world;
-        this.canvasMouse = new MouseTracker(this.canvas);
+        const world = this._world;
+        this._canvasMouse = new MouseTracker(this._canvas);
 
-        this.output = <HTMLOutputElement>document.getElementById("output");
-        this.friction = new Friction();
-        this.gravity = new Gravity(world.orientation, 0.3);
-        this.liquid = new Liquid(new Vector(world.minX, world.offsetAbove(world.minY, 200)), 0.05, world.width / 8, 90);
-        this.radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
+        this._output = <HTMLOutputElement>document.getElementById("output");
+        this._friction = new Friction();
+        this._gravity = new Gravity(world.orientation, 0.3);
+        this._liquid = new Liquid(new Vector(world.minX, world.offsetAbove(world.minY, 200)), 0.05, world.width / 8, 90);
+        this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
 
-        world.addCharacter(this.liquid);
-        world.addCharacter(this.radar);
+        world.addCharacter(this._liquid);
+        world.addCharacter(this._radar);
 
-        this.leftFan = this.createFan(world.left, this._settings.LeftFan);
-        this.rightFan = this.createFan(world.right, this._settings.RightFan);
-        world.addCharacter(this.leftFan);
-        world.addCharacter(this.rightFan);
+        this._leftFan = this.createFan(world.left, this._settings.LeftFan);
+        this._rightFan = this.createFan(world.right, this._settings.RightFan);
+        world.addCharacter(this._leftFan);
+        world.addCharacter(this._rightFan);
+
+        this._settings.addEventListener("change", this._boundHandleSettingsChanged);
+        this.handleSettingsChanged();
     }
 
     public handleSettingsChanged() {
         log("Game settings changed");
 
-        if (Math.abs(this.viewportDeltaX) !== Math.abs(this._settings.Viewport.deltaX)) {
-            const mult = this.viewportDeltaX >= 0 ? 1 : -1;
-            this.viewportDeltaX = this._settings.Viewport.deltaX * mult;
+        if (Math.abs(this._viewportDeltaX) !== Math.abs(this._settings.Viewport.deltaX)) {
+            const mult = this._viewportDeltaX >= 0 ? 1 : -1;
+            this._viewportDeltaX = this._settings.Viewport.deltaX * mult;
         }
 
-        if (Math.abs(this.viewportDeltaY) !== Math.abs(this._settings.Viewport.deltaY)) {
-            const mult = this.viewportDeltaY >= 0 ? 1 : -1;
-            this.viewportDeltaY = this._settings.Viewport.deltaY * mult;
+        if (Math.abs(this._viewportDeltaY) !== Math.abs(this._settings.Viewport.deltaY)) {
+            const mult = this._viewportDeltaY >= 0 ? 1 : -1;
+            this._viewportDeltaY = this._settings.Viewport.deltaY * mult;
         }
 
-        this.backColorStart = this._settings.World.backColorStart || "blue";
-        this.backColorEnd = this._settings.World.backColorEnd || "lightgreen";
+        this._backColorStart = this._settings.World.backColorStart || "blue";
+        this._backColorEnd = this._settings.World.backColorEnd || "lightgreen";
 
         this.createBackgroundGradient();
-        this.updateFan(this.leftFan, this._settings.LeftFan);
-        this.updateFan(this.rightFan, this._settings.RightFan);
+        this.updateFan(this._leftFan, this._settings.LeftFan);
+        this.updateFan(this._rightFan, this._settings.RightFan);
     }
 
     private createFan(x: number, settings: Dynamic) {
-        const world = this.world;
+        const world = this._world;
 
         let fanPos = settings.position;
         let fanAngle = settings.angle;
@@ -95,98 +99,98 @@
             let radius = mass * 5;
             let color = MathEx.random(colors);
             //color = "blue";
-            let startY = this.world.viewport.topOffset(radius);
+            let startY = this._world.viewport.topOffset(radius);
             let ball = new Ball(
                 radius,
                 color,
-                new Vector(MathEx.random(radius, this.width - radius * 2), startY),
+                new Vector(MathEx.random(radius, this._width - radius * 2), startY),
                 new Vector(MathEx.random(0, 5), 0),
-                new Vector(0, 0.00),
+                Vector.empty,
                 mass * mass,
                 50,
-                this.gravity.gravityConst,
-                this.world,
+                this._gravity.gravityConst,
+                this._world,
                 this.addBallToRemove);
 
-            ball.addUniversalForce(this.gravity);
-            ball.addUniversalForce(this.friction);
+            ball.addUniversalForce(this._gravity);
+            ball.addUniversalForce(this._friction);
             ball.frictionCoeffecient = this._settings.Balls.frictionCoeffecient * (ball.radius * ball.radius / 2);
-            this.balls[i] = ball;
-            this.world.addCharacter(ball);
+            this._balls[i] = ball;
+            this._world.addCharacter(ball);
         }
     }
 
     private removeBall(ball: Ball) {
-        this.world.removeCharacter(ball);
-        let index = this.balls.indexOf(ball);
+        this._world.removeCharacter(ball);
+        let index = this._balls.indexOf(ball);
 
         if (index >= 0)
-            this.balls.splice(index, 1);
+            this._balls.splice(index, 1);
     }
 
-    private addBallToRemove = (ball: Ball) => this.ballsToRemove.push(ball);
+    private addBallToRemove = (ball: Ball) => this._ballsToRemove.push(ball);
 
     private processBallsToRemove() {
-        this.ballsToRemove.forEach(ball => this.removeBall(ball), this);
-        this.ballsToRemove = [];
+        this._ballsToRemove.forEach(ball => this.removeBall(ball), this);
+        this._ballsToRemove = [];
     }
 
     private updateViewport() {
-        const world = this.world;
+        const world = this._world;
 
         if (this._settings.Viewport.movement === "Horizontal") {
-            if (!world.moveViewportHorizontal(this.viewportDeltaX)) {
-                this.viewportDeltaX = -this.viewportDeltaX;
+            if (!world.moveViewportHorizontal(this._viewportDeltaX)) {
+                this._viewportDeltaX = -this._viewportDeltaX;
             }
         }
         else if (this._settings.Viewport.movement === "Vertical") {
-            if (!world.moveViewportVertical(this.viewportDeltaY)) {
-                this.viewportDeltaY = -this.viewportDeltaY;
+            if (!world.moveViewportVertical(this._viewportDeltaY)) {
+                this._viewportDeltaY = -this._viewportDeltaY;
             }
         }
         else if (this._settings.Viewport.movement === "Rotate") {
-            world.centerViewportAt(this.radar.armPos.x, this.radar.armPos.y);
+            world.centerViewportAt(this._radar.armPos.x, this._radar.armPos.y);
         }
     }
 
     private createBackgroundGradient() {
-        const ctx = this.ctx;
-        const world = this.world;
+        const ctx = this._ctx;
+        const world = this._world;
         const viewport = world.viewport;
         const center = world.center;
 
         viewport.applyTransform();
 
-        this.backgroundOffset += this.backgroundDelta;
+        this._backgroundOffset += this._backgroundDelta;
 
-        if (this.backgroundOffset < 0.6) {
-            this.backgroundOffset = 0.6;
-            this.backgroundDelta = -this.backgroundDelta;
+        if (this._backgroundOffset < 0.6) {
+            this._backgroundOffset = 0.6;
+            this._backgroundDelta = -this._backgroundDelta;
         }
 
-        if (this.backgroundOffset > 1) {
-            this.backgroundOffset = 1;
-            this.backgroundDelta = -this.backgroundDelta;
+        if (this._backgroundOffset > 1) {
+            this._backgroundOffset = 1;
+            this._backgroundDelta = -this._backgroundDelta;
         }
 
         //this.backgroundGradient = ctx.createLinearGradient(0, 0, world.width, world.height);
-        this.backgroundGradient = ctx.createRadialGradient(center.x, center.y, 2, center.x, center.y, world.width / 2);
-        this.backgroundGradient.addColorStop(0, this.backColorStart);
-        this.backgroundGradient.addColorStop(this.backgroundOffset, this.backColorEnd);
+        this._backgroundGradient = ctx.createRadialGradient(center.x, center.y, 2, center.x, center.y, world.width / 2);
+        this._backgroundGradient.addColorStop(0, this._backColorStart);
+        this._backgroundGradient.addColorStop(this._backgroundOffset, this._backColorEnd);
         //this.backgroundGradient.addColorStop(1, this.paintedBackStart);
 
         viewport.restoreTransform();
     }
 
     private paintBackground() {
-        const ctx = this.ctx;
-        const world = this.world;
+        const ctx = this._ctx;
+        const world = this._world;
         const viewport = world.viewport;
         const center = world.center;
 
         viewport.applyTransform();
 
-        ctx.fillStyle = this.backgroundGradient;
+        ctx.fillStyle = this._backgroundGradient;
         let bounds: IBounds = viewport;
         ctx.beginPath();
         ctx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -203,7 +207,7 @@
     }
 
     private updateFan(fan: Wind, settings: Dynamic) {
-        const world = this.world;
+        const world = this._world;
 
         let fanPos = settings.position;
         let fanAngle = settings.angle;
@@ -215,29 +219,29 @@
     }
 
     private paintRadarAngle() {
-        const ctx = this.ctx;
-        const viewport = this.world.viewport;
+        const ctx = this._ctx;
+        const viewport = this._world.viewport;
 
         ctx.save();
         ctx.font = "20px Arial";
         ctx.fillStyle = "black";
         ctx.strokeStyle = "black";
         ctx.textAlign = "center";
-        let [radarX, radarY] = viewport.toScreen(this.radar.position.x, this.radar.position.y);
-        ctx.fillText(this.radar.degrees.toFixed(0).toString(), radarX, radarY);
+        let [radarX, radarY] = viewport.toScreen(this._radar.position.x, this._radar.position.y);
+        ctx.fillText(this._radar.degrees.toFixed(0).toString(), radarX, radarY);
         ctx.restore();
     }
 
     public update(frame: number, timestamp: DOMHighResTimeStamp, delta: number): void {
         this.updateViewport();
         this.createBackgroundGradient();
-        this.liquid.position.x = this.radar.armPos.x - this.liquid.bounds.width / 2;
-        this.liquid.position.y = this.radar.armPos.y - this.liquid.bounds.height / 2;
+        this._liquid.position.x = this._radar.armPos.x - this._liquid.bounds.width / 2;
+        this._liquid.position.y = this._radar.armPos.y - this._liquid.bounds.height / 2;
 
-        if (this.balls.length === 0)
+        if (this._balls.length === 0)
             this.createRandomBalls();
 
-        this.world.update(frame, timestamp, delta);
+        this._world.update(frame, timestamp, delta);
         this.processBallsToRemove();
     }
 
@@ -245,16 +249,16 @@
         this.paintBackground();
         this.paintRadarAngle();
 
-        const world = this.world;
+        const world = this._world;
         const viewport = world.viewport;
 
-        this.world.render(frame);
+        this._world.render(frame);
 
-        if (this.balls.length === 0) return;
+        if (this._balls.length === 0) return;
 
         //let ball = this.balls[0];
 
-        this.output.innerHTML = "(" + this.canvasMouse.x + ", " + this.canvasMouse.y + ") <br/>" +
+        this._output.innerHTML = "(" + this._canvasMouse.x + ", " + this._canvasMouse.y + ") <br/>" +
             "world: " + world + "<br/>" +
             "viewport: " + viewport + "<br/>" +
             "viewport top: " + viewport.top.toFixed(0) + "<br/>" +
@@ -267,11 +271,11 @@
             //"velocity radians: " + ball.velocity.radians.toFixed(3) + "<br/>" +
             //"velocity angle: " + ball.velocity.degrees.toFixed(1) + "<br/>" +
             //"rotate velocity: " + ball.rotateVelocity.toFixed(2) + "<br/>" +
-            "gravity: " + this.gravity.gravityConst.toFixed(3) + "<br/>" +
+            "gravity: " + this._gravity.gravityConst.toFixed(3) + "<br/>" +
             "";
     }
 
     public stop() {
-
+        this._settings.removeEventListener("change", this._boundHandleSettingsChanged);
     }
 }   

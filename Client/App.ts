@@ -12,6 +12,8 @@
     private _nextFPSUpdate = 0;
     private _rafHandle = -1;
     private _timeoutHandle = -1;
+    private _deltaUpdateCounter = 0;
+    private _maxDeltaUpdateShown = 0;
 
     private _boundHandleSettingsChanged = this.handleSettingsChanged.bind(this);
     private _targetFPS: number;
@@ -33,9 +35,9 @@
     private _elapsedTime = 0;
     private _statY = 20;
 
-    constructor(canvas: HTMLCanvasElement, private _settings: Dynamic) {
-        this._game = new Game(canvas, this._settings);
-        this._ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
+    constructor(private _canvas: HTMLCanvasElement, private _settings: Dynamic) {
+        this._game = new Game(_canvas, this._settings);
+        this._ctx = <CanvasRenderingContext2D>_canvas.getContext("2d");
         this._lastFrameTime = performance.now();
         this._settings.addEventListener("change", this._boundHandleSettingsChanged);
 
@@ -76,8 +78,6 @@
         this._emaWeight2 = 1 - this._emaWeight;
 
         log("FPS = " + this._targetFPS + " ---> time step: " + this._timeStep.toFixed(2));
-
-        this._game.handleSettingsChanged();
     }
 
     private requestFrame() {
@@ -105,6 +105,27 @@
 
         this._ctx.strokeText(msg, 0, this._statY);
         this._statY += 20;
+    }
+
+    private showMaxDeltaUpdates() {
+        if (this._deltaUpdateCounter <= 0) return;
+
+        this._deltaUpdateCounter--;
+        const ctx = this._ctx;
+
+        ctx.save();
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 20;
+        ctx.beginPath();
+        ctx.strokeRect(0, 0, this._canvas.width, this._canvas.height);
+        ctx.closePath();
+
+        ctx.font = "20px Arial";
+        ctx.strokeStyle = "black";
+        ctx.textAlign = "center";
+        ctx.lineWidth = 1;
+        ctx.strokeText(this._maxDeltaUpdateShown.toFixed(0), this._canvas.width / 2, 20);
+        ctx.restore();
     }
 
     private showStats() {
@@ -145,12 +166,15 @@
         this._lastFrameTimeAdjusted = this._lastFrameTime - (elapsedTimeAdjusted % this._timeStep);
         let updateTime = 0;
         let deltaUpdates = 0;
+        let deltaUpdatesRaw = 0;
 
         //*
         // Simulate the total elapsed time in timestep increments.
         // If exceeds inactive cutoff updates, assume user had tabbed away.  Continue where left off.
-        if (this._settings.App.pauseInactive && this._timeStepDelta > this._maxTimeStepDelta)
+        if (this._settings.App.pauseInactive && this._timeStepDelta > this._maxTimeStepDelta) {
+            deltaUpdatesRaw = Math.floor(this._timeStepDelta / this._timeStep) - 1;
             this._timeStepDelta = this._timeStep;
+        }
 
         if (this._settings.App.fixedTimeStep) {
             while (this._timeStepDelta >= this._timeStep) {
@@ -158,9 +182,11 @@
                 this._game.update(this._frame, timestamp, 1);
                 updateTime = performance.now() - startTime;
                 this._timeStepDelta -= this._timeStep;
-                this._deltaUpdate++;
                 deltaUpdates++;
             }
+
+            this._deltaUpdate += deltaUpdates;
+            deltaUpdatesRaw += deltaUpdates;
 
             if (this._settings.App.interpolate) {
                 let startTime = performance.now();
@@ -179,6 +205,11 @@
         if (deltaUpdates > this._maxDeltaUpdate)
             this._maxDeltaUpdate = deltaUpdates;
 
+        if (deltaUpdatesRaw > 2 && (deltaUpdatesRaw > this._maxDeltaUpdateShown || this._deltaUpdateCounter <= 0)) {
+            this._maxDeltaUpdateShown = deltaUpdatesRaw;
+            this._deltaUpdateCounter = this._targetFPS * 5;
+        }
+
         this._game.render(this._frame);
 
         if (timestamp >= this._nextFPSUpdate) {
@@ -191,6 +222,7 @@
 
         this._framesLastSecond++;
         this._frame++;
+        this.showMaxDeltaUpdates();
         this.showStats();
     }
 }
