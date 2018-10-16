@@ -99,9 +99,41 @@
         this.reset();
     }
 
-    static add = (v1: Vector2D, v2: Vector2D) => new Vector2D(v1.x + v2.x, v1.y + v2.y);
-    static subtract = (v1: Vector2D, v2: Vector2D) => new Vector2D(v1.x - v2.x, v1.y - v2.y);
-    static mult = (v: Vector2D, scale: number) => new Vector2D(v.x * scale, v.y * scale);
-    static div = (v: Vector2D, scale: number) => new Vector2D(v.x / scale, v.y / scale);
-    static normalize = (v: Vector2D) => v.mag > 0 ? Vector2D.div(v, v.mag) : v;
+    static add(v1: Vector2D, v2: Vector2D) { return new Vector2D(v1.x + v2.x, v1.y + v2.y) }
+    static subtract(v1: Vector2D, v2: Vector2D) { return new Vector2D(v1.x - v2.x, v1.y - v2.y); } 
+    static normalize(v: Vector2D) { return v.mag > 0 ? Vector2D.div(v, v.mag) : v; }
+
+    static mult(v: Vector2D, scale: number): Vector2D;
+    static mult(scale: number, v: Vector2D): Vector2D;
+    static mult(scale: any, v: any): Vector2D {
+        let vec: Vector2D;
+        let scalar: number;
+
+        if (typeof v === "object") {
+            vec = v;
+            scalar = scale;
+        } else {
+            vec = scale;
+            scalar = <number>v;
+        }
+
+        return new Vector2D(vec.x * scalar, vec.y * scalar);
+    }
+
+    static div(v: Vector2D, scale: number): Vector2D;
+    static div(scale: number, v: Vector2D): Vector2D;
+    static div(scale: any, v: any): Vector2D {
+        let vec: Vector2D;
+        let scalar: number;
+
+        if (typeof v === "object") {
+            vec = v;
+            scalar = scale;
+        } else {
+            vec = scale;
+            scalar = <number>v;
+        }
+
+        return new Vector2D(vec.x / scalar, vec.y / scalar);
+    }
 }
