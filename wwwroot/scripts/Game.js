@@ -29,7 +29,7 @@ var Game = /** @class */ (function () {
         this._output = document.getElementById("output");
         this._friction = new Friction();
         this._gravity = new Gravity(world.orientation, 0.3);
-        this._liquid = new Liquid(new Vector(world.minX, world.offsetAbove(world.minY, 200)), 0.05, world.width / 8, 90);
+        this._liquid = new Liquid(new Vector2D(world.minX, world.offsetAbove(world.minY, 200)), 0.05, world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
         world.addCharacter(this._liquid);
         world.addCharacter(this._radar);
@@ -42,12 +42,13 @@ var Game = /** @class */ (function () {
     }
     Game.prototype.handleSettingsChanged = function () {
         log("Game settings changed");
+        var mult;
         if (Math.abs(this._viewportDeltaX) !== Math.abs(this._settings.Viewport.deltaX)) {
-            var mult = this._viewportDeltaX >= 0 ? 1 : -1;
+            mult = this._viewportDeltaX >= 0 ? 1 : -1;
             this._viewportDeltaX = this._settings.Viewport.deltaX * mult;
         }
         if (Math.abs(this._viewportDeltaY) !== Math.abs(this._settings.Viewport.deltaY)) {
-            var mult = this._viewportDeltaY >= 0 ? 1 : -1;
+            mult = this._viewportDeltaY >= 0 ? 1 : -1;
             this._viewportDeltaY = this._settings.Viewport.deltaY * mult;
         }
         this._backColorStart = this._settings.World.backColorStart || "blue";
@@ -61,7 +62,7 @@ var Game = /** @class */ (function () {
         var fanPos = settings.position;
         var fanAngle = settings.angle;
         var fanRadius = settings.strength;
-        return new Wind(new Vector(x, world.offsetAbove(world.minY, world.height * fanPos)), world.localizeDegrees(fanAngle), fanRadius);
+        return new Wind(new Vector2D(x, world.offsetAbove(world.minY, world.height * fanPos)), world.localizeDegrees(fanAngle), fanRadius);
     };
     Game.prototype.createRandomBalls = function () {
         var colors = this._settings.Balls.colors || ['blue', 'green', 'red', 'black', 'white'];
@@ -72,7 +73,7 @@ var Game = /** @class */ (function () {
             var color = MathEx.random(colors);
             //color = "blue";
             var startY = this._world.viewport.topOffset(radius);
-            var ball = new Ball(radius, color, new Vector(MathEx.random(radius, this._width - radius * 2), startY), new Vector(MathEx.random(0, 5), 0), Vector.empty, mass * mass, 50, this._gravity.gravityConst, this._world, this.addBallToRemove);
+            var ball = new Ball(radius, color, new Vector2D(MathEx.random(radius, this._width - radius * 2), startY), new Vector2D(MathEx.random(0, 5), 0), Vector2D.empty, mass * mass, 50, this._gravity.gravityConst, this._world, this.addBallToRemove);
             ball.addUniversalForce(this._gravity);
             ball.addUniversalForce(this._friction);
             ball.frictionCoeffecient = this._settings.Balls.frictionCoeffecient * (ball.radius * ball.radius / 2);

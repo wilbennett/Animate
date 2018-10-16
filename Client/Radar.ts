@@ -1,13 +1,13 @@
 ﻿class Radar extends Character {
     private _armManager: Polar;
-    private _armPos: Vector | null = null;
+    private _armPos: Vector2D | null = null;
 
     constructor(
-        position: Vector,
+        position: Vector2D,
         private _radius: number,
         private _color: string,
         private _angleVelocity: number) {
-        super(position, Vector.empty, Vector.empty, 0, 0);
+        super(position, Vector2D.empty, Vector2D.empty, 0, 0);
 
         this._armManager = new Polar(this._radius * 0.95, 0);
     }
@@ -18,8 +18,8 @@
     get degrees() { return this._armManager.degrees; }
 
     get armPos() {
-        if (this._armPos == null)
-            this._armPos = Vector.add(this._armManager.vector, this._position);
+        if (this._armPos === null)
+            this._armPos = Vector2D.add(this._armManager.vector, this._position);
 
         return this._armPos;
     }

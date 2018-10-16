@@ -2,8 +2,8 @@
     protected twoPI: number = 2 * Math.PI;
 
     constructor(
-        protected _position: Vector,
-        protected _forceVector: Vector,
+        protected _position: Vector2D,
+        protected _forceVector: Vector2D,
         protected _forceRadius: number) {
     }
 

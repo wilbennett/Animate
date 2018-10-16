@@ -24,18 +24,23 @@ var Viewport2D = /** @class */ (function (_super) {
                     ctx.save();
                     ctx.translate(-this.left, this.top);
                     ctx.scale(1, -1);
-                    ctx.beginPath();
-                    ctx.rect(this._x, this._y, this._width, this._height);
-                    ctx.clip();
-                    ctx.closePath();
+                    this.applyClipRegion();
                 }
             :
                 function () {
                     this._ctx.save();
                     this._ctx.translate(-this.left, -this.top);
+                    this.applyClipRegion();
                 };
         return _this;
     }
+    Viewport2D.prototype.applyClipRegion = function () {
+        var ctx = this._ctx;
+        ctx.beginPath();
+        ctx.rect(this._x, this._y, this._width, this._height);
+        ctx.clip();
+        ctx.closePath();
+    };
     Viewport2D.prototype.restoreTransform = function () {
         this._ctx.restore();
     };

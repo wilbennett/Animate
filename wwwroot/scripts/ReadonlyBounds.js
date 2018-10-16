@@ -55,7 +55,7 @@ var ReadonlyBounds = /** @class */ (function () {
     ReadonlyBounds.prototype.calcRight = function () { return this._x + this._width - 1; };
     ReadonlyBounds.prototype.calcCenterX = function () { return Math.round(this._x + this._width / 2); };
     ReadonlyBounds.prototype.calcCenterY = function () { return Math.round(this._y + this._height / 2); };
-    ReadonlyBounds.prototype.calcCenter = function () { return new Vector(this.calcCenterX(), this.calcCenterY()); };
+    ReadonlyBounds.prototype.calcCenter = function () { return new Vector2D(this.calcCenterX(), this.calcCenterY()); };
     ReadonlyBounds.prototype.calcBoundsArray = function () { return [this._x, this._y, this._width, this._height]; };
     Object.defineProperty(ReadonlyBounds.prototype, "orientation", {
         get: function () { return this._orientation; },

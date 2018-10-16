@@ -5,9 +5,9 @@
     constructor(
         private readonly _radius: number,
         private _color: string,
-        position: Vector,
-        velocity: Vector,
-        acceleration: Vector,
+        position: Vector2D,
+        velocity: Vector2D,
+        acceleration: Vector2D,
         mass: number,
         maxVelocity: number,
         private _gravityConst: number,
@@ -48,6 +48,48 @@
         this.checkBoundary();
     }
 
+    //*
+    draw(ctx: CanvasRenderingContext2D, frame: number) {
+        super.draw(ctx, frame);
+
+        let radiusX = this._radius;
+        let radiusY = this._radius;
+
+        ctx.save();
+
+        let polar = new Polar(this._radius, this._rotateRadians);
+        let highlightPos = polar.vector;
+        highlightPos.add(this.position);
+
+        let gradient = ctx.createRadialGradient(
+            highlightPos.x,
+            highlightPos.y,
+            this._radius * 0.01,
+            highlightPos.x,
+            highlightPos.y,
+            this._radius);
+
+        gradient.addColorStop(0, "#bbbbbb");
+        gradient.addColorStop(0.7, this._color);
+
+        ctx.globalAlpha = this._opacity;
+        ctx.beginPath();
+        ctx.ellipse(this.position.x, this.position.y, radiusX, radiusY, 0, 0, MathEx.TWO_PI);
+        ctx.fillStyle = this._color;
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.globalAlpha = ctx.globalAlpha * 0.7;
+        ctx.strokeStyle = "#bbbbbb";
+        ctx.ellipse(this.position.x, this.position.y, radiusX * 0.95, radiusY * 0.95, 0, 1 + 0, MathEx.TWO_PI - 0.5);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
+    }
+    /*/
     draw(ctx: CanvasRenderingContext2D, frame: number) {
         super.draw(ctx, frame);
 
@@ -81,6 +123,7 @@
 
         ctx.restore();
     }
+    //*/
 
     private checkBoundary() {
         const boundary = this._boundary;

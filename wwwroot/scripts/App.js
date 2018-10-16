@@ -51,9 +51,10 @@ var App = /** @class */ (function () {
                 deltaUpdatesRaw = Math.floor(_this._timeStepDelta / _this._timeStep) - 1;
                 _this._timeStepDelta = _this._timeStep;
             }
+            var startTime;
             if (_this._settings.App.fixedTimeStep) {
                 while (_this._timeStepDelta >= _this._timeStep) {
-                    var startTime = performance.now();
+                    startTime = performance.now();
                     _this._game.update(_this._frame, timestamp, 1);
                     updateTime = performance.now() - startTime;
                     _this._timeStepDelta -= _this._timeStep;
@@ -62,7 +63,7 @@ var App = /** @class */ (function () {
                 _this._deltaUpdate += deltaUpdates;
                 deltaUpdatesRaw += deltaUpdates;
                 if (_this._settings.App.interpolate) {
-                    var startTime = performance.now();
+                    startTime = performance.now();
                     _this._game.update(_this._frame, timestamp, _this._timeStepDelta / _this._timeStep);
                     updateTime = performance.now() - startTime;
                     _this._timeStepDelta = 0;
@@ -70,7 +71,7 @@ var App = /** @class */ (function () {
             }
             else {
                 var delta = _this._settings.App.interpolate ? _this._timeStepDelta / _this._timeStep : 1;
-                var startTime = performance.now();
+                startTime = performance.now();
                 _this._game.update(_this._frame, timestamp, delta);
                 updateTime = performance.now() - startTime;
                 _this._timeStepDelta = 0;

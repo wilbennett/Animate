@@ -1,4 +1,4 @@
-﻿class Vector {
+﻿class Vector2D {
     private _magSquared: number = -1;
     private _mag: number = -1;
     private _degrees: number = -1;
@@ -51,7 +51,7 @@
 
     toString = () => "(" + this._x.toFixed(3) + ", " + this._y.toFixed(3) + ")";
 
-    static get empty() { return new Vector(0, 0); }
+    static get empty() { return new Vector2D(0, 0); }
 
     reset() {
         this._mag = -1;
@@ -60,13 +60,13 @@
         this._polar = null;
     }
 
-    add(other: Vector) {
+    add(other: Vector2D) {
         this._x += other.x;
         this._y += other.y;
         this.reset();
     }
 
-    subtract(other: Vector) {
+    subtract(other: Vector2D) {
         this._x -= other.x;
         this._y -= other.y;
         this.reset();
@@ -99,9 +99,9 @@
         this.reset();
     }
 
-    static add = (v1: Vector, v2: Vector) => new Vector(v1.x + v2.x, v1.y + v2.y);
-    static subtract = (v1: Vector, v2: Vector) => new Vector(v1.x - v2.x, v1.y - v2.y);
-    static mult = (v: Vector, scale: number) => new Vector(v.x * scale, v.y * scale);
-    static div = (v: Vector, scale: number) => new Vector(v.x / scale, v.y / scale);
-    static normalize = (v: Vector) => v.mag > 0 ? Vector.div(v, v.mag) : v;
+    static add = (v1: Vector2D, v2: Vector2D) => new Vector2D(v1.x + v2.x, v1.y + v2.y);
+    static subtract = (v1: Vector2D, v2: Vector2D) => new Vector2D(v1.x - v2.x, v1.y - v2.y);
+    static mult = (v: Vector2D, scale: number) => new Vector2D(v.x * scale, v.y * scale);
+    static div = (v: Vector2D, scale: number) => new Vector2D(v.x / scale, v.y / scale);
+    static normalize = (v: Vector2D) => v.mag > 0 ? Vector2D.div(v, v.mag) : v;
 }

@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 var Radar = /** @class */ (function (_super) {
     __extends(Radar, _super);
     function Radar(position, _radius, _color, _angleVelocity) {
-        var _this = _super.call(this, position, Vector.empty, Vector.empty, 0, 0) || this;
+        var _this = _super.call(this, position, Vector2D.empty, Vector2D.empty, 0, 0) || this;
         _this._radius = _radius;
         _this._color = _color;
         _this._angleVelocity = _angleVelocity;
@@ -45,8 +45,8 @@ var Radar = /** @class */ (function (_super) {
     });
     Object.defineProperty(Radar.prototype, "armPos", {
         get: function () {
-            if (this._armPos == null)
-                this._armPos = Vector.add(this._armManager.vector, this._position);
+            if (this._armPos === null)
+                this._armPos = Vector2D.add(this._armManager.vector, this._position);
             return this._armPos;
         },
         enumerable: true,

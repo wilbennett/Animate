@@ -9,6 +9,14 @@
         super(orientation, x, y, width, height);
     }
 
+    protected applyClipRegion() {
+        const ctx = this._ctx;
+        ctx.beginPath();
+        ctx.rect(this._x, this._y, this._width, this._height);
+        ctx.clip();
+        ctx.closePath();
+    }
+
     applyTransform = this._isOrientedUp
         ?
         function () {
@@ -17,15 +25,14 @@
             ctx.translate(-this.left, this.top);
             ctx.scale(1, -1);
 
-            ctx.beginPath();
-            ctx.rect(this._x, this._y, this._width, this._height);
-            ctx.clip();
-            ctx.closePath();
+            this.applyClipRegion();
         }
         :
         function () {
             this._ctx.save();
             this._ctx.translate(-this.left, -this.top);
+
+            this.applyClipRegion();
         };
 
     restoreTransform() {

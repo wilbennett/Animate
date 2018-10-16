@@ -28,7 +28,7 @@ var Polar = /** @class */ (function () {
     Object.defineProperty(Polar.prototype, "vector", {
         get: function () {
             if (!this._vector)
-                this._vector = new Vector(this._radius * Math.cos(this._radians), this._radius * Math.sin(this._radians));
+                this._vector = new Vector2D(this._radius * Math.cos(this._radians), this._radius * Math.sin(this._radians));
             return this._vector;
         },
         enumerable: true,

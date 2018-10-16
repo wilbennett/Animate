@@ -54,15 +54,16 @@ var Ball = /** @class */ (function (_super) {
         }
         this.checkBoundary();
     };
+    //*
     Ball.prototype.draw = function (ctx, frame) {
         _super.prototype.draw.call(this, ctx, frame);
         var radiusX = this._radius;
         var radiusY = this._radius;
         ctx.save();
-        ctx.translate(this._position.x, this._position.y);
-        ctx.rotate(this._rotateRadians);
-        ctx.translate(-this._position.x, -this._position.y);
-        var gradient = ctx.createRadialGradient(this.position.x + radiusX, this.position.y, radiusX * 0.01, this.position.x + radiusX, this.position.y, radiusX);
+        var polar = new Polar(this._radius, this._rotateRadians);
+        var highlightPos = polar.vector;
+        highlightPos.add(this.position);
+        var gradient = ctx.createRadialGradient(highlightPos.x, highlightPos.y, this._radius * 0.01, highlightPos.x, highlightPos.y, this._radius);
         gradient.addColorStop(0, "#bbbbbb");
         gradient.addColorStop(0.7, this._color);
         ctx.globalAlpha = this._opacity;
@@ -80,6 +81,41 @@ var Ball = /** @class */ (function (_super) {
         ctx.closePath();
         ctx.restore();
     };
+    /*/
+    draw(ctx: CanvasRenderingContext2D, frame: number) {
+        super.draw(ctx, frame);
+
+        let radiusX = this._radius;
+        let radiusY = this._radius;
+
+        ctx.save();
+
+        ctx.translate(this._position.x, this._position.y);
+        ctx.rotate(this._rotateRadians);
+        ctx.translate(-this._position.x, -this._position.y);
+
+        let gradient = ctx.createRadialGradient(this.position.x + radiusX, this.position.y, radiusX * 0.01, this.position.x + radiusX, this.position.y, radiusX);
+        gradient.addColorStop(0, "#bbbbbb");
+        gradient.addColorStop(0.7, this._color);
+
+        ctx.globalAlpha = this._opacity;
+        ctx.beginPath();
+        ctx.ellipse(this.position.x, this.position.y, radiusX, radiusY, 0, 0, MathEx.TWO_PI);
+        ctx.fillStyle = this._color;
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.globalAlpha = ctx.globalAlpha * 0.7;
+        ctx.strokeStyle = "#bbbbbb";
+        ctx.ellipse(this.position.x, this.position.y, radiusX * 0.95, radiusY * 0.95, 0, 1 + 0, MathEx.TWO_PI - 0.5);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
+    }
+    //*/
     Ball.prototype.checkBoundary = function () {
         var boundary = this._boundary;
         var leftPenetration = boundary.leftPenetration(this.position.x - this.radius);

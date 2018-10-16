@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 var Friction = /** @class */ (function (_super) {
     __extends(Friction, _super);
     function Friction() {
-        return _super.call(this, Vector.empty, Vector.empty, -1) || this;
+        return _super.call(this, Vector2D.empty, Vector2D.empty, -1) || this;
     }
     Friction.prototype.applyTo = function (character) {
         var normal = 1; // TODO: Calculate the proper normal;

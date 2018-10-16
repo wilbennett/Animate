@@ -10,7 +10,7 @@
     bottom: number;
     centerX: number;
     centerY: number;
-    center: Vector;
+    center: Vector2D;
     minX: number;
     minY: number;
     boundsArray: number[];

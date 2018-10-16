@@ -3,10 +3,10 @@
     private _radiusPct: number = 0.10;
 
     constructor(
-        position: Vector,
+        position: Vector2D,
         degrees: number,
         strength: number) {
-        super(position, Vector.empty, Vector.empty, 0, strength);
+        super(position, Vector2D.empty, Vector2D.empty, 0, strength);
 
         this._polar = new Polar(strength, MathEx.toRadians(degrees));
         this.polarUpdated();
@@ -31,17 +31,17 @@
 
     private polarUpdated() {
         this._forceRadius = this._polar.radius;
-        this._velocity = Vector.normalize(this._polar.vector);
+        this._velocity = Vector2D.normalize(this._polar.vector);
     }
 
     applyTo(character: Character) {
-        if (character == this) return;
+        if (character === this) return;
 
-        let pos = Vector.subtract(character.position, this.position);
+        let pos = Vector2D.subtract(character.position, this.position);
 
         if (pos.mag > this._forceRadius) return;
 
-        this._forceVector = Vector.mult(this._velocity, pos.magSquared * 0.01);
+        this._forceVector = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
         this._forceVector.div(character.velocity.mag);
 
         super.applyTo(character);
@@ -64,7 +64,7 @@
         ctx.fill();
         ctx.closePath();
 
-        let v = Vector.mult(this._velocity, this._forceRadius * 0.5);
+        let v = Vector2D.mult(this._velocity, this._forceRadius * 0.5);
         v.add(this._position);
         ctx.beginPath();
         ctx.strokeStyle = "purple";

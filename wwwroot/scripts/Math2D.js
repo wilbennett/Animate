@@ -45,7 +45,7 @@ var Math2D = /** @class */ (function () {
             dy = w;
             return this.inflateBoundsCore(bounds, dx, dy);
         }
-        if (typeof x == "object") {
+        if (typeof x === "object") {
             var obj = x;
             dx = y;
             dy = w;
@@ -63,7 +63,7 @@ var Math2D = /** @class */ (function () {
             py = w;
             return this.isPointInBoundsCore(bounds[0], bounds[1], bounds[2], bounds[3], px, py);
         }
-        if (typeof x == "object") {
+        if (typeof x === "object") {
             var obj = x;
             px = y;
             py = w;

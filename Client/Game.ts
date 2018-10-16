@@ -41,7 +41,7 @@
         this._output = <HTMLOutputElement>document.getElementById("output");
         this._friction = new Friction();
         this._gravity = new Gravity(world.orientation, 0.3);
-        this._liquid = new Liquid(new Vector(world.minX, world.offsetAbove(world.minY, 200)), 0.05, world.width / 8, 90);
+        this._liquid = new Liquid(new Vector2D(world.minX, world.offsetAbove(world.minY, 200)), 0.05, world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
 
         world.addCharacter(this._liquid);
@@ -58,14 +58,15 @@
 
     public handleSettingsChanged() {
         log("Game settings changed");
+        let mult: number;
 
         if (Math.abs(this._viewportDeltaX) !== Math.abs(this._settings.Viewport.deltaX)) {
-            const mult = this._viewportDeltaX >= 0 ? 1 : -1;
+            mult = this._viewportDeltaX >= 0 ? 1 : -1;
             this._viewportDeltaX = this._settings.Viewport.deltaX * mult;
         }
 
         if (Math.abs(this._viewportDeltaY) !== Math.abs(this._settings.Viewport.deltaY)) {
-            const mult = this._viewportDeltaY >= 0 ? 1 : -1;
+            mult = this._viewportDeltaY >= 0 ? 1 : -1;
             this._viewportDeltaY = this._settings.Viewport.deltaY * mult;
         }
 
@@ -85,7 +86,7 @@
         let fanRadius = settings.strength;
 
         return new Wind(
-            new Vector(x, world.offsetAbove(world.minY, world.height * fanPos)),
+            new Vector2D(x, world.offsetAbove(world.minY, world.height * fanPos)),
             world.localizeDegrees(fanAngle),
             fanRadius);
     }
@@ -103,9 +104,9 @@
             let ball = new Ball(
                 radius,
                 color,
-                new Vector(MathEx.random(radius, this._width - radius * 2), startY),
-                new Vector(MathEx.random(0, 5), 0),
-                Vector.empty,
+                new Vector2D(MathEx.random(radius, this._width - radius * 2), startY),
+                new Vector2D(MathEx.random(0, 5), 0),
+                Vector2D.empty,
                 mass * mass,
                 50,
                 this._gravity.gravityConst,

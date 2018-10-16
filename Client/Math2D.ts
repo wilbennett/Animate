@@ -55,7 +55,7 @@
             return this.inflateBoundsCore(bounds, dx, dy);
         }
 
-        if (typeof x == "object") {
+        if (typeof x === "object") {
             let obj: IBoundsInfo = x;
             dx = y;
             dy = w;
@@ -80,7 +80,7 @@
             return this.isPointInBoundsCore(bounds[0], bounds[1], bounds[2], bounds[3], px, py);
         }
 
-        if (typeof x == "object") {
+        if (typeof x === "object") {
             let obj: IBoundsInfo = x;
             px = y;
             py = w;

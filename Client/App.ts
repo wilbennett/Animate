@@ -130,7 +130,7 @@
 
     private showStats() {
         this._ctx.save();
-        this._ctx.font = "20px Arial";
+        this._ctx.  font = "20px Arial";
         this._statY = 20;
         this._ctx.strokeStyle = "black";
         this._ctx.textAlign = "topleft";
@@ -176,9 +176,11 @@
             this._timeStepDelta = this._timeStep;
         }
 
+        let startTime: number;
+
         if (this._settings.App.fixedTimeStep) {
             while (this._timeStepDelta >= this._timeStep) {
-                let startTime = performance.now();
+                startTime = performance.now();
                 this._game.update(this._frame, timestamp, 1);
                 updateTime = performance.now() - startTime;
                 this._timeStepDelta -= this._timeStep;
@@ -189,14 +191,14 @@
             deltaUpdatesRaw += deltaUpdates;
 
             if (this._settings.App.interpolate) {
-                let startTime = performance.now();
+                startTime = performance.now();
                 this._game.update(this._frame, timestamp, this._timeStepDelta / this._timeStep);
                 updateTime = performance.now() - startTime;
                 this._timeStepDelta = 0;
             }
         } else {
             let delta = this._settings.App.interpolate ? this._timeStepDelta / this._timeStep : 1;
-            let startTime = performance.now();
+            startTime = performance.now();
             this._game.update(this._frame, timestamp, delta);
             updateTime = performance.now() - startTime;
             this._timeStepDelta = 0;

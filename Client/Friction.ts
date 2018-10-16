@@ -1,6 +1,6 @@
 ﻿class Friction extends Force {
     constructor() {
-        super(Vector.empty, Vector.empty, -1);
+        super(Vector2D.empty, Vector2D.empty, -1);
     }
 
     applyTo(character: Character) {

@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 var Gravity = /** @class */ (function (_super) {
     __extends(Gravity, _super);
     function Gravity(_orientation, _gravityConst) {
-        var _this = _super.call(this, new Vector(0, 0), new Vector(0, 0), -1) || this;
+        var _this = _super.call(this, new Vector2D(0, 0), new Vector2D(0, 0), -1) || this;
         _this._orientation = _orientation;
         _this._gravityConst = _gravityConst;
         if (_this._orientation === WorldOrientation.Up)
@@ -28,11 +28,11 @@ var Gravity = /** @class */ (function (_super) {
         configurable: true
     });
     Gravity.prototype.applyTo = function (character) {
-        //this._forceVector = new Vector(0, 0);
-        //this._forceVector = new Vector(0, this._gravityConst);
+        //this._forceVector = new Vector2D(0, 0);
+        //this._forceVector = new Vector2D(0, this._gravityConst);
         // Gravity applies along the y axis.
         // All objects fall at the same rate because the effect of gravity is proportional to the mass of the object.
-        this._forceVector = new Vector(0, this._gravityConst * character.mass);
+        this._forceVector = new Vector2D(0, this._gravityConst * character.mass);
         _super.prototype.applyTo.call(this, character);
     };
     return Gravity;

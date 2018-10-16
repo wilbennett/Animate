@@ -1,10 +1,10 @@
 ﻿class Liquid extends Character {
     constructor(
-        position: Vector,
+        position: Vector2D,
         protected readonly _frictionCoeffecient: number,
         private readonly _width: number,
         private readonly _height: number) {
-        super(position, new Vector(0, 0), new Vector(0, 0), 0, 0);
+        super(position, new Vector2D(0, 0), new Vector2D(0, 0), 0, 0);
     }
 
     get bounds() {

@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 var Character = /** @class */ (function (_super) {
     __extends(Character, _super);
     function Character(position, _velocity, _acceleration, _mass, _maxVelocity) {
-        var _this = _super.call(this, position, new Vector(0, 0), 0) || this;
+        var _this = _super.call(this, position, new Vector2D(0, 0), 0) || this;
         _this._velocity = _velocity;
         _this._acceleration = _acceleration;
         _this._mass = _mass;
@@ -126,14 +126,14 @@ var Character = /** @class */ (function (_super) {
             this._rotateVelocity = newVelocity;
     };
     Character.prototype.preUpdate = function (frame, timestamp, delta) {
-        this._acceleration = new Vector(0, 0);
+        this._acceleration = new Vector2D(0, 0);
         this._rotateAcceleration = 0;
     };
     Character.prototype.update = function (frame, timestamp, delta, characters) {
         this.applyUniversalForces();
         this.updateVelocity(frame, timestamp, delta);
         this.updateRotateVelocity(frame, timestamp, delta);
-        this._position.add(Vector.mult(this._velocity, delta));
+        this._position.add(Vector2D.mult(this._velocity, delta));
         this._rotateRadians += this._rotateVelocity * delta;
         this._rotateRadians = this._rotateRadians % MathEx.TWO_PI;
         this._lastUpdateFrame = frame;

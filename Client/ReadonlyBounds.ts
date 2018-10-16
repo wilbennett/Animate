@@ -15,7 +15,7 @@
 
     protected calcCenterY() { return Math.round(this._y + this._height / 2); }
 
-    protected calcCenter() { return new Vector(this.calcCenterX(), this.calcCenterY()); }
+    protected calcCenter() { return new Vector2D(this.calcCenterX(), this.calcCenterY()); }
 
     protected calcBoundsArray() { return [this._x, this._y, this._width, this._height]; }
 

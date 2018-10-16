@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 var Wind = /** @class */ (function (_super) {
     __extends(Wind, _super);
     function Wind(position, degrees, strength) {
-        var _this = _super.call(this, position, Vector.empty, Vector.empty, 0, strength) || this;
+        var _this = _super.call(this, position, Vector2D.empty, Vector2D.empty, 0, strength) || this;
         _this._radiusPct = 0.10;
         _this._polar = new Polar(strength, MathEx.toRadians(degrees));
         _this.polarUpdated();
@@ -47,15 +47,15 @@ var Wind = /** @class */ (function (_super) {
     });
     Wind.prototype.polarUpdated = function () {
         this._forceRadius = this._polar.radius;
-        this._velocity = Vector.normalize(this._polar.vector);
+        this._velocity = Vector2D.normalize(this._polar.vector);
     };
     Wind.prototype.applyTo = function (character) {
-        if (character == this)
+        if (character === this)
             return;
-        var pos = Vector.subtract(character.position, this.position);
+        var pos = Vector2D.subtract(character.position, this.position);
         if (pos.mag > this._forceRadius)
             return;
-        this._forceVector = Vector.mult(this._velocity, pos.magSquared * 0.01);
+        this._forceVector = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
         this._forceVector.div(character.velocity.mag);
         _super.prototype.applyTo.call(this, character);
     };
@@ -72,7 +72,7 @@ var Wind = /** @class */ (function (_super) {
         ctx.fillStyle = "purple";
         ctx.fill();
         ctx.closePath();
-        var v = Vector.mult(this._velocity, this._forceRadius * 0.5);
+        var v = Vector2D.mult(this._velocity, this._forceRadius * 0.5);
         v.add(this._position);
         ctx.beginPath();
         ctx.strokeStyle = "purple";
