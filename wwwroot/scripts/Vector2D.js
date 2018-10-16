@@ -113,9 +113,33 @@ var Vector2D = /** @class */ (function () {
     };
     Vector2D.add = function (v1, v2) { return new Vector2D(v1.x + v2.x, v1.y + v2.y); };
     Vector2D.subtract = function (v1, v2) { return new Vector2D(v1.x - v2.x, v1.y - v2.y); };
-    Vector2D.mult = function (v, scale) { return new Vector2D(v.x * scale, v.y * scale); };
-    Vector2D.div = function (v, scale) { return new Vector2D(v.x / scale, v.y / scale); };
     Vector2D.normalize = function (v) { return v.mag > 0 ? Vector2D.div(v, v.mag) : v; };
+    Vector2D.mult = function (scale, v) {
+        var vec;
+        var scalar;
+        if (typeof v === "object") {
+            vec = v;
+            scalar = scale;
+        }
+        else {
+            vec = scale;
+            scalar = v;
+        }
+        return new Vector2D(vec.x * scalar, vec.y * scalar);
+    };
+    Vector2D.div = function (scale, v) {
+        var vec;
+        var scalar;
+        if (typeof v === "object") {
+            vec = v;
+            scalar = scale;
+        }
+        else {
+            vec = scale;
+            scalar = v;
+        }
+        return new Vector2D(vec.x / scalar, vec.y / scalar);
+    };
     return Vector2D;
 }());
 //# sourceMappingURL=Vector2D.js.map
