@@ -49,9 +49,18 @@
         return this._polar;
     }
 
-    toString = () => "(" + this._x.toFixed(3) + ", " + this._y.toFixed(3) + ")";
+    toString() { "(" + this._x.toFixed(3) + ", " + this._y.toFixed(3) + ")"; }
 
     static get empty() { return new Vector2D(0, 0); }
+
+    clone(): Vector2D {
+        let result = new Vector2D(this.x, this.y);
+        result._mag = this._mag;
+        result._degrees = this._degrees;
+        result._radians = this._radians;
+        result._polar = this._polar;
+        return result;
+    }
 
     reset() {
         this._mag = -1;
@@ -60,48 +69,54 @@
         this._polar = null;
     }
 
-    add(other: Vector2D) {
+    add(other: Vector2D): Vector2D {
         this._x += other.x;
         this._y += other.y;
         this.reset();
+        return this;
     }
 
-    subtract(other: Vector2D) {
+    subtract(other: Vector2D): Vector2D {
         this._x -= other.x;
         this._y -= other.y;
         this.reset();
+        return this;
     }
 
-    mult(scale: number) {
+    mult(scale: number): Vector2D {
         this._x *= scale;
         this._y *= scale;
         this.reset();
+        return this;
     }
 
-    div(scale: number) {
+    div(scale: number): Vector2D {
         this._x /= scale;
         this._y /= scale;
         this.reset();
+        return this;
     }
 
-    dot(scale: number) {
+    dot(scale: number): Vector2D {
         this._x /= scale;
         this._y /= scale;
         this.reset();
+        return this;
     }
 
-    normalize() {
+    normalize(): Vector2D {
         let m = this.mag;
 
-        if (m <= 0) return;
+        if (m <= 0) return this;
 
         this.div(m);
         this.reset();
+        return this;
     }
 
-    static add(v1: Vector2D, v2: Vector2D) { return new Vector2D(v1.x + v2.x, v1.y + v2.y) }
-    static subtract(v1: Vector2D, v2: Vector2D) { return new Vector2D(v1.x - v2.x, v1.y - v2.y); } 
-    static normalize(v: Vector2D) { return v.mag > 0 ? Vector2D.div(v, v.mag) : v; }
+    static add(v1: Vector2D, v2: Vector2D): Vector2D { return v1.clone().add(v2); }
+    static subtract(v1: Vector2D, v2: Vector2D): Vector2D { return v1.clone().subtract(v2); }
+    static normalize(v: Vector2D): Vector2D { return v.clone().normalize(); }
 
     static mult(v: Vector2D, scale: number): Vector2D;
     static mult(scale: number, v: Vector2D): Vector2D;
@@ -117,7 +132,9 @@
             scalar = <number>v;
         }
 
-        return new Vector2D(vec.x * scalar, vec.y * scalar);
+        vec = vec.clone();
+        vec.mult(scalar);
+        return vec;
     }
 
     static div(v: Vector2D, scale: number): Vector2D;
@@ -134,6 +151,8 @@
             scalar = <number>v;
         }
 
-        return new Vector2D(vec.x / scalar, vec.y / scalar);
+        vec = vec.clone();
+        vec.div(scalar);
+        return vec;
     }
 }

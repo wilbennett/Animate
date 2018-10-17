@@ -1,7 +1,6 @@
 "use strict";
 var Vector2D = /** @class */ (function () {
     function Vector2D(_x, _y) {
-        var _this = this;
         this._x = _x;
         this._y = _y;
         this._magSquared = -1;
@@ -9,7 +8,6 @@ var Vector2D = /** @class */ (function () {
         this._degrees = -1;
         this._radians = -1;
         this._polar = null;
-        this.toString = function () { return "(" + _this._x.toFixed(3) + ", " + _this._y.toFixed(3) + ")"; };
     }
     Object.defineProperty(Vector2D.prototype, "x", {
         get: function () { return this._x; },
@@ -68,11 +66,20 @@ var Vector2D = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Vector2D.prototype.toString = function () { "(" + this._x.toFixed(3) + ", " + this._y.toFixed(3) + ")"; };
     Object.defineProperty(Vector2D, "empty", {
         get: function () { return new Vector2D(0, 0); },
         enumerable: true,
         configurable: true
     });
+    Vector2D.prototype.clone = function () {
+        var result = new Vector2D(this.x, this.y);
+        result._mag = this._mag;
+        result._degrees = this._degrees;
+        result._radians = this._radians;
+        result._polar = this._polar;
+        return result;
+    };
     Vector2D.prototype.reset = function () {
         this._mag = -1;
         this._degrees = -1;
@@ -83,37 +90,43 @@ var Vector2D = /** @class */ (function () {
         this._x += other.x;
         this._y += other.y;
         this.reset();
+        return this;
     };
     Vector2D.prototype.subtract = function (other) {
         this._x -= other.x;
         this._y -= other.y;
         this.reset();
+        return this;
     };
     Vector2D.prototype.mult = function (scale) {
         this._x *= scale;
         this._y *= scale;
         this.reset();
+        return this;
     };
     Vector2D.prototype.div = function (scale) {
         this._x /= scale;
         this._y /= scale;
         this.reset();
+        return this;
     };
     Vector2D.prototype.dot = function (scale) {
         this._x /= scale;
         this._y /= scale;
         this.reset();
+        return this;
     };
     Vector2D.prototype.normalize = function () {
         var m = this.mag;
         if (m <= 0)
-            return;
+            return this;
         this.div(m);
         this.reset();
+        return this;
     };
-    Vector2D.add = function (v1, v2) { return new Vector2D(v1.x + v2.x, v1.y + v2.y); };
-    Vector2D.subtract = function (v1, v2) { return new Vector2D(v1.x - v2.x, v1.y - v2.y); };
-    Vector2D.normalize = function (v) { return v.mag > 0 ? Vector2D.div(v, v.mag) : v; };
+    Vector2D.add = function (v1, v2) { return v1.clone().add(v2); };
+    Vector2D.subtract = function (v1, v2) { return v1.clone().subtract(v2); };
+    Vector2D.normalize = function (v) { return v.clone().normalize(); };
     Vector2D.mult = function (scale, v) {
         var vec;
         var scalar;
@@ -125,7 +138,9 @@ var Vector2D = /** @class */ (function () {
             vec = scale;
             scalar = v;
         }
-        return new Vector2D(vec.x * scalar, vec.y * scalar);
+        vec = vec.clone();
+        vec.mult(scalar);
+        return vec;
     };
     Vector2D.div = function (scale, v) {
         var vec;
@@ -138,7 +153,9 @@ var Vector2D = /** @class */ (function () {
             vec = scale;
             scalar = v;
         }
-        return new Vector2D(vec.x / scalar, vec.y / scalar);
+        vec = vec.clone();
+        vec.div(scalar);
+        return vec;
     };
     return Vector2D;
 }());
