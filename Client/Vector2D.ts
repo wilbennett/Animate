@@ -70,6 +70,8 @@
         return result;
     }
 
+    toPoint(): Point2D { return new Point2D(this.x, this.y); }
+
     reset() {
         this._mag = -1;
         this._degrees = -1;
