@@ -9,10 +9,18 @@
     }
 
     get x() { return this._x; }
-    set x(value) { this._x = value; }
+
+    set x(value) {
+        this._x = value;
+        this.reset();
+    }
 
     get y() { return this._y; }
-    set y(value) { this._y = value; }
+
+    set y(value) {
+        this._y = value;
+        this.reset();
+    }
 
     get magSquared() {
         if (this._magSquared < 0)

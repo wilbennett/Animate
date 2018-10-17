@@ -11,13 +11,19 @@ var Vector2D = /** @class */ (function () {
     }
     Object.defineProperty(Vector2D.prototype, "x", {
         get: function () { return this._x; },
-        set: function (value) { this._x = value; },
+        set: function (value) {
+            this._x = value;
+            this.reset();
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Vector2D.prototype, "y", {
         get: function () { return this._y; },
-        set: function (value) { this._y = value; },
+        set: function (value) {
+            this._y = value;
+            this.reset();
+        },
         enumerable: true,
         configurable: true
     });
