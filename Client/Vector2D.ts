@@ -81,8 +81,6 @@
         return result;
     }
 
-    toPoint(): Point2D { return new Point2D(this.x, this.y); }
-
     reset() {
         this._magSquared = -1;
         this._mag = -1;

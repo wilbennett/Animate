@@ -99,7 +99,6 @@ var Vector2D = /** @class */ (function () {
         result._normal = this._normal;
         return result;
     };
-    Vector2D.prototype.toPoint = function () { return new Point2D(this.x, this.y); };
     Vector2D.prototype.reset = function () {
         this._magSquared = -1;
         this._mag = -1;
