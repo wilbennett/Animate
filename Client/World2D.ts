@@ -1,4 +1,4 @@
-﻿class World2D extends ReadonlyBounds {
+﻿class World2D extends Bounds {
     private _viewport: Viewport2D;
     private _characters: Character[] = [];
 

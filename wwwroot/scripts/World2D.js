@@ -132,5 +132,5 @@ var World2D = /** @class */ (function (_super) {
         this._viewport.restoreTransform();
     };
     return World2D;
-}(ReadonlyBounds));
+}(Bounds));
 //# sourceMappingURL=World2D.js.map

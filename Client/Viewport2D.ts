@@ -1,4 +1,4 @@
-﻿class Viewport2D extends ReadonlyBounds {
+﻿class Viewport2D extends Bounds {
     constructor(
         protected readonly _ctx: CanvasRenderingContext2D,
         orientation: WorldOrientation,

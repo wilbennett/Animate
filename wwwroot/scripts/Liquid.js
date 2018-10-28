@@ -23,7 +23,7 @@ var Liquid = /** @class */ (function (_super) {
     }
     Object.defineProperty(Liquid.prototype, "bounds", {
         get: function () {
-            return new ReadonlyBounds(WorldOrientation.Up, this._position.x, this._position.y, this._width, this._height);
+            return new Bounds(WorldOrientation.Up, this._position.x, this._position.y, this._width, this._height);
         },
         enumerable: true,
         configurable: true

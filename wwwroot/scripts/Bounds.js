@@ -1,87 +1,144 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
+var Bounds = /** @class */ (function () {
+    function Bounds(_orientation, _x, _y, _width, _height) {
+        this._orientation = _orientation;
+        this._x = _x;
+        this._y = _y;
+        this._width = _width;
+        this._height = _height;
+        this._isOrientedUp = this._orientation === WorldOrientation.Up;
+        this.calcTop = this._isOrientedUp
+            ? function () { return this._y + this._height - 1; }
+            : function () { return this._y; };
+        this.calcBottom = this._isOrientedUp
+            ? function () { return this._y; }
+            : function () { return this._y + this._height - 1; };
+        this._right = this.calcRight();
+        this._top = this.calcTop();
+        this._bottom = this.calcBottom();
+        this._minY = this._bottom;
+        this._centerX = this.calcCenterX();
+        this._centerY = this.calcCenterY();
+        this._center = this.calcCenter();
+        this._boundsArray = this.calcBoundsArray();
+        this.topOffset = this._isOrientedUp
+            ? function (y) { return this.top - 1 - y; }
+            : function (y) { return this.top + y; };
+        this.bottomOffset = this._isOrientedUp
+            ? function (y) { return this.bottom + y; }
+            : function (y) { return this.bottom - y; };
+        this.offsetAbove = this._isOrientedUp
+            ? function (y, delta) { return y + delta; }
+            : function (y, delta) { return y - delta; };
+        this.offsetBelow = this._isOrientedUp
+            ? function (y, delta) { return y - delta; }
+            : function (y, delta) { return y + delta; };
+        this.topPenetration = this._isOrientedUp
+            ? function (y) { return y - (this.top - 1); }
+            : function (y) { return this.top - y; };
+        this.bottomPenetration = this._isOrientedUp
+            ? function (y) { return this.bottom - y; }
+            : function (y) { return y - this.bottom; };
+        this.isUp = this._isOrientedUp
+            ? function (y) { return y > 0; }
+            : function (y) { return y < 0; };
+        this.isDown = this._isOrientedUp
+            ? function (y) { return y < 0; }
+            : function (y) { return y > 0; };
+        this.toWorld = this._isOrientedUp
+            ? function (x, y) { return [this.left + x, this.top - y]; }
+            : function (x, y) { return [this.left + x, this.top + y]; };
+        this.toScreen = this._isOrientedUp
+            ? function (x, y) { return [x - this.left, this.top - y]; }
+            : function (x, y) { return [x - this.left, y - this.top]; };
     }
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var Bounds = /** @class */ (function (_super) {
-    __extends(Bounds, _super);
-    function Bounds(orientation, x, y, width, height) {
-        return _super.call(this, orientation, x, y, width, height) || this;
-    }
+    Bounds.prototype.calcRight = function () { return this._x + this._width - 1; };
+    Bounds.prototype.calcCenterX = function () { return Math.round(this._x + this._width / 2); };
+    Bounds.prototype.calcCenterY = function () { return Math.round(this._y + this._height / 2); };
+    Bounds.prototype.calcCenter = function () { return new Vector2D(this.calcCenterX(), this.calcCenterY()); };
+    Bounds.prototype.calcBoundsArray = function () { return [this._x, this._y, this._width, this._height]; };
+    Object.defineProperty(Bounds.prototype, "orientation", {
+        get: function () { return this._orientation; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Bounds.prototype, "x", {
         get: function () { return this._x; },
-        set: function (value) { this._x = value; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "left", {
         get: function () { return this._x; },
-        set: function (value) { this.x = value; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "y", {
         get: function () { return this._y; },
-        set: function (value) { this._y = value; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "top", {
-        get: function () { return this.calcTop(); },
+        get: function () { return this._top; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "width", {
         get: function () { return this._width; },
-        set: function (value) { this._width = value; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "height", {
         get: function () { return this._height; },
-        set: function (value) { this._height = value; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "right", {
-        get: function () { return this.calcRight(); },
+        get: function () { return this._right; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "bottom", {
-        get: function () { return this.calcBottom(); },
+        get: function () { return this._bottom; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "centerX", {
-        get: function () { return this.calcCenterX(); },
+        get: function () { return this._centerX; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "centerY", {
-        get: function () { return this.calcCenterY(); },
+        get: function () { return this._centerY; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "center", {
+        get: function () { return this._center; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "minX", {
+        get: function () { return this._x; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "minY", {
-        get: function () { return this.calcBottom(); },
+        get: function () { return this._minY; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "boundsArray", {
-        get: function () { return this.calcBoundsArray(); },
+        get: function () { return this._boundsArray; },
         enumerable: true,
         configurable: true
     });
+    Bounds.prototype.toString = function () {
+        return "((" + this.left.toFixed(0) + ", " + this.bottom.toFixed(0) + "), (" + this.right.toFixed(0) + ", " + this.top.toFixed(0) + "))";
+    };
+    Bounds.prototype.leftOffset = function (x) { return this.left + x; };
+    Bounds.prototype.rightOffset = function (x) { return this.right - x; };
+    Bounds.prototype.leftPenetration = function (x) { return this.left - x; };
+    Bounds.prototype.rightPenetration = function (x) { return x - this.right; };
     Bounds.prototype.inflate = function (dx, dy) {
         var x = this._x - dx;
         var y = this._y - dy;
@@ -103,12 +160,8 @@ var Bounds = /** @class */ (function (_super) {
             width = width;
             height = 0;
         }
-        this._x = x;
-        this._y = y;
-        this._width = width;
-        this._height = height;
-        return this;
+        return new Bounds(this._orientation, x, y, width, height);
     };
     return Bounds;
-}(ReadonlyBounds));
+}());
 //# sourceMappingURL=Bounds.js.map

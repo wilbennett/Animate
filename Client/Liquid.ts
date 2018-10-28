@@ -8,7 +8,7 @@
     }
 
     get bounds() {
-        return new ReadonlyBounds(WorldOrientation.Up, this._position.x, this._position.y, this._width, this._height);
+        return new Bounds(WorldOrientation.Up, this._position.x, this._position.y, this._width, this._height);
     }
 
     applyTo(character: Character) {

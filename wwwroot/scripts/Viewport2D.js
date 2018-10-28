@@ -45,5 +45,5 @@ var Viewport2D = /** @class */ (function (_super) {
         this._ctx.restore();
     };
     return Viewport2D;
-}(ReadonlyBounds));
+}(Bounds));
 //# sourceMappingURL=Viewport2D.js.map
