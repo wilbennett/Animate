@@ -15,6 +15,10 @@ class Physics {
         return currentVelocity + acceleration;
     }
 
+    static calcReflection(v: Vector2D, normal: Vector2D): Vector2D {
+        return v.reflectViaNormal(normal);
+    }
+
     static calcFriction(coeffecient: number, normal: number, velocity: Vector2D) {
         let c = coeffecient;
         let magnitude = c * normal;
