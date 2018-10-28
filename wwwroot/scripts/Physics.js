@@ -14,6 +14,9 @@ var Physics = /** @class */ (function () {
     Physics.calcRotationVelocity = function (currentVelocity, acceleration) {
         return currentVelocity + acceleration;
     };
+    Physics.calcReflection = function (v, normal) {
+        return v.reflectViaNormal(normal);
+    };
     Physics.calcFriction = function (coeffecient, normal, velocity) {
         var c = coeffecient;
         var magnitude = c * normal;
