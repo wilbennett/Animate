@@ -213,7 +213,7 @@ var TestBounds = /** @class */ (function () {
     TestBounds.prototype.testViewport = function (viewport, ball, bounds, viewportColor, boundsColor) {
         var ctx = this._ctx;
         ball.update();
-        viewport.draw(ctx, 2, viewportColor, viewport);
+        viewport.draw(ctx, 2, viewportColor);
         bounds.draw(ctx, 2, boundsColor, viewport);
         ball.draw(ctx, viewport);
     };

@@ -31,6 +31,8 @@
     applyTransform = this._isOrientedUp
         ?
         function (ctx: CanvasRenderingContext2D) {
+            if (this.isTransformed) return;
+
             ctx.save();
             ctx.transform(
                 this._boundsToScreenScaleX,
@@ -41,9 +43,12 @@
                 this.screenTop + this.y + this.screenHeight - 1);
 
             this.applyClipRegion(ctx);
+            this._isTransformed = true;
         }
         :
         function (ctx: CanvasRenderingContext2D) {
+            if (this.isTransformed) return;
+
             ctx.save();
             ctx.transform(
                 this._boundsToScreenScaleX,
@@ -54,5 +59,6 @@
                 this.screenTop + this.y);
 
             this.applyClipRegion(ctx);
+            this._isTransformed = true;
         };
 }

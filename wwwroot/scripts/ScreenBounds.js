@@ -19,15 +19,21 @@ var ScreenBounds = /** @class */ (function (_super) {
         _this.applyTransform = _this._isOrientedUp
             ?
                 function (ctx) {
+                    if (this.isTransformed)
+                        return;
                     ctx.save();
                     ctx.transform(this._boundsToScreenScaleX, 0, 0, -this._boundsToScreenScaleY, this.screenLeft + this.x, this.screenTop + this.y + this.screenHeight - 1);
                     this.applyClipRegion(ctx);
+                    this._isTransformed = true;
                 }
             :
                 function (ctx) {
+                    if (this.isTransformed)
+                        return;
                     ctx.save();
                     ctx.transform(this._boundsToScreenScaleX, 0, 0, this._boundsToScreenScaleY, this.screenLeft + this.x, this.screenTop + this.y);
                     this.applyClipRegion(ctx);
+                    this._isTransformed = true;
                 };
         if (!screenWidth)
             screenWidth = width;

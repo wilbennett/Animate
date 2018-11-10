@@ -11,4 +11,8 @@
         screenHeight?: number) {
         super(orientation, x, y, width, height, screenX, screenY, screenWidth, screenHeight);
     }
+
+    draw(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds) {
+        super.draw(ctx, width, color, this.isTransformed ? undefined : this);
+    }
 }

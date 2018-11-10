@@ -18,17 +18,24 @@ var OrientedBounds = /** @class */ (function (_super) {
         var _this = _super.call(this, x, y, width, height) || this;
         _this._orientation = _orientation;
         _this._isOrientedUp = _this._orientation === WorldOrientation.Up;
+        _this._isTransformed = false;
         _this.applyTransform = _this._isOrientedUp
             ?
                 function (ctx) {
+                    if (this.isTransformed)
+                        return;
                     ctx.save();
                     ctx.transform(1, 0, 0, -1, 0, this.maxY + this.y);
                     this.applyClipRegion(ctx);
+                    this._isTransformed = true;
                 }
             :
                 function (ctx) {
+                    if (this.isTransformed)
+                        return;
                     ctx.save();
                     this.applyClipRegion(ctx);
+                    this._isTransformed = true;
                 };
         _this.flipBoundsToScreenY = _this._isOrientedUp
             ? function (y) { return this._boundsToScreenOffsetY - y; }
@@ -121,6 +128,11 @@ var OrientedBounds = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(OrientedBounds.prototype, "isTransformed", {
+        get: function () { return this._isTransformed; },
+        enumerable: true,
+        configurable: true
+    });
     OrientedBounds.prototype.topOffsetAbove = function (delta) {
         return this._isOrientedUp ? this.top + delta : _super.prototype.topOffsetAbove.call(this, delta);
     };
@@ -166,7 +178,10 @@ var OrientedBounds = /** @class */ (function (_super) {
         ctx.closePath();
     };
     OrientedBounds.prototype.restoreTransform = function (ctx) {
+        if (!this.isTransformed)
+            return;
         ctx.restore();
+        this._isTransformed = false;
     };
     OrientedBounds.prototype.calcScreenOffsets = function () {
         this._screenBottomRight = new Vector2D(this.screenLeft + this.screenWidth - 1, this.screenTop + this.screenHeight - 1);

@@ -17,6 +17,9 @@ var Viewport2D = /** @class */ (function (_super) {
     function Viewport2D(orientation, x, y, width, height, screenX, screenY, screenWidth, screenHeight) {
         return _super.call(this, orientation, x, y, width, height, screenX, screenY, screenWidth, screenHeight) || this;
     }
+    Viewport2D.prototype.draw = function (ctx, width, color, bounds) {
+        _super.prototype.draw.call(this, ctx, width, color, this.isTransformed ? undefined : this);
+    };
     return Viewport2D;
 }(ScreenBounds));
 //# sourceMappingURL=Viewport2D.js.map

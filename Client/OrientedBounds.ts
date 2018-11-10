@@ -12,6 +12,7 @@
     protected _screenToBoundsScaleY: number;
     protected _boundsToScreenOffsetY: number;
     protected _screenToBoundsOffsetY: number;
+    protected _isTransformed: boolean = false;
 
     constructor(
         protected readonly _orientation: WorldOrientation,
@@ -61,6 +62,8 @@
     get boundsToScreenScaleY(): number { return this._boundsToScreenScaleY; }
     get screenToBoundsScaleX(): number { return this._screenToBoundsScaleX; }
     get screenToBoundsScaleY(): number { return this._screenToBoundsScaleY; }
+
+    get isTransformed(): boolean { return this._isTransformed; }
 
     topOffsetAbove(delta: number) {
         return this._isOrientedUp ? this.top + delta : super.topOffsetAbove(delta);
@@ -121,6 +124,8 @@
     applyTransform = this._isOrientedUp
         ?
         function (ctx: CanvasRenderingContext2D) {
+            if (this.isTransformed) return;
+
             ctx.save();
 
             ctx.transform(
@@ -132,15 +137,22 @@
                 this.maxY + this.y);
 
             this.applyClipRegion(ctx);
+            this._isTransformed = true;
         }
         :
         function (ctx: CanvasRenderingContext2D) {
+            if (this.isTransformed) return;
+
             ctx.save();
             this.applyClipRegion(ctx);
+            this._isTransformed = true;
         };
 
     restoreTransform(ctx: CanvasRenderingContext2D) {
+        if (!this.isTransformed) return;
+
         ctx.restore();
+        this._isTransformed = false;
     }
 
     protected calcScreenOffsets() {
