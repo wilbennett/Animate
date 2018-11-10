@@ -1,84 +1,29 @@
 "use strict";
 var Bounds = /** @class */ (function () {
-    function Bounds(_orientation, _x, _y, _width, _height) {
-        this._orientation = _orientation;
-        this._x = _x;
-        this._y = _y;
+    function Bounds(x, y, _width, _height) {
         this._width = _width;
         this._height = _height;
-        this._isOrientedUp = this._orientation === WorldOrientation.Up;
-        this.calcTop = this._isOrientedUp
-            ? function () { return this._y + this._height - 1; }
-            : function () { return this._y; };
-        this.calcBottom = this._isOrientedUp
-            ? function () { return this._y; }
-            : function () { return this._y + this._height - 1; };
-        this._right = this.calcRight();
-        this._top = this.calcTop();
-        this._bottom = this.calcBottom();
-        this._minY = this._bottom;
-        this._centerX = this.calcCenterX();
-        this._centerY = this.calcCenterY();
-        this._center = this.calcCenter();
-        this._boundsArray = this.calcBoundsArray();
-        this.topOffset = this._isOrientedUp
-            ? function (y) { return this.top - 1 - y; }
-            : function (y) { return this.top + y; };
-        this.bottomOffset = this._isOrientedUp
-            ? function (y) { return this.bottom + y; }
-            : function (y) { return this.bottom - y; };
-        this.offsetAbove = this._isOrientedUp
-            ? function (y, delta) { return y + delta; }
-            : function (y, delta) { return y - delta; };
-        this.offsetBelow = this._isOrientedUp
-            ? function (y, delta) { return y - delta; }
-            : function (y, delta) { return y + delta; };
-        this.topPenetration = this._isOrientedUp
-            ? function (y) { return y - (this.top - 1); }
-            : function (y) { return this.top - y; };
-        this.bottomPenetration = this._isOrientedUp
-            ? function (y) { return this.bottom - y; }
-            : function (y) { return y - this.bottom; };
-        this.isUp = this._isOrientedUp
-            ? function (y) { return y > 0; }
-            : function (y) { return y < 0; };
-        this.isDown = this._isOrientedUp
-            ? function (y) { return y < 0; }
-            : function (y) { return y > 0; };
-        this.toWorld = this._isOrientedUp
-            ? function (x, y) { return [this.left + x, this.top - y]; }
-            : function (x, y) { return [this.left + x, this.top + y]; };
-        this.toScreen = this._isOrientedUp
-            ? function (x, y) { return [x - this.left, this.top - y]; }
-            : function (x, y) { return [x - this.left, y - this.top]; };
+        this._origin = new Vector2D(x, y);
+        this._maxX = this.x + this.width - 1;
+        this._maxY = this.y + this.height - 1;
     }
-    Bounds.prototype.calcRight = function () { return this._x + this._width - 1; };
-    Bounds.prototype.calcCenterX = function () { return Math.round(this._x + this._width / 2); };
-    Bounds.prototype.calcCenterY = function () { return Math.round(this._y + this._height / 2); };
-    Bounds.prototype.calcCenter = function () { return new Vector2D(this.calcCenterX(), this.calcCenterY()); };
-    Bounds.prototype.calcBoundsArray = function () { return [this._x, this._y, this._width, this._height]; };
-    Object.defineProperty(Bounds.prototype, "orientation", {
-        get: function () { return this._orientation; },
+    Object.defineProperty(Bounds.prototype, "maxX", {
+        get: function () { return this._maxX; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "maxY", {
+        get: function () { return this._maxY; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "x", {
-        get: function () { return this._x; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Bounds.prototype, "left", {
-        get: function () { return this._x; },
+        get: function () { return this.origin.x; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "y", {
-        get: function () { return this._y; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Bounds.prototype, "top", {
-        get: function () { return this._top; },
+        get: function () { return this.origin.y; },
         enumerable: true,
         configurable: true
     });
@@ -92,76 +37,155 @@ var Bounds = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Bounds.prototype, "left", {
+        get: function () { return this.x; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Bounds.prototype, "right", {
-        get: function () { return this._right; },
+        get: function () { return this.maxX; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "origin", {
+        get: function () { return this._origin; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "topLeft", {
+        get: function () {
+            if (!this._topLeft)
+                this._topLeft = this.origin;
+            return this._topLeft;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "bottomRight", {
+        get: function () {
+            if (!this._bottomRight)
+                this._bottomRight = new Vector2D(this.right, this.maxY);
+            return this._bottomRight;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "bottomLeft", {
+        get: function () {
+            if (!this._bottomLeft)
+                this._bottomLeft = new Vector2D(this.topLeft.x, this.bottomRight.y);
+            return this._bottomLeft;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "topRight", {
+        get: function () {
+            if (!this._topRight)
+                this._topRight = new Vector2D(this.right, this.topLeft.y);
+            return this._topRight;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "top", {
+        get: function () { return this.topLeft.y; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "bottom", {
-        get: function () { return this._bottom; },
+        get: function () { return this.bottomLeft.y; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "centerX", {
-        get: function () { return this._centerX; },
+        get: function () {
+            if (!this._centerX)
+                this._centerX = this.x + this.width / 2;
+            return this._centerX;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "centerY", {
-        get: function () { return this._centerY; },
+        get: function () {
+            if (!this._centerY)
+                this._centerY = this.y + this.height / 2;
+            return this._centerY;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "center", {
-        get: function () { return this._center; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Bounds.prototype, "minX", {
-        get: function () { return this._x; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Bounds.prototype, "minY", {
-        get: function () { return this._minY; },
+        get: function () {
+            if (!this._center)
+                this._center = new Vector2D(this.centerX, this.centerY);
+            return this._center;
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "boundsArray", {
-        get: function () { return this._boundsArray; },
+        get: function () {
+            if (!this._boundsArray)
+                this._boundsArray = [this.x, this.y, this.width, this.height];
+            return this._boundsArray;
+        },
         enumerable: true,
         configurable: true
     });
     Bounds.prototype.toString = function () {
         return "((" + this.left.toFixed(0) + ", " + this.bottom.toFixed(0) + "), (" + this.right.toFixed(0) + ", " + this.top.toFixed(0) + "))";
     };
-    Bounds.prototype.leftOffset = function (x) { return this.left + x; };
-    Bounds.prototype.rightOffset = function (x) { return this.right - x; };
-    Bounds.prototype.leftPenetration = function (x) { return this.left - x; };
-    Bounds.prototype.rightPenetration = function (x) { return x - this.right; };
     Bounds.prototype.inflate = function (dx, dy) {
-        var x = this._x - dx;
-        var y = this._y - dy;
+        var x = this.x - dx;
+        var y = this.y - dy;
         var width = this.width + dx + dx;
         var height = this.height + dy + dy;
         if (width < 0 && height < 0) {
-            x = this._x;
-            y = this._y;
+            x = this.x;
+            y = this.y;
             width = 0;
             height = 0;
         }
         else if (width < 0) {
-            x = this._x;
+            x = this.x;
             width = 0;
             height = height;
         }
         else if (height < 0) {
-            y = this._y;
+            y = this.y;
             width = width;
             height = 0;
         }
-        return new Bounds(this._orientation, x, y, width, height);
+        return new Bounds(x, y, width, height);
     };
+    Bounds.prototype.draw = function (ctx, width, color) {
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        //ctx.moveTo(this.x, this.top);
+        //ctx.lineTo(this.x, this.bottom);
+        //ctx.lineTo(this.right, this.bottom);
+        //ctx.lineTo(this.right, this.top);
+        //ctx.lineTo(this.x, this.top);
+        //ctx.stroke();
+        ctx.strokeRect(this.x, this.top, this.width, this.height);
+    };
+    Bounds.prototype.leftOffset = function (x) { return this.left + x; };
+    Bounds.prototype.rightOffset = function (x) { return this.right - x; };
+    Bounds.prototype.topOffsetAbove = function (delta) { return this.top - delta; };
+    Bounds.prototype.topOffsetBelow = function (delta) { return this.top + delta; };
+    Bounds.prototype.bottomOffsetAbove = function (delta) { return this.bottom - delta; };
+    Bounds.prototype.bottomOffsetBelow = function (delta) { return this.bottom + delta; };
+    Bounds.prototype.offsetAbove = function (y, delta) { return y - delta; };
+    Bounds.prototype.offsetBelow = function (y, delta) { return y + delta; };
+    Bounds.prototype.leftPenetration = function (x) { return this.left - x; };
+    Bounds.prototype.rightPenetration = function (x) { return x - this.right; };
+    Bounds.prototype.topPenetration = function (y) { return this.top - y; };
+    Bounds.prototype.bottomPenetration = function (y) { return y - this.bottom; };
+    Bounds.prototype.isUp = function (y) { return y < 0; };
+    Bounds.prototype.isDown = function (y) { return y > 0; };
     return Bounds;
 }());
 //# sourceMappingURL=Bounds.js.map

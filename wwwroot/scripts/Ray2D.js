@@ -37,19 +37,27 @@ var Ray2D = /** @class */ (function () {
         result.add(this.origin);
         return result;
     };
-    Ray2D.prototype.drawLine = function (ctx, width, color) {
+    Ray2D.prototype.drawLine = function (ctx, width, color, bounds) {
+        var origin = this.origin;
+        var endPoint = this.endPoint;
+        if (bounds) {
+            origin = bounds.toScreen(origin);
+            endPoint = bounds.toScreen(endPoint);
+        }
         ctx.beginPath();
         ctx.lineWidth = width;
         ctx.strokeStyle = color;
-        ctx.moveTo(this.origin.x, this.origin.y);
-        ctx.lineTo(this._endPoint.x, this._endPoint.y);
+        ctx.moveTo(origin.x, origin.y);
+        ctx.lineTo(endPoint.x, endPoint.y);
         ctx.stroke();
         //console.log(`length: ${length}  - (${this.origin.x}, ${this.origin.y}) -> (${this._endPoint.x}, ${this._endPoint.y})`);
     };
-    Ray2D.prototype.draw = function (ctx, width, color) {
-        this.drawLine(ctx, width, color);
+    Ray2D.prototype.draw = function (ctx, width, color, bounds) {
+        this.drawLine(ctx, width, color, bounds);
+        var origin = bounds ? bounds.toScreen(this.origin) : this.origin;
+        ctx.beginPath();
         ctx.fillStyle = color;
-        ctx.ellipse(this.origin.x, this.origin.y, width, width, 0, 0, 2 * Math.PI);
+        ctx.ellipse(origin.x, origin.y, width, width, 0, 0, 2 * Math.PI);
         ctx.fill();
     };
     Ray2D.prototype.reflectViaNormal = function (normal) {

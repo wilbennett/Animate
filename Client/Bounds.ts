@@ -1,130 +1,144 @@
-﻿class Bounds implements IBounds {
-    protected readonly _isOrientedUp = this._orientation === WorldOrientation.Up;
-
-    protected calcRight() { return this._x + this._width - 1; }
-
-    protected calcTop = this._isOrientedUp
-        ? function () { return this._y + this._height - 1; }
-        : function () { return this._y; }
-
-    protected calcBottom = this._isOrientedUp
-        ? function () { return this._y; }
-        : function () { return this._y + this._height - 1; }
-
-    protected calcCenterX() { return Math.round(this._x + this._width / 2) }
-
-    protected calcCenterY() { return Math.round(this._y + this._height / 2); }
-
-    protected calcCenter() { return new Vector2D(this.calcCenterX(), this.calcCenterY()); }
-
-    protected calcBoundsArray() { return [this._x, this._y, this._width, this._height]; }
-
-    private readonly _right = this.calcRight();
-    private readonly _top = this.calcTop();
-    private readonly _bottom = this.calcBottom();
-    private readonly _minY = this._bottom;
-    private readonly _centerX = this.calcCenterX();
-    private readonly _centerY = this.calcCenterY();
-    private readonly _center = this.calcCenter();
-    private readonly _boundsArray = this.calcBoundsArray();
+﻿class Bounds {
+    private _maxX: number;
+    private _maxY: number;
+    private _centerX: number;
+    private _centerY: number;
+    private _center: Vector2D;
+    private _origin: Vector2D;
+    protected _topLeft: Vector2D;
+    protected _bottomLeft: Vector2D;
+    protected _bottomRight: Vector2D;
+    protected _topRight: Vector2D;
+    private _boundsArray: number[];
 
     constructor(
-        protected readonly _orientation: WorldOrientation,
-        protected _x: number,
-        protected _y: number,
-        protected _width: number,
-        protected _height: number) {
+        x: number,
+        y: number,
+        private readonly _width: number,
+        private readonly _height: number) {
+        this._origin = new Vector2D(x, y);
+        this._maxX = this.x + this.width - 1;
+        this._maxY = this.y + this.height - 1;
     }
 
-    get orientation() { return this._orientation; }
-    get x() { return this._x; }
-    get left() { return this._x; }
-    get y() { return this._y; }
-    get top() { return this._top; }
+    get maxX() { return this._maxX; }
+    get maxY() { return this._maxY; }
+    get x() { return this.origin.x; }
+    get y() { return this.origin.y; }
     get width() { return this._width; }
     get height() { return this._height; }
-    get right() { return this._right; }
-    get bottom() { return this._bottom; }
-    get centerX() { return this._centerX; }
-    get centerY() { return this._centerY; }
-    get center() { return this._center; }
-    get minX() { return this._x; }
-    get minY() { return this._minY; }
-    get boundsArray() { return this._boundsArray; }
+    get left() { return this.x; }
+    get right() { return this.maxX; }
+
+    get origin() { return this._origin; }
+
+    get topLeft() {
+        if (!this._topLeft) this._topLeft = this.origin;
+
+        return this._topLeft;
+    }
+
+    get bottomRight() {
+        if (!this._bottomRight) this._bottomRight = new Vector2D(this.right, this.maxY);
+
+        return this._bottomRight;
+    }
+
+    get bottomLeft() {
+        if (!this._bottomLeft) this._bottomLeft = new Vector2D(this.topLeft.x, this.bottomRight.y);
+
+        return this._bottomLeft;
+    }
+
+    get topRight() {
+        if (!this._topRight) this._topRight = new Vector2D(this.right, this.topLeft.y);
+
+        return this._topRight;
+    }
+
+    get top() { return this.topLeft.y; }
+    get bottom() { return this.bottomLeft.y; }
+
+    get centerX() {
+        if (!this._centerX) this._centerX = this.x + this.width / 2;
+
+        return this._centerX;
+    }
+
+    get centerY() {
+        if (!this._centerY) this._centerY = this.y + this.height / 2;
+
+        return this._centerY;
+    }
+
+    get center() {
+        if (!this._center) this._center = new Vector2D(this.centerX, this.centerY);
+
+        return this._center;
+    }
+
+    get boundsArray() {
+        if (!this._boundsArray) this._boundsArray = [this.x, this.y, this.width, this.height];
+
+        return this._boundsArray;
+    }
 
     toString() {
         return "((" + this.left.toFixed(0) + ", " + this.bottom.toFixed(0) + "), (" + this.right.toFixed(0) + ", " + this.top.toFixed(0) + "))";
     }
 
-    leftOffset(x: number) { return this.left + x; }
-    rightOffset(x: number) { return this.right - x; }
-
-    topOffset = this._isOrientedUp
-        ? function (y: number) { return this.top - 1 - y; }
-        : function (y: number) { return this.top + y; }
-
-    bottomOffset = this._isOrientedUp
-        ? function (y: number) { return this.bottom + y; }
-        : function (y: number) { return this.bottom - y; }
-
-    offsetAbove = this._isOrientedUp
-        ? function (y: number, delta: number) { return y + delta; }
-        : function (y: number, delta: number) { return y - delta; }
-
-    offsetBelow = this._isOrientedUp
-        ? function (y: number, delta: number) { return y - delta; }
-        : function (y: number, delta: number) { return y + delta; }
-
-    leftPenetration(x: number) { return this.left - x; }
-    rightPenetration(x: number) { return x - this.right; }
-
-    topPenetration = this._isOrientedUp
-        ? function (y: number) { return y - (this.top - 1); }
-        : function (y: number) { return this.top - y; }
-
-    bottomPenetration = this._isOrientedUp
-        ? function (y: number) { return this.bottom - y; }
-        : function (y: number) { return y - this.bottom; }
-
-    isUp = this._isOrientedUp
-        ? function (y: number) { return y > 0; }
-        : function (y: number) { return y < 0; }
-
-    isDown = this._isOrientedUp
-        ? function (y: number) { return y < 0; }
-        : function (y: number) { return y > 0; }
-
-    toWorld = this._isOrientedUp
-        ? function (x: number, y: number) { return [this.left + x, this.top - y]; }
-        : function (x: number, y: number) { return [this.left + x, this.top + y]; }
-
-    toScreen = this._isOrientedUp
-        ? function (x: number, y: number) { return [x - this.left, this.top - y]; }
-        : function (x: number, y: number) { return [x - this.left, y - this.top]; }
-
     inflate(dx: number, dy: number) {
-        let x = this._x - dx;
-        let y = this._y - dy;
+        let x = this.x - dx;
+        let y = this.y - dy;
         let width = this.width + dx + dx;
         let height = this.height + dy + dy;
 
         if (width < 0 && height < 0) {
-            x = this._x;
-            y = this._y;
+            x = this.x;
+            y = this.y;
             width = 0;
             height = 0;
         }
         else if (width < 0) {
-            x = this._x;
+            x = this.x;
             width  = 0;
             height = height;
         }
         else if (height < 0) {
-            y = this._y;
+            y = this.y;
             width  = width;
             height = 0;
         }
 
-        return new Bounds(this._orientation, x, y, width, height);
+        return new Bounds(x, y, width, height);
     }
+
+    draw(ctx: CanvasRenderingContext2D, width: number, color: string) {
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        //ctx.moveTo(this.x, this.top);
+        //ctx.lineTo(this.x, this.bottom);
+        //ctx.lineTo(this.right, this.bottom);
+        //ctx.lineTo(this.right, this.top);
+        //ctx.lineTo(this.x, this.top);
+        //ctx.stroke();
+        ctx.strokeRect(this.x, this.top, this.width, this.height);
+    }
+
+    leftOffset(x: number) { return this.left + x; }
+    rightOffset(x: number) { return this.right - x; }
+    topOffsetAbove(delta: number) { return this.top - delta; }
+    topOffsetBelow(delta: number) { return this.top + delta; }
+    bottomOffsetAbove(delta: number) { return this.bottom - delta; }
+    bottomOffsetBelow(delta: number) { return this.bottom + delta; }
+    offsetAbove(y: number, delta: number) { return y - delta; }
+    offsetBelow(y: number, delta: number) { return y + delta; }
+
+    leftPenetration(x: number) { return this.left - x; }
+    rightPenetration(x: number) { return x - this.right; }
+    topPenetration(y: number) { return this.top - y; }
+    bottomPenetration(y: number) { return y - this.bottom; }
+    isUp(y: number) { return y < 0; }
+    isDown(y: number) { return y > 0; }
 }

@@ -21,21 +21,32 @@
         return result;
     }
 
-    protected drawLine(ctx: CanvasRenderingContext2D, width: number, color: string): void {
+    protected drawLine(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds): void {
+        let origin = this.origin;
+        let endPoint = this.endPoint;
+
+        if (bounds) {
+            origin = bounds.toScreen(origin);
+            endPoint = bounds.toScreen(endPoint);
+        }
+
         ctx.beginPath();
         ctx.lineWidth = width;
         ctx.strokeStyle = color;
-        ctx.moveTo(this.origin.x, this.origin.y);
-        ctx.lineTo(this._endPoint.x, this._endPoint.y);
+        ctx.moveTo(origin.x, origin.y);
+        ctx.lineTo(endPoint.x, endPoint.y);
         ctx.stroke();
         //console.log(`length: ${length}  - (${this.origin.x}, ${this.origin.y}) -> (${this._endPoint.x}, ${this._endPoint.y})`);
     }
 
-    draw(ctx: CanvasRenderingContext2D, width: number, color: string): void {
-        this.drawLine(ctx, width, color);
+    draw(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds): void {
+        this.drawLine(ctx, width, color, bounds);
 
+        let origin = bounds ? bounds.toScreen(this.origin) : this.origin;
+
+        ctx.beginPath();
         ctx.fillStyle = color;
-        ctx.ellipse(this.origin.x, this.origin.y, width, width, 0, 0, 2 * Math.PI);
+        ctx.ellipse(origin.x, origin.y, width, width, 0, 0, 2 * Math.PI);
         ctx.fill();
     }
 

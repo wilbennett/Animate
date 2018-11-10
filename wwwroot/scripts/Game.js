@@ -23,13 +23,13 @@ var Game = /** @class */ (function () {
         var orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
         var worldWidth = _settings.World.wide ? width * 1.5 : width;
         var worldHeight = _settings.World.tall ? height * 1.5 : height;
-        this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, width, height);
+        this._world = new World2D(orientation, 0, 0, worldWidth, worldHeight, width, height, 0, 0, width, height);
         var world = this._world;
         this._canvasMouse = new MouseTracker(this._canvas);
         this._output = document.getElementById("output");
         this._friction = new Friction();
         this._gravity = new Gravity(world.orientation, 0.3);
-        this._liquid = new Liquid(new Vector2D(world.minX, world.offsetAbove(world.minY, 200)), 0.05, world.width / 8, 90);
+        this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 0.05, world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
         world.addCharacter(this._liquid);
         world.addCharacter(this._radar);
@@ -62,18 +62,19 @@ var Game = /** @class */ (function () {
         var fanPos = settings.position;
         var fanAngle = settings.angle;
         var fanRadius = settings.strength;
-        return new Wind(new Vector2D(x, world.offsetAbove(world.minY, world.height * fanPos)), world.localizeDegrees(fanAngle), fanRadius);
+        return new Wind(new Vector2D(x, world.bottomOffsetAbove(world.height * fanPos)), world.localizeDegrees(fanAngle), fanRadius);
     };
     Game.prototype.createRandomBalls = function () {
         var colors = this._settings.Balls.colors || ['blue', 'green', 'red', 'black', 'white'];
+        var container = new ContainerBounds(this._world.orientation, this._world.x, this._world.y, this._world.width, this._world.height);
         for (var i = 0; i < this._settings.Balls.count; i++) {
             var mass = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
             //mass = 4;
             var radius = mass * 5;
             var color = MathEx.random(colors);
             //color = "blue";
-            var startY = this._world.viewport.topOffset(radius);
-            var ball = new Ball(radius, color, new Vector2D(MathEx.random(radius, this._width - radius * 2), startY), new Vector2D(MathEx.random(0, 5), 0), Vector2D.empty, mass * mass, 50, this._gravity.gravityConst, this._world, this.addBallToRemove);
+            var startY = this._world.viewport.topOffsetBelow(radius);
+            var ball = new Ball(radius, color, new Vector2D(MathEx.random(radius, this._width - radius * 2), startY), new Vector2D(MathEx.random(0, 5), 0), Vector2D.empty, mass * mass, 50, this._gravity.gravityConst, container, this.addBallToRemove);
             ball.addUniversalForce(this._gravity);
             ball.addUniversalForce(this._friction);
             ball.frictionCoeffecient = this._settings.Balls.frictionCoeffecient * (ball.radius * ball.radius / 2);
@@ -113,7 +114,7 @@ var Game = /** @class */ (function () {
         var world = this._world;
         var viewport = world.viewport;
         var center = world.center;
-        viewport.applyTransform();
+        viewport.applyTransform(ctx);
         this._backgroundOffset += this._backgroundDelta;
         if (this._backgroundOffset < 0.6) {
             this._backgroundOffset = 0.6;
@@ -128,14 +129,14 @@ var Game = /** @class */ (function () {
         this._backgroundGradient.addColorStop(0, this._backColorStart);
         this._backgroundGradient.addColorStop(this._backgroundOffset, this._backColorEnd);
         //this.backgroundGradient.addColorStop(1, this.paintedBackStart);
-        viewport.restoreTransform();
+        viewport.restoreTransform(ctx);
     };
     Game.prototype.paintBackground = function () {
         var ctx = this._ctx;
         var world = this._world;
         var viewport = world.viewport;
         var center = world.center;
-        viewport.applyTransform();
+        viewport.applyTransform(ctx);
         ctx.fillStyle = this._backgroundGradient;
         var bounds = viewport;
         ctx.beginPath();
@@ -147,14 +148,14 @@ var Game = /** @class */ (function () {
         ctx.strokeStyle = "black";
         ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
         ctx.closePath();
-        viewport.restoreTransform();
+        viewport.restoreTransform(ctx);
     };
     Game.prototype.updateFan = function (fan, settings) {
         var world = this._world;
         var fanPos = settings.position;
         var fanAngle = settings.angle;
         var fanRadius = settings.strength;
-        fan.position.y = world.offsetAbove(world.minY, world.height * fanPos);
+        fan.position.y = world.bottomOffsetAbove(world.height * fanPos);
         fan.degrees = world.localizeDegrees(fanAngle);
         fan.strength = fanRadius;
     };
@@ -166,8 +167,8 @@ var Game = /** @class */ (function () {
         ctx.fillStyle = "black";
         ctx.strokeStyle = "black";
         ctx.textAlign = "center";
-        var _a = viewport.toScreen(this._radar.position.x, this._radar.position.y), radarX = _a[0], radarY = _a[1];
-        ctx.fillText(this._radar.degrees.toFixed(0).toString(), radarX, radarY);
+        var radarPos = viewport.toScreen(this._radar.position);
+        ctx.fillText(this._radar.degrees.toFixed(0).toString(), radarPos.x, radarPos.y);
         ctx.restore();
     };
     Game.prototype.update = function (frame, timestamp, delta) {
@@ -185,7 +186,7 @@ var Game = /** @class */ (function () {
         this.paintRadarAngle();
         var world = this._world;
         var viewport = world.viewport;
-        this._world.render(frame);
+        this._world.render(this._ctx, frame);
         if (this._balls.length === 0)
             return;
         //let ball = this.balls[0];

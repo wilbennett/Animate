@@ -33,7 +33,18 @@
         const orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
         const worldWidth = _settings.World.wide ? width * 1.5 : width;
         const worldHeight = _settings.World.tall ? height * 1.5 : height;
-        this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, width, height);
+        this._world = new World2D(
+            orientation,
+            0,
+            0,
+            worldWidth,
+            worldHeight,
+            width,
+            height,
+            0,
+            0,
+            width,
+            height);
 
         const world = this._world;
         this._canvasMouse = new MouseTracker(this._canvas);
@@ -41,7 +52,7 @@
         this._output = <HTMLOutputElement>document.getElementById("output");
         this._friction = new Friction();
         this._gravity = new Gravity(world.orientation, 0.3);
-        this._liquid = new Liquid(new Vector2D(world.minX, world.offsetAbove(world.minY, 200)), 0.05, world.width / 8, 90);
+        this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 0.05, world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
 
         world.addCharacter(this._liquid);
@@ -86,7 +97,7 @@
         let fanRadius = settings.strength;
 
         return new Wind(
-            new Vector2D(x, world.offsetAbove(world.minY, world.height * fanPos)),
+            new Vector2D(x, world.bottomOffsetAbove(world.height * fanPos)),
             world.localizeDegrees(fanAngle),
             fanRadius);
     }
@@ -94,13 +105,20 @@
     private createRandomBalls() {
         let colors: string[] = this._settings.Balls.colors || ['blue', 'green', 'red', 'black', 'white'];
 
+        let container = new ContainerBounds(
+            this._world.orientation,
+            this._world.x,
+            this._world.y,
+            this._world.width,
+            this._world.height);
+
         for (var i = 0; i < this._settings.Balls.count; i++) {
             let mass = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
             //mass = 4;
             let radius = mass * 5;
             let color = MathEx.random(colors);
             //color = "blue";
-            let startY = this._world.viewport.topOffset(radius);
+            let startY = this._world.viewport.topOffsetBelow(radius);
             let ball = new Ball(
                 radius,
                 color,
@@ -110,7 +128,7 @@
                 mass * mass,
                 50,
                 this._gravity.gravityConst,
-                this._world,
+                container,
                 this.addBallToRemove);
 
             ball.addUniversalForce(this._gravity);
@@ -160,7 +178,7 @@
         const viewport = world.viewport;
         const center = world.center;
 
-        viewport.applyTransform();
+        viewport.applyTransform(ctx);
 
         this._backgroundOffset += this._backgroundDelta;
 
@@ -180,7 +198,7 @@
         this._backgroundGradient.addColorStop(this._backgroundOffset, this._backColorEnd);
         //this.backgroundGradient.addColorStop(1, this.paintedBackStart);
 
-        viewport.restoreTransform();
+        viewport.restoreTransform(ctx);
     }
 
     private paintBackground() {
@@ -189,10 +207,10 @@
         const viewport = world.viewport;
         const center = world.center;
 
-        viewport.applyTransform();
+        viewport.applyTransform(ctx);
 
         ctx.fillStyle = this._backgroundGradient;
-        let bounds: IBounds = viewport;
+        let bounds: Bounds = viewport;
         ctx.beginPath();
         ctx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
         ctx.closePath();
@@ -204,7 +222,7 @@
         ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
         ctx.closePath();
 
-        viewport.restoreTransform();
+        viewport.restoreTransform(ctx);
     }
 
     private updateFan(fan: Wind, settings: Dynamic) {
@@ -214,7 +232,7 @@
         let fanAngle = settings.angle;
         let fanRadius = settings.strength;
 
-        fan.position.y = world.offsetAbove(world.minY, world.height * fanPos);
+        fan.position.y = world.bottomOffsetAbove(world.height * fanPos);
         fan.degrees = world.localizeDegrees(fanAngle);
         fan.strength = fanRadius;
     }
@@ -228,8 +246,8 @@
         ctx.fillStyle = "black";
         ctx.strokeStyle = "black";
         ctx.textAlign = "center";
-        let [radarX, radarY] = viewport.toScreen(this._radar.position.x, this._radar.position.y);
-        ctx.fillText(this._radar.degrees.toFixed(0).toString(), radarX, radarY);
+        let radarPos = viewport.toScreen(this._radar.position);
+        ctx.fillText(this._radar.degrees.toFixed(0).toString(), radarPos.x, radarPos.y);
         ctx.restore();
     }
 
@@ -253,7 +271,7 @@
         const world = this._world;
         const viewport = world.viewport;
 
-        this._world.render(frame);
+        this._world.render(this._ctx, frame);
 
         if (this._balls.length === 0) return;
 

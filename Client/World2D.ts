@@ -1,36 +1,40 @@
-﻿class World2D extends Bounds {
+﻿class World2D extends OrientedBounds {
     private _viewport: Viewport2D;
     private _characters: Character[] = [];
 
     constructor(
-        protected readonly _ctx: CanvasRenderingContext2D,
         orientation: WorldOrientation,
         x: number,
         y: number,
         width: number,
         height: number,
         protected readonly _viewportWidth: number,
-        protected readonly _viewportHeight: number) {
+        protected readonly _viewportHeight: number,
+        protected readonly _screenX: number,
+        protected readonly _screenY: number,
+        protected readonly _screenWidth: number,
+        protected readonly _screenHeight: number) {
         super(orientation, x, y, width, height);
 
-        this._viewportWidth = Math.min(this._viewportWidth, this._width);
-        this._viewportHeight = Math.min(this._viewportHeight, this._height);
-        this._viewportWidth = Math.min(this._viewportWidth, _ctx.canvas.width);
-        this._viewportHeight = Math.min(this._viewportHeight, _ctx.canvas.height);
+        this._viewportWidth = Math.min(this._viewportWidth, this.width);
+        this._viewportHeight = Math.min(this._viewportHeight, this.height);
 
-        this.createViewport(this._x, this._y);
+        this.createViewport(this.x, this.y);
     }
 
     get viewport() { return this._viewport; }
 
     protected createViewport(x: number, y: number) {
         this._viewport = new Viewport2D(
-            this._ctx,
             this._orientation,
             x,
             y,
             this._viewportWidth,
-            this._viewportHeight);
+            this._viewportHeight,
+            this._screenX,
+            this._screenY,
+            this._screenWidth,
+            this._screenHeight);
     }
 
     setViewportTopLeft = this._isOrientedUp
@@ -133,12 +137,12 @@
         this._characters.forEach(character => character.update(frame, timestamp, delta, this._characters), this);
     }
 
-    render(frame: number) {
-        this._viewport.applyTransform();
+    render(ctx: CanvasRenderingContext2D, frame: number) {
+        this._viewport.applyTransform(ctx);
 
-        this._characters.forEach(character => character.draw(this._ctx, frame));
+        this._characters.forEach(character => character.draw(ctx, frame));
 
-        this._viewport.restoreTransform();
+        this._viewport.restoreTransform(ctx);
     }
 
     localizeDegrees = this._isOrientedUp

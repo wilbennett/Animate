@@ -20,8 +20,8 @@ var Line2D = /** @class */ (function (_super) {
         _this = _super.call(this, start, direction, direction.mag) || this;
         return _this;
     }
-    Line2D.prototype.draw = function (ctx, width, color) {
-        _super.prototype.drawLine.call(this, ctx, width, color);
+    Line2D.prototype.draw = function (ctx, width, color, bounds) {
+        _super.prototype.drawLine.call(this, ctx, width, color, bounds);
     };
     Line2D.prototype.reflectViaNormal = function (normal) {
         var ray = _super.prototype.reflectViaNormal.call(this, normal);
@@ -32,6 +32,12 @@ var Line2D = /** @class */ (function (_super) {
     };
     Line2D.prototype.reflect = function (source) {
         return source.reflectViaNormal(this.normal);
+    };
+    Line2D.prototype.toRay = function () {
+        return new Ray2D(this.origin, this.direction, this.length);
+    };
+    Line2D.fromRay = function (ray) {
+        return new Line2D(ray.origin, ray.endPoint);
     };
     return Line2D;
 }(Ray2D));

@@ -132,11 +132,11 @@ var Ball = /** @class */ (function (_super) {
         }
         if (topPenetration > 0 && boundary.isUp(this.velocity.y)) {
             this.velocity.y *= -1;
-            this.position.y = boundary.topOffset(this.radius);
+            this.position.y = boundary.topOffsetBelow(this.radius);
         }
         if (bottomPenetration > 0 && boundary.isDown(this.velocity.y)) {
             this.velocity.y *= -1;
-            this.position.y = boundary.bottomOffset(this.radius);
+            this.position.y = boundary.bottomOffsetAbove(this.radius);
             var force = Math.abs(this.velocity.y); // TODO: Calculate proper force.
             if (force <= Math.abs(this._gravityConst)) {
                 this.velocity.y = 0;

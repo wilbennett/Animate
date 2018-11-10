@@ -14,36 +14,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Viewport2D = /** @class */ (function (_super) {
     __extends(Viewport2D, _super);
-    function Viewport2D(_ctx, orientation, x, y, width, height) {
-        var _this = _super.call(this, orientation, x, y, width, height) || this;
-        _this._ctx = _ctx;
-        _this.applyTransform = _this._isOrientedUp
-            ?
-                function () {
-                    var ctx = this._ctx;
-                    ctx.save();
-                    ctx.translate(-this.left, this.top);
-                    ctx.scale(1, -1);
-                    this.applyClipRegion();
-                }
-            :
-                function () {
-                    this._ctx.save();
-                    this._ctx.translate(-this.left, -this.top);
-                    this.applyClipRegion();
-                };
-        return _this;
+    function Viewport2D(orientation, x, y, width, height, screenX, screenY, screenWidth, screenHeight) {
+        return _super.call(this, orientation, x, y, width, height, screenX, screenY, screenWidth, screenHeight) || this;
     }
-    Viewport2D.prototype.applyClipRegion = function () {
-        var ctx = this._ctx;
-        ctx.beginPath();
-        ctx.rect(this._x, this._y, this._width, this._height);
-        ctx.clip();
-        ctx.closePath();
-    };
-    Viewport2D.prototype.restoreTransform = function () {
-        this._ctx.restore();
-    };
     return Viewport2D;
-}(Bounds));
+}(ScreenBounds));
 //# sourceMappingURL=Viewport2D.js.map

@@ -6,8 +6,8 @@
     }
 
 
-    draw(ctx: CanvasRenderingContext2D, width: number, color: string): void {
-        super.drawLine(ctx, width, color);
+    draw(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds): void {
+        super.drawLine(ctx, width, color, bounds);
     }
 
     reflectViaNormal(normal: Vector2D): Line2D {
@@ -21,5 +21,13 @@
 
     reflect(source: Line2D): Line2D {
         return source.reflectViaNormal(this.normal);
+    }
+
+    toRay(): Ray2D {
+        return new Ray2D(this.origin, this.direction, this.length);
+    }
+
+    static fromRay(ray: Ray2D): Line2D {
+        return new Line2D(ray.origin, ray.endPoint);
     }
 }
