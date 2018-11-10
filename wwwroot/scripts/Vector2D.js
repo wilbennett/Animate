@@ -142,6 +142,31 @@ var Vector2D = /** @class */ (function () {
         this.reset();
         return this;
     };
+    Vector2D.prototype.directionTo = function (target) {
+        return target.clone().subtract(this);
+    };
+    Vector2D.prototype.rotateRadiansAboutCore = function (x, y, angle, centerX, centerY) {
+        var transX = x - centerX;
+        var transY = y - centerY;
+        var newX = transX * Math.cos(angle) - transY * Math.sin(angle);
+        var newY = transX * Math.sin(angle) + transY * Math.cos(angle);
+        this._x = newX + centerX;
+        this._y = newY + centerY;
+        this.reset();
+        return this;
+    };
+    Vector2D.prototype.rotateRadians = function (angle) {
+        return this.rotateRadiansAboutCore(this.x, this.y, angle, 0, 0);
+    };
+    Vector2D.prototype.rotateDegrees = function (angle) {
+        return this.rotateRadians(MathEx.toRadians(angle));
+    };
+    Vector2D.prototype.rotateRadiansAbout = function (angle, center) {
+        return this.rotateRadiansAboutCore(this.x, this.y, angle, center.x, center.y);
+    };
+    Vector2D.prototype.rotateDegreesAbout = function (angle, center) {
+        return this.rotateRadiansAbout(MathEx.toRadians(angle), center);
+    };
     Vector2D.prototype.reflectViaNormal = function (normal) {
         // -(2 * (v . normal) * normal - v)
         var dot2 = 2 * this.dot(normal);

@@ -132,6 +132,37 @@
         return this;
     }
 
+    directionTo(target: Vector2D): Vector2D {
+        return target.clone().subtract(this);
+    }
+
+    rotateRadiansAboutCore(x: number, y: number, angle: number, centerX: number, centerY: number): Vector2D {
+        let transX = x - centerX;
+        let transY = y - centerY;
+        let newX = transX * Math.cos(angle) - transY * Math.sin(angle);
+        let newY = transX * Math.sin(angle) + transY * Math.cos(angle);
+        this._x = newX + centerX;
+        this._y = newY + centerY;
+        this.reset();
+        return this;
+    }
+
+    rotateRadians(angle: number): Vector2D {
+        return this.rotateRadiansAboutCore(this.x, this.y, angle, 0, 0);
+    }
+
+    rotateDegrees(angle: number): Vector2D {
+        return this.rotateRadians(MathEx.toRadians(angle));
+    }
+
+    rotateRadiansAbout(angle: number, center: Vector2D): Vector2D {
+        return this.rotateRadiansAboutCore(this.x, this.y, angle, center.x, center.y);
+    }
+
+    rotateDegreesAbout(angle: number, center: Vector2D): Vector2D {
+        return this.rotateRadiansAbout(MathEx.toRadians(angle), center);
+    }
+
     reflectViaNormal(normal: Vector2D): Vector2D {
         // -(2 * (v . normal) * normal - v)
         let dot2 = 2 * this.dot(normal);
