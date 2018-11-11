@@ -36,15 +36,16 @@ var Ray2D = /** @class */ (function () {
         var result = Vector2D.mult(length, this.direction);
         return result.add(this.origin);
     };
-    Ray2D.prototype.drawLine = function (ctx, width, color, bounds) {
+    Ray2D.prototype.drawLine = function (ctx, lineWidth, color, bounds) {
         var origin = this.origin;
         var endPoint = this.endPoint;
         if (bounds) {
             origin = bounds.toScreen(origin);
             endPoint = bounds.toScreen(endPoint);
+            lineWidth = lineWidth * Math.max(bounds.boundsToScreenScaleX, bounds.boundsToScreenScaleY);
         }
         ctx.beginPath();
-        ctx.lineWidth = width;
+        ctx.lineWidth = lineWidth;
         ctx.strokeStyle = color;
         ctx.moveTo(origin.x, origin.y);
         ctx.lineTo(endPoint.x, endPoint.y);
@@ -74,13 +75,34 @@ var Ray2D = /** @class */ (function () {
     Ray2D.prototype.reflect = function (source) {
         return source.reflectViaNormal(this.normal);
     };
-    Ray2D.prototype.draw = function (ctx, width, color, bounds) {
-        this.drawLine(ctx, width, color, bounds);
-        var origin = bounds ? bounds.toScreen(this.origin) : this.origin;
+    Ray2D.prototype.draw = function (ctx, lineWidth, color, bounds) {
+        this.drawLine(ctx, lineWidth, color, bounds);
+        var origin = this.origin;
+        var endPoint = this.endPoint;
+        var triangleBase = this.getPointAt(this.length * 0.9);
+        if (bounds) {
+            origin = bounds.toScreen(origin);
+            endPoint = bounds.toScreen(endPoint);
+            triangleBase = bounds.toScreen(triangleBase);
+            lineWidth = lineWidth * Math.max(bounds.boundsToScreenScaleX, bounds.boundsToScreenScaleY);
+        }
+        var triangleLeft = triangleBase.rotateDegreesAbout(-45, endPoint);
+        var triangleRight = triangleBase.rotateDegreesAbout(45, endPoint);
         ctx.beginPath();
         ctx.fillStyle = color;
-        ctx.ellipse(origin.x, origin.y, width, width, 0, 0, 2 * Math.PI);
+        ctx.ellipse(origin.x, origin.y, lineWidth, lineWidth, 0, 0, 2 * Math.PI);
         ctx.fill();
+        // TODO: Fix alignment.
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        //ctx.fillStyle = "white";
+        //ctx.strokeStyle = "white";
+        ctx.lineWidth = lineWidth;
+        ctx.moveTo(endPoint.x, endPoint.y);
+        ctx.lineTo(triangleLeft.x, triangleLeft.y);
+        ctx.lineTo(triangleRight.x, triangleRight.y);
+        ctx.fill();
+        ctx.stroke();
     };
     Ray2D.fromPoints = function (start, end) {
         var direction = start.directionTo(end);

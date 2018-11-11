@@ -20,17 +20,18 @@
         return result.add(this.origin);
     }
 
-    protected drawLine(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds): void {
+    protected drawLine(ctx: CanvasRenderingContext2D, lineWidth: number, color: string, bounds?: OrientedBounds): void {
         let origin = this.origin;
         let endPoint = this.endPoint;
 
         if (bounds) {
             origin = bounds.toScreen(origin);
             endPoint = bounds.toScreen(endPoint);
+            lineWidth = lineWidth * Math.max(bounds.boundsToScreenScaleX, bounds.boundsToScreenScaleY);
         }
 
         ctx.beginPath();
-        ctx.lineWidth = width;
+        ctx.lineWidth = lineWidth;
         ctx.strokeStyle = color;
         ctx.moveTo(origin.x, origin.y);
         ctx.lineTo(endPoint.x, endPoint.y);
@@ -71,15 +72,39 @@
         return source.reflectViaNormal(this.normal);
     }
 
-    draw(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds): void {
-        this.drawLine(ctx, width, color, bounds);
+    draw(ctx: CanvasRenderingContext2D, lineWidth: number, color: string, bounds?: OrientedBounds): void {
+        this.drawLine(ctx, lineWidth, color, bounds);
 
-        let origin = bounds ? bounds.toScreen(this.origin) : this.origin;
+        let origin = this.origin;
+        let endPoint = this.endPoint;
+        let triangleBase = this.getPointAt(this.length * 0.9);
+        
+        if (bounds) {
+            origin = bounds.toScreen(origin);
+            endPoint = bounds.toScreen(endPoint);
+            triangleBase = bounds.toScreen(triangleBase);
+            lineWidth = lineWidth * Math.max(bounds.boundsToScreenScaleX, bounds.boundsToScreenScaleY);
+        }
+
+        let triangleLeft = triangleBase.rotateDegreesAbout(-45, endPoint);
+        let triangleRight = triangleBase.rotateDegreesAbout(45, endPoint);
 
         ctx.beginPath();
         ctx.fillStyle = color;
-        ctx.ellipse(origin.x, origin.y, width, width, 0, 0, 2 * Math.PI);
+        ctx.ellipse(origin.x, origin.y, lineWidth, lineWidth, 0, 0, 2 * Math.PI);
         ctx.fill();
+
+        // TODO: Fix alignment.
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        //ctx.fillStyle = "white";
+        //ctx.strokeStyle = "white";
+        ctx.lineWidth = lineWidth;
+        ctx.moveTo(endPoint.x, endPoint.y);
+        ctx.lineTo(triangleLeft.x, triangleLeft.y);
+        ctx.lineTo(triangleRight.x, triangleRight.y);
+        ctx.fill();
+        ctx.stroke();
     }
 
     static fromPoints(start: Vector2D, end: Vector2D) {
