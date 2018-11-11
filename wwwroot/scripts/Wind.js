@@ -56,7 +56,7 @@ var Wind = /** @class */ (function (_super) {
         if (pos.mag > this._forceRadius)
             return;
         this._forceVector = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
-        this._forceVector.div(character.velocity.mag);
+        this._forceVector = this._forceVector.div(character.velocity.mag);
         _super.prototype.applyTo.call(this, character);
     };
     Wind.prototype.update = function (frame, timestamp, delta, characters) {
@@ -73,7 +73,7 @@ var Wind = /** @class */ (function (_super) {
         ctx.fill();
         ctx.closePath();
         var v = Vector2D.mult(this._velocity, this._forceRadius * 0.5);
-        v.add(this._position);
+        v = v.add(this._position);
         ctx.beginPath();
         ctx.strokeStyle = "purple";
         ctx.moveTo(this._position.x, this._position.y);

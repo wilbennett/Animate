@@ -34,13 +34,11 @@ var Polar = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Polar.prototype.add = function (radiansDelta) {
+    Polar.prototype.addRadians = function (radiansDelta) {
         var newAngle = this._radians + radiansDelta;
         if (newAngle < 0 || newAngle > MathEx.TWO_PI)
             newAngle %= MathEx.TWO_PI;
-        this._radians = newAngle;
-        this._degrees = -1;
-        this._vector = null;
+        return new Polar(this.radius, newAngle);
     };
     return Polar;
 }());

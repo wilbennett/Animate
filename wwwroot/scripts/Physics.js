@@ -21,16 +21,16 @@ var Physics = /** @class */ (function () {
         var c = coeffecient;
         var magnitude = c * normal;
         var friction = Vector2D.mult(velocity, -1); // Friction applies in the opposite direction of motion.
-        friction.normalize();
-        friction.mult(magnitude);
+        friction = friction.normalize();
+        friction = friction.mult(magnitude);
         return friction;
     };
     Physics.calcDrag = function (coeffecient, velocity) {
         var c = coeffecient;
         var magnitude = c * velocity.magSquared;
         var drag = Vector2D.mult(velocity, -1); // Drag applies in the opposite direction of motion.
-        drag.normalize();
-        drag.mult(magnitude);
+        drag = drag.normalize();
+        drag = drag.mult(magnitude);
         return drag;
     };
     return Physics;

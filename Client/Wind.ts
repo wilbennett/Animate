@@ -42,7 +42,7 @@
         if (pos.mag > this._forceRadius) return;
 
         this._forceVector = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
-        this._forceVector.div(character.velocity.mag);
+        this._forceVector = this._forceVector.div(character.velocity.mag);
 
         super.applyTo(character);
     }
@@ -65,7 +65,7 @@
         ctx.closePath();
 
         let v = Vector2D.mult(this._velocity, this._forceRadius * 0.5);
-        v.add(this._position);
+        v = v.add(this._position);
         ctx.beginPath();
         ctx.strokeStyle = "purple";
         ctx.moveTo(this._position.x, this._position.y);

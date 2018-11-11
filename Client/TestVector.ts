@@ -96,7 +96,7 @@ class TestVector {
         this._rRadius = radius;
 
         this._rRayStart = new Vector2D(this._rCenter.x - radius, this._rCenter.y);
-        this._rRayInStart = this._rRayStart.clone();
+        this._rRayInStart = this._rRayStart;
 
         x = sx;
         y = sy2;
@@ -104,7 +104,7 @@ class TestVector {
         this._lRadius = radius;
 
         this._lLineStart = new Vector2D(this._lCenter.x - radius, this._lCenter.y);
-        this._lLineInStart = this._lLineStart.clone();
+        this._lLineInStart = this._lLineStart;
 
         sx = sx + sw + sd;
         x = sx;
@@ -114,7 +114,7 @@ class TestVector {
 
         this._rViewportUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
         this._rRayStartVU = new Vector2D(-radius, 0);
-        this._rRayInStartVU = this._rRayStartVU.clone();
+        this._rRayInStartVU = this._rRayStartVU;
 
         x = sx;
         y = sy2;
@@ -123,7 +123,7 @@ class TestVector {
 
         this._rViewportDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
         this._rRayStartVD = new Vector2D(-radius, 0);
-        this._rRayInStartVD = this._rRayStartVD.clone();
+        this._rRayInStartVD = this._rRayStartVD;
 
         sx = sx + sw + sd;
         x = sx;
@@ -133,7 +133,7 @@ class TestVector {
 
         this._lViewportUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
         this._lLineStartVU = new Vector2D(-radius, 0);
-        this._lLineInStartVU = this._lLineStartVU.clone();
+        this._lLineInStartVU = this._lLineStartVU;
 
         y = sy2;
         this._lCenterVD = new Vector2D(0, 0);
@@ -141,7 +141,7 @@ class TestVector {
 
         this._lViewportDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
         this._lLineStartVD = new Vector2D(-radius, 0);
-        this._lLineInStartVD = this._lLineStartVD.clone();
+        this._lLineInStartVD = this._lLineStartVD;
     }
 
     circleOutline(center: Vector2D, radius: number, viewport?: Viewport2D) {

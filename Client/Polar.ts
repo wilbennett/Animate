@@ -23,14 +23,12 @@
         return this._vector;
     }
 
-    add(radiansDelta: number) {
+    addRadians(radiansDelta: number): Polar {
         let newAngle = this._radians + radiansDelta;
 
         if (newAngle < 0 || newAngle > MathEx.TWO_PI)
             newAngle %= MathEx.TWO_PI;
 
-        this._radians = newAngle;
-        this._degrees = -1;
-        this._vector = null;
+        return new Polar(this.radius, newAngle);
     }
 }

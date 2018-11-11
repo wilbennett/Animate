@@ -35,8 +35,8 @@
         super.update(frame, timestamp, delta, characters);
 
         if (!this._allowBounce) {
-            this._position.y = origY;
-            this._velocity.y = 0;
+            this.position = this.position.withY(origY);
+            this.velocity = this.velocity.withY(0);
 
             if (this._opacity > 0.2)
                 this._opacity = Math.max(this._opacity - 0.01, 0);
@@ -59,7 +59,7 @@
 
         let polar = new Polar(this._radius, this._rotateRadians);
         let highlightPos = polar.vector;
-        highlightPos.add(this.position);
+        highlightPos = highlightPos.add(this.position);
 
         let gradient = ctx.createRadialGradient(
             highlightPos.x,
@@ -134,27 +134,27 @@
         let bottomPenetration = boundary.bottomPenetration(boundary.offsetBelow(this.position.y, this.radius));
 
         if (leftPenetration > 0 && this.velocity.x < 0) {
-            this.velocity.x *= -1;
-            this.position.x = boundary.leftOffset(this.radius);
+            this.velocity = this.velocity.withX(this.velocity.x * -1);
+            this.position = this.position.withX(boundary.leftOffset(this.radius));
         }
 
         if (rightPenetration > 0 && this.velocity.x > 0) {
-            this.velocity.x *= -1;
-            this.position.x = boundary.rightOffset(this.radius);
+            this.velocity = this.velocity.withX(this.velocity.x * -1);
+            this.position = this.position.withX(boundary.rightOffset(this.radius));
         }
 
         if (topPenetration > 0 && boundary.isUp(this.velocity.y)) {
-            this.velocity.y *= -1;
-            this.position.y = boundary.topOffsetBelow(this.radius);
+            this.velocity = this.velocity.withY(this.velocity.y * -1);
+            this.position = this.position.withY(boundary.topOffsetBelow(this.radius));
         }
 
         if (bottomPenetration > 0 && boundary.isDown(this.velocity.y)) {
-            this.velocity.y *= -1;
-            this.position.y = boundary.bottomOffsetAbove(this.radius);
+            this.velocity = this.velocity.withY(this.velocity.y * -1);
+            this.position = this.position.withY(boundary.bottomOffsetAbove(this.radius));
             const force = Math.abs(this.velocity.y); // TODO: Calculate proper force.
 
             if (force <= Math.abs(this._gravityConst)) {
-                this.velocity.y = 0;
+                this.velocity = this.velocity.withY(0);
                 this._allowBounce = false;
             }
         }

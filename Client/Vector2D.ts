@@ -5,23 +5,13 @@
     private _radians: number = -1;
     private _polar: Polar | null = null;
     private _normal: Vector2D | null = null;
+    private static _empty: Vector2D;
 
-    constructor(private _x: number, private _y: number) {
+    constructor(private readonly _x: number, private readonly _y: number) {
     }
 
     get x() { return this._x; }
-
-    set x(value) {
-        this._x = value;
-        this.reset();
-    }
-
     get y() { return this._y; }
-
-    set y(value) {
-        this._y = value;
-        this.reset();
-    }
 
     get magSquared() {
         if (this._magSquared < 0)
@@ -68,83 +58,35 @@
 
     toString() { "(" + this._x.toFixed(3) + ", " + this._y.toFixed(3) + ")"; }
 
-    static get empty() { return new Vector2D(0, 0); }
+    static get empty() {
+        if (!this._empty)
+            this._empty = new Vector2D(0, 0);
 
-    clone(): Vector2D {
-        let result = new Vector2D(this.x, this.y);
-        result._magSquared = this._magSquared;
-        result._mag = this._mag;
-        result._degrees = this._degrees;
-        result._radians = this._radians;
-        result._polar = this._polar;
-        result._normal = this._normal;
-        return result;
+        return this._empty;
     }
 
-    reset() {
-        this._magSquared = -1;
-        this._mag = -1;
-        this._degrees = -1;
-        this._radians = -1;
-        this._polar = null;
-        this._normal = null;
-    }
-
-    add(other: Vector2D): Vector2D {
-        this._x += other.x;
-        this._y += other.y;
-        this.reset();
-        return this;
-    }
-
-    subtract(other: Vector2D): Vector2D {
-        this._x -= other.x;
-        this._y -= other.y;
-        this.reset();
-        return this;
-    }
-
-    mult(scale: number): Vector2D {
-        this._x *= scale;
-        this._y *= scale;
-        this.reset();
-        return this;
-    }
-
-    div(scale: number): Vector2D {
-        this._x /= scale;
-        this._y /= scale;
-        this.reset();
-        return this;
-    }
-
-    dot(other: Vector2D): number {
-        return Math2D.dot(this.x, this.y, other.x, other.y);
-    }
+    add(other: Vector2D): Vector2D { return new Vector2D(this.x + other.x, this.y + other.y); }
+    subtract(other: Vector2D): Vector2D { return new Vector2D(this.x - other.x, this.y - other.y); }
+    mult(scale: number): Vector2D { return new Vector2D(this.x * scale, this.y * scale); }
+    div(scale: number): Vector2D { return new Vector2D(this.x / scale, this.y / scale); }
+    dot(other: Vector2D): number { return Math2D.dot(this.x, this.y, other.x, other.y); }
 
     normalize(): Vector2D {
         let m = this.mag;
 
         if (m <= 0) return this;
 
-        this.div(m);
-        this.reset();
-        return this;
+        return this.div(m);
     }
 
-    directionTo(target: Vector2D): Vector2D {
-        return target.clone().subtract(this);
-    }
+    directionTo(target: Vector2D): Vector2D { return target.subtract(this); }
 
     rotateRadiansAboutCore(x: number, y: number, angle: number, centerX: number, centerY: number): Vector2D {
         let transX = x - centerX;
         let transY = y - centerY;
         let newX = transX * Math.cos(angle) - transY * Math.sin(angle);
         let newY = transX * Math.sin(angle) + transY * Math.cos(angle);
-        this._x = newX + centerX;
-        this._y = newY + centerY;
-        this.reset();
-        return this;
+        return new Vector2D(newX + centerX, newY + centerY);
     }
 
     rotateRadians(angle: number): Vector2D {
@@ -190,9 +132,12 @@
         ctx.stroke();
     }
 
-    static add(v1: Vector2D, v2: Vector2D): Vector2D { return v1.clone().add(v2); }
-    static subtract(v1: Vector2D, v2: Vector2D): Vector2D { return v1.clone().subtract(v2); }
-    static normalize(v: Vector2D): Vector2D { return v.clone().normalize(); }
+    withX(x: number) { return new Vector2D(x, this.y); }
+    withY(y: number) { return new Vector2D(this.x, y); }
+
+    static add(v1: Vector2D, v2: Vector2D): Vector2D { return v1.add(v2); }
+    static subtract(v1: Vector2D, v2: Vector2D): Vector2D { return v1.subtract(v2); }
+    static normalize(v: Vector2D): Vector2D { return v.normalize(); }
     static dot(v1: Vector2D, v2: Vector2D): number { return v1.dot(v2); }
 
     static mult(v: Vector2D, scale: number): Vector2D;
@@ -209,9 +154,7 @@
             scalar = <number>v;
         }
 
-        vec = vec.clone();
-        vec.mult(scalar);
-        return vec;
+        return vec.mult(scalar);
     }
 
     static div(v: Vector2D, scale: number): Vector2D;
@@ -228,8 +171,6 @@
             scalar = <number>v;
         }
 
-        vec = vec.clone();
-        vec.div(scalar);
-        return vec;
+        return vec.div(scalar);
     }
 }

@@ -34,8 +34,7 @@ var Ray2D = /** @class */ (function () {
     Ray2D.prototype.getPointAt = function (length) {
         //console.log(`Origin (${this.origin.x}, ${this.origin.y}) - Direction (${this.direction.x}, ${this.direction.y})`);
         var result = Vector2D.mult(length, this.direction);
-        result.add(this.origin);
-        return result;
+        return result.add(this.origin);
     };
     Ray2D.prototype.drawLine = function (ctx, width, color, bounds) {
         var origin = this.origin;

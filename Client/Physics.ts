@@ -24,8 +24,8 @@ class Physics {
         let magnitude = c * normal;
 
         let friction = Vector2D.mult(velocity, -1); // Friction applies in the opposite direction of motion.
-        friction.normalize();
-        friction.mult(magnitude);
+        friction = friction.normalize();
+        friction = friction.mult(magnitude);
         return friction;
     }
 
@@ -34,8 +34,8 @@ class Physics {
         let magnitude = c * velocity.magSquared;
 
         let drag = Vector2D.mult(velocity, -1); // Drag applies in the opposite direction of motion.
-        drag.normalize();
-        drag.mult(magnitude);
+        drag = drag.normalize();
+        drag = drag.mult(magnitude);
 
         return drag;
     }

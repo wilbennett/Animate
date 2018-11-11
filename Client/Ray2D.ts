@@ -2,7 +2,7 @@
     private readonly _direction: Vector2D;
     private readonly _endPoint: Vector2D;
 
-    constructor(private _origin: Vector2D, direction: Vector2D, private _length: number) {
+    constructor(private readonly _origin: Vector2D, direction: Vector2D, private readonly _length: number) {
         this._direction = direction.normalize();
 
         this._endPoint = this.getPointAt(this._length);
@@ -17,8 +17,7 @@
     getPointAt(length: number): Vector2D {
         //console.log(`Origin (${this.origin.x}, ${this.origin.y}) - Direction (${this.direction.x}, ${this.direction.y})`);
         let result = Vector2D.mult(length, this.direction);
-        result.add(this.origin);
-        return result;
+        return result.add(this.origin);
     }
 
     protected drawLine(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds): void {

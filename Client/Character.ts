@@ -62,7 +62,7 @@
 
     applyForce(force: Vector2D) {
         let a = Physics.calcAcceleration(force, this._mass);
-        this._acceleration.add(a);
+        this._acceleration = this._acceleration.add(a);
     }
 
     applyRotateForce(force: number) {
@@ -87,7 +87,7 @@
     }
 
     preUpdate(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
-        this._acceleration = new Vector2D(0, 0);
+        this._acceleration = Vector2D.empty;
         this._rotateAcceleration = 0;
     }
 
@@ -96,7 +96,7 @@
         this.updateVelocity(frame, timestamp, delta);
         this.updateRotateVelocity(frame, timestamp, delta);
 
-        this._position.add(Vector2D.mult(this._velocity, delta));
+        this._position = this._position.add(this._velocity.mult(delta));
         this._rotateRadians += this._rotateVelocity * delta;
         this._rotateRadians = this._rotateRadians % MathEx.TWO_PI;
 

@@ -46,14 +46,14 @@ var Radar = /** @class */ (function (_super) {
     Object.defineProperty(Radar.prototype, "armPos", {
         get: function () {
             if (this._armPos === null)
-                this._armPos = Vector2D.add(this._armManager.vector, this._position);
+                this._armPos = this._armManager.vector.add(this._position);
             return this._armPos;
         },
         enumerable: true,
         configurable: true
     });
     Radar.prototype.updateRotateVelocity = function (frame, timestamp, delta) {
-        this._armManager.add(this._angleVelocity * delta);
+        this._armManager = this._armManager.addRadians(this._angleVelocity * delta);
         this._armPos = null;
     };
     Radar.prototype.draw = function (ctx, frame) {

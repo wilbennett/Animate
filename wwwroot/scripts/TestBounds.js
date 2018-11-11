@@ -36,23 +36,19 @@ var TestBall = /** @class */ (function () {
         var rightPenetration = boundary.rightPenetration(this._position.x + this._radius);
         var bottomPenetration = boundary.bottomPenetration(boundary.offsetBelow(this._position.y, this._radius));
         if (leftPenetration > 0) {
-            //this._velocity.x *= -1;
-            this._position.x = boundary.leftOffset(this._radius);
+            this._position = this._position.withX(boundary.leftOffset(this._radius));
             this._velocity = boundary.reflectLeft(this._velocity);
         }
         if (rightPenetration > 0) {
-            //this._velocity.x *= -1;
-            this._position.x = boundary.rightOffset(this._radius);
+            this._position = this._position.withX(boundary.rightOffset(this._radius));
             this._velocity = boundary.reflectRight(this._velocity);
         }
         if (topPenetration > 0) {
-            //this._velocity.y *= -1;
-            this._position.y = boundary.topOffsetBelow(this._radius);
+            this._position = this._position.withY(boundary.topOffsetBelow(this._radius));
             this._velocity = boundary.reflectTop(this._velocity);
         }
         if (bottomPenetration > 0) {
-            //this._velocity.y *= -1;
-            this._position.y = boundary.bottomOffsetAbove(this._radius);
+            this._position = this._position.withY(boundary.bottomOffsetAbove(this._radius));
             this._velocity = boundary.reflectBottom(this._velocity);
             //const force = Math.abs(this._velocity.y); // TODO: Calculate proper force.
             //if (force <= Math.abs(this._gravityConst)) {

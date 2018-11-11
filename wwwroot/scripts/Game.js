@@ -155,7 +155,7 @@ var Game = /** @class */ (function () {
         var fanPos = settings.position;
         var fanAngle = settings.angle;
         var fanRadius = settings.strength;
-        fan.position.y = world.bottomOffsetAbove(world.height * fanPos);
+        fan.position = fan.position.withY(world.bottomOffsetAbove(world.height * fanPos));
         fan.degrees = world.localizeDegrees(fanAngle);
         fan.strength = fanRadius;
     };
@@ -174,8 +174,7 @@ var Game = /** @class */ (function () {
     Game.prototype.update = function (frame, timestamp, delta) {
         this.updateViewport();
         this.createBackgroundGradient();
-        this._liquid.position.x = this._radar.armPos.x - this._liquid.bounds.width / 2;
-        this._liquid.position.y = this._radar.armPos.y - this._liquid.bounds.height / 2;
+        this._liquid.position = new Vector2D(this._radar.armPos.x - this._liquid.bounds.width / 2, this._radar.armPos.y - this._liquid.bounds.height / 2);
         if (this._balls.length === 0)
             this.createRandomBalls();
         this._world.update(frame, timestamp, delta);

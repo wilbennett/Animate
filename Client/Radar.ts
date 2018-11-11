@@ -19,13 +19,13 @@
 
     get armPos() {
         if (this._armPos === null)
-            this._armPos = Vector2D.add(this._armManager.vector, this._position);
+            this._armPos = this._armManager.vector.add(this._position);
 
         return this._armPos;
     }
 
     updateRotateVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
-        this._armManager.add(this._angleVelocity * delta);
+        this._armManager = this._armManager.addRadians(this._angleVelocity * delta);
         this._armPos = null;
     }
 
