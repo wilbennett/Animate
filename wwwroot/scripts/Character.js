@@ -126,7 +126,7 @@ var Character = /** @class */ (function (_super) {
             this._rotateVelocity = newVelocity;
     };
     Character.prototype.preUpdate = function (frame, timestamp, delta) {
-        this._acceleration = Vector2D.empty;
+        this._acceleration = Vector2D.emptyVector;
         this._rotateAcceleration = 0;
     };
     Character.prototype.update = function (frame, timestamp, delta, characters) {

@@ -1,21 +1,19 @@
-﻿class Vector2D {
+﻿class Vector2D extends Point2D {
     private _magSquared: number = -1;
     private _mag: number = -1;
     private _degrees: number = -1;
     private _radians: number = -1;
     private _polar: Polar2D | null = null;
     private _normal: Vector2D | null = null;
-    private static _empty: Vector2D;
+    private static _emptyVector: Vector2D;
 
-    constructor(private readonly _x: number, private readonly _y: number) {
+    constructor(x: number, y: number) {
+        super(x, y);
     }
-
-    get x() { return this._x; }
-    get y() { return this._y; }
 
     get magSquared() {
         if (this._magSquared < 0)
-            this._magSquared = Math2D.dot(this._x, this._y, this._x, this._y);
+            this._magSquared = Math2D.dot(this.x, this.y, this.x, this.y);
 
         return this._magSquared;
     }
@@ -29,7 +27,7 @@
 
     get radians() {
         if (this._radians < 0)
-            this._radians = Math2D.radians(this._x, this._y);
+            this._radians = Math2D.radians(this.x, this.y);
 
         return this._radians;
     }
@@ -56,13 +54,13 @@
         return this._normal;
     }
 
-    toString() { "(" + this._x.toFixed(3) + ", " + this._y.toFixed(3) + ")"; }
+    toString() { "(" + this.x.toFixed(3) + ", " + this.y.toFixed(3) + ")"; }
 
-    static get empty() {
-        if (!this._empty)
-            this._empty = new Vector2D(0, 0);
+    static get emptyVector() {
+        if (!this._emptyVector)
+            this._emptyVector = new Vector2D(0, 0);
 
-        return this._empty;
+        return this._emptyVector;
     }
 
     add(other: Vector2D): Vector2D { return new Vector2D(this.x + other.x, this.y + other.y); }
@@ -121,15 +119,6 @@
 
     reflect(source: Vector2D): Vector2D {
         return source.reflectViaNormal(this.normal);
-    }
-
-    draw(ctx: CanvasRenderingContext2D, size: number, color: string) {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, size, 0, MathEx.TWO_PI, true);
-        ctx.fillStyle = color;
-        ctx.fill();
-        ctx.strokeStyle = color;
-        ctx.stroke();
     }
 
     withX(x: number) { return new Vector2D(x, this.y); }

@@ -124,7 +124,7 @@
                 color,
                 new Vector2D(MathEx.random(radius, this._width - radius * 2), startY),
                 new Vector2D(MathEx.random(0, 5), 0),
-                Vector2D.empty,
+                Vector2D.emptyVector,
                 mass * mass,
                 50,
                 this._gravity.gravityConst,

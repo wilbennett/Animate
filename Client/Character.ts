@@ -87,7 +87,7 @@
     }
 
     preUpdate(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
-        this._acceleration = Vector2D.empty;
+        this._acceleration = Vector2D.emptyVector;
         this._rotateAcceleration = 0;
     }
 

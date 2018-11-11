@@ -1,29 +1,33 @@
 "use strict";
-var Vector2D = /** @class */ (function () {
-    function Vector2D(_x, _y) {
-        this._x = _x;
-        this._y = _y;
-        this._magSquared = -1;
-        this._mag = -1;
-        this._degrees = -1;
-        this._radians = -1;
-        this._polar = null;
-        this._normal = null;
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     }
-    Object.defineProperty(Vector2D.prototype, "x", {
-        get: function () { return this._x; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Vector2D.prototype, "y", {
-        get: function () { return this._y; },
-        enumerable: true,
-        configurable: true
-    });
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Vector2D = /** @class */ (function (_super) {
+    __extends(Vector2D, _super);
+    function Vector2D(x, y) {
+        var _this = _super.call(this, x, y) || this;
+        _this._magSquared = -1;
+        _this._mag = -1;
+        _this._degrees = -1;
+        _this._radians = -1;
+        _this._polar = null;
+        _this._normal = null;
+        return _this;
+    }
     Object.defineProperty(Vector2D.prototype, "magSquared", {
         get: function () {
             if (this._magSquared < 0)
-                this._magSquared = Math2D.dot(this._x, this._y, this._x, this._y);
+                this._magSquared = Math2D.dot(this.x, this.y, this.x, this.y);
             return this._magSquared;
         },
         enumerable: true,
@@ -41,7 +45,7 @@ var Vector2D = /** @class */ (function () {
     Object.defineProperty(Vector2D.prototype, "radians", {
         get: function () {
             if (this._radians < 0)
-                this._radians = Math2D.radians(this._x, this._y);
+                this._radians = Math2D.radians(this.x, this.y);
             return this._radians;
         },
         enumerable: true,
@@ -75,12 +79,12 @@ var Vector2D = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Vector2D.prototype.toString = function () { "(" + this._x.toFixed(3) + ", " + this._y.toFixed(3) + ")"; };
-    Object.defineProperty(Vector2D, "empty", {
+    Vector2D.prototype.toString = function () { "(" + this.x.toFixed(3) + ", " + this.y.toFixed(3) + ")"; };
+    Object.defineProperty(Vector2D, "emptyVector", {
         get: function () {
-            if (!this._empty)
-                this._empty = new Vector2D(0, 0);
-            return this._empty;
+            if (!this._emptyVector)
+                this._emptyVector = new Vector2D(0, 0);
+            return this._emptyVector;
         },
         enumerable: true,
         configurable: true
@@ -130,14 +134,6 @@ var Vector2D = /** @class */ (function () {
     Vector2D.prototype.reflect = function (source) {
         return source.reflectViaNormal(this.normal);
     };
-    Vector2D.prototype.draw = function (ctx, size, color) {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, size, 0, MathEx.TWO_PI, true);
-        ctx.fillStyle = color;
-        ctx.fill();
-        ctx.strokeStyle = color;
-        ctx.stroke();
-    };
     Vector2D.prototype.withX = function (x) { return new Vector2D(x, this.y); };
     Vector2D.prototype.withY = function (y) { return new Vector2D(this.x, y); };
     Vector2D.add = function (v1, v2) { return v1.add(v2); };
@@ -171,5 +167,5 @@ var Vector2D = /** @class */ (function () {
         return vec.div(scalar);
     };
     return Vector2D;
-}());
+}(Point2D));
 //# sourceMappingURL=Vector2D.js.map
