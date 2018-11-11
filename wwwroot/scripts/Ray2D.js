@@ -36,22 +36,8 @@ var Ray2D = /** @class */ (function () {
         var result = Vector2D.mult(length, this.direction);
         return result.add(this.origin);
     };
-    Ray2D.prototype.drawLine = function (ctx, lineWidth, color, bounds) {
-        var origin = this.origin;
-        var endPoint = this.endPoint;
-        if (bounds) {
-            origin = bounds.toScreen(origin);
-            endPoint = bounds.toScreen(endPoint);
-            lineWidth = lineWidth * Math.max(bounds.boundsToScreenScaleX, bounds.boundsToScreenScaleY);
-        }
-        ctx.beginPath();
-        ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = color;
-        ctx.moveTo(origin.x, origin.y);
-        ctx.lineTo(endPoint.x, endPoint.y);
-        ctx.stroke();
-        //console.log(`length: ${length}  - (${this.origin.x}, ${this.origin.y}) -> (${this._endPoint.x}, ${this._endPoint.y})`);
-    };
+    Ray2D.prototype.radiansBetween = function (target) { return this.direction.radiansBetween(target.direction); };
+    Ray2D.prototype.degreesBetween = function (target) { return MathEx.toDegrees(this.radiansBetween(target)); };
     Ray2D.prototype.rotateRadians = function (angle) {
         return new Ray2D(this.origin, this.direction.rotateRadians(angle), this.length);
     };
@@ -74,6 +60,22 @@ var Ray2D = /** @class */ (function () {
     };
     Ray2D.prototype.reflect = function (source) {
         return source.reflectViaNormal(this.normal);
+    };
+    Ray2D.prototype.drawLine = function (ctx, lineWidth, color, bounds) {
+        var origin = this.origin;
+        var endPoint = this.endPoint;
+        if (bounds) {
+            origin = bounds.toScreen(origin);
+            endPoint = bounds.toScreen(endPoint);
+            lineWidth = lineWidth * Math.max(bounds.boundsToScreenScaleX, bounds.boundsToScreenScaleY);
+        }
+        ctx.beginPath();
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = color;
+        ctx.moveTo(origin.x, origin.y);
+        ctx.lineTo(endPoint.x, endPoint.y);
+        ctx.stroke();
+        //console.log(`length: ${length}  - (${this.origin.x}, ${this.origin.y}) -> (${this._endPoint.x}, ${this._endPoint.y})`);
     };
     Ray2D.prototype.draw = function (ctx, lineWidth, color, bounds) {
         this.drawLine(ctx, lineWidth, color, bounds);

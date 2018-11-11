@@ -101,6 +101,13 @@ var Vector2D = /** @class */ (function (_super) {
         return this.div(m);
     };
     Vector2D.prototype.directionTo = function (target) { return target.subtract(this); };
+    Vector2D.prototype.radiansBetween = function (target) {
+        var result = target.radians - this.radians;
+        if (result < 0)
+            result = MathEx.TWO_PI + result;
+        return result;
+    };
+    Vector2D.prototype.degreesBetween = function (target) { return MathEx.toDegrees(this.radiansBetween(target)); };
     Vector2D.prototype.rotateRadiansAboutCore = function (x, y, angle, centerX, centerY) {
         var transX = x - centerX;
         var transY = y - centerY;

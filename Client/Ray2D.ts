@@ -20,24 +20,8 @@
         return result.add(this.origin);
     }
 
-    protected drawLine(ctx: CanvasRenderingContext2D, lineWidth: number, color: string, bounds?: OrientedBounds): void {
-        let origin = this.origin;
-        let endPoint = this.endPoint;
-
-        if (bounds) {
-            origin = bounds.toScreen(origin);
-            endPoint = bounds.toScreen(endPoint);
-            lineWidth = lineWidth * Math.max(bounds.boundsToScreenScaleX, bounds.boundsToScreenScaleY);
-        }
-
-        ctx.beginPath();
-        ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = color;
-        ctx.moveTo(origin.x, origin.y);
-        ctx.lineTo(endPoint.x, endPoint.y);
-        ctx.stroke();
-        //console.log(`length: ${length}  - (${this.origin.x}, ${this.origin.y}) -> (${this._endPoint.x}, ${this._endPoint.y})`);
-    }
+    radiansBetween(target: Ray2D): number { return this.direction.radiansBetween(target.direction); }
+    degreesBetween(target: Ray2D): number { return MathEx.toDegrees(this.radiansBetween(target)); }
 
     rotateRadians(angle: number): Ray2D {
         return new Ray2D(this.origin, this.direction.rotateRadians(angle), this.length);
@@ -70,6 +54,25 @@
 
     reflect(source: Ray2D): Ray2D {
         return source.reflectViaNormal(this.normal);
+    }
+
+    protected drawLine(ctx: CanvasRenderingContext2D, lineWidth: number, color: string, bounds?: OrientedBounds): void {
+        let origin = this.origin;
+        let endPoint = this.endPoint;
+
+        if (bounds) {
+            origin = bounds.toScreen(origin);
+            endPoint = bounds.toScreen(endPoint);
+            lineWidth = lineWidth * Math.max(bounds.boundsToScreenScaleX, bounds.boundsToScreenScaleY);
+        }
+
+        ctx.beginPath();
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = color;
+        ctx.moveTo(origin.x, origin.y);
+        ctx.lineTo(endPoint.x, endPoint.y);
+        ctx.stroke();
+        //console.log(`length: ${length}  - (${this.origin.x}, ${this.origin.y}) -> (${this._endPoint.x}, ${this._endPoint.y})`);
     }
 
     draw(ctx: CanvasRenderingContext2D, lineWidth: number, color: string, bounds?: OrientedBounds): void {

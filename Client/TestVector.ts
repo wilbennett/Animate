@@ -77,20 +77,26 @@ class TestVector {
     private _lLineInStartVD: Vector2D;
 
     private _rRayR: Ray2D;
+    private _rRayR2: Ray2D;
 
     private _lLineR: Line2D;
+    private _lLineR2: Line2D;
 
     private _rViewportRUp: Viewport2D;
     private _rRayRVU: Ray2D;
+    private _rRayRVU2: Ray2D;
 
     private _rViewportRDown: Viewport2D;
     private _rRayRVD: Ray2D;
+    private _rRayRVD2: Ray2D;
 
     private _lViewportRUp: Viewport2D;
     private _lLineRVU: Line2D;
+    private _lLineRVU2: Line2D;
 
     private _lViewportRDown: Viewport2D;
     private _lLineRVD: Line2D;
+    private _lLineRVD2: Line2D;
 
     private _rRayRA: Ray2D;
     private _rCenterRA: Vector2D;
@@ -193,10 +199,12 @@ class TestVector {
 
         let center = new Vector2D(x + radius, y + radius);
         this._rRayR = new Ray2D(center, new Vector2D(1, 0), radius);
+        this._rRayR2 = this._rRayR;
 
         y = sy2;
         center = new Vector2D(x + radius, y + radius);
         this._lLineR = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
+        this._lLineR2 = this._lLineR;
 
         sx = sx + sw + sd;
         x = sx;
@@ -206,6 +214,7 @@ class TestVector {
 
         this._rViewportRUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
         this._rRayRVU = new Ray2D(center, new Vector2D(1, 0), radius);
+        this._rRayRVU2 = this._rRayRVU;
 
         y = sy2;
 
@@ -213,6 +222,7 @@ class TestVector {
 
         this._rViewportRDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
         this._rRayRVD = new Ray2D(center, new Vector2D(1, 0), radius);
+        this._rRayRVD2 = this._rRayRVD;
 
         sx = sx + sw + sd;
         x = sx;
@@ -222,6 +232,7 @@ class TestVector {
 
         this._lViewportRUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
         this._lLineRVU = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
+        this._lLineRVU2 = this._lLineRVU;
 
         y = sy2;
 
@@ -229,6 +240,7 @@ class TestVector {
 
         this._lViewportRDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
         this._lLineRVD = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
+        this._lLineRVD2 = this._lLineRVD;
 
         sx = 10;
         sy = sy2 + sh + sd;
@@ -300,6 +312,22 @@ class TestVector {
         ctx.restore();
     }
 
+    drawAngleText(source: Ray2D, target: Ray2D, center: Vector2D, viewport?: Viewport2D, mod90: boolean = false) {
+        const ctx = this._ctx;
+
+        if (viewport)
+            center = viewport.toScreen(center);
+
+        let degreesBetween = source.degreesBetween(target);
+
+        if (mod90)
+            degreesBetween %= 90;
+
+        ctx.font = "20px arial";
+        ctx.textAlign = "center";
+        ctx.fillText(degreesBetween.toFixed(0), center.x, center.y);
+    }
+
     testRay(rayStart: Vector2D, rayInStart: Vector2D, center: Vector2D, radius: number, viewport?: Viewport2D) {
         const ctx = this._ctx;
 
@@ -315,6 +343,7 @@ class TestVector {
         rayNormal.draw(ctx, 3, "red", viewport);
         rayIn.draw(ctx, 4, "black", viewport);
         rayReflect.draw(ctx, 4, "gray", viewport);
+        this.drawAngleText(rayIn, ray, center, viewport);
         //console.log(`Origin (${rayReflect.origin.x}, ${rayReflect.origin.y}) - Endpoint (${rayReflect.endPoint.x}, ${rayReflect.endPoint.y})`);
     }
 
@@ -323,16 +352,17 @@ class TestVector {
 
         this.circleOutline(center, radius, viewport);
 
-        let line = Line2D.fromRay(new Ray2D(lineStart, lineStart.directionTo(center), radius * 2));
+        let line = Line2D.fromDirection(lineStart, lineStart.directionTo(center), radius * 2);
         let lineIn = new Line2D(lineInStart, center);
 
         let lineReflect: Line2D = line.reflect(lineIn);
-        let lineNormal = Line2D.fromRay(new Ray2D(center, line.normal, radius));
+        let lineNormal = Line2D.fromDirection(center, line.normal, radius);
 
         line.draw(ctx, 5, "blue", viewport);
         lineNormal.draw(ctx, 3, "red", viewport);
         lineReflect.draw(ctx, 4, "gray", viewport);
         lineIn.draw(ctx, 4, "black", viewport);
+        this.drawAngleText(lineIn, line, center, viewport);
         //console.log(`Origin (${lineReflect.origin.x}, ${lineReflect.origin.y}) - Endpoint (${lineReflect.endPoint.x}, ${lineReflect.endPoint.y})`);
     }
 
@@ -382,36 +412,54 @@ class TestVector {
         this.testLine(this._lLineStartVD, this._lLineInStartVD, this._lCenterVD, this._lRadiusVD, this._lViewportDown);
 
         this._rRayR = this._rRayR.rotateDegrees(rotDegrees);
+        this._rRayR2 = this._rRayR2.rotateDegrees(inDegrees);
         this.circleOutline(this._rRayR.origin, this._rRayR.length);
         this._rRayR.draw(ctx, 2, "blue");
+        this._rRayR2.draw(ctx, 2, "purple");
         let vector = this.getRayEndpointVector(this._rRayR);
         vector.draw(ctx, 3, "green");
+        this.drawAngleText(this._rRayR, this._rRayR2, this._rRayR.origin);
 
         this._lLineR = this._lLineR.rotateDegrees(rotDegrees);
+        this._lLineR2 = this._lLineR2.rotateDegrees(inDegrees);
         this.circleOutline(this._lLineR.origin, this._lLineR.length);
         this._lLineR.draw(ctx, 2, "blue");
+        this._lLineR2.draw(ctx, 2, "purple");
+        this.drawAngleText(this._lLineR, this._lLineR2, this._lLineR.origin);
 
         this._rRayRVU = this._rRayRVU.rotateDegrees(rotDegrees);
+        this._rRayRVU2 = this._rRayRVU2.rotateDegrees(inDegrees);
         this.circleOutline(this._rRayRVU.origin, this._rRayRVU.length, this._rViewportRUp);
         this._rViewportRUp.draw(ctx, 2, "white");
         this._rRayRVU.draw(ctx, 2, "blue", this._rViewportRUp);
+        this._rRayRVU2.draw(ctx, 2, "purple", this._rViewportRUp);
         vector = this.getRayEndpointVector(this._rRayRVU, this._rViewportRUp);
         vector.draw(ctx, 3, "green");
+        this.drawAngleText(this._rRayRVU, this._rRayRVU2, this._rRayRVU.origin, this._rViewportRUp);
 
         this._rRayRVD = this._rRayRVD.rotateDegrees(rotDegrees);
+        this._rRayRVD2 = this._rRayRVD2.rotateDegrees(inDegrees);
         this.circleOutline(this._rRayRVD.origin, this._rRayRVD.length, this._rViewportRDown);
         this._rViewportRDown.draw(ctx, 2, "white");
         this._rRayRVD.draw(ctx, 2, "blue", this._rViewportRDown);
+        this._rRayRVD2.draw(ctx, 2, "purple", this._rViewportRDown);
+        this.drawAngleText(this._rRayRVD, this._rRayRVD2, this._rRayRVD.origin, this._rViewportRDown);
 
         this._lLineRVU = this._lLineRVU.rotateDegrees(rotDegrees);
+        this._lLineRVU2 = this._lLineRVU2.rotateDegrees(inDegrees);
         this.circleOutline(this._lLineRVU.origin, this._lLineRVU.length, this._lViewportRUp);
         this._lViewportRUp.draw(ctx, 2, "white");
         this._lLineRVU.draw(ctx, 2, "blue", this._lViewportRUp);
+        this._lLineRVU2.draw(ctx, 2, "purple", this._lViewportRUp);
+        this.drawAngleText(this._lLineRVU, this._lLineRVU2, this._lLineRVU.origin, this._lViewportRUp);
 
         this._lLineRVD = this._lLineRVD.rotateDegrees(rotDegrees);
+        this._lLineRVD2 = this._lLineRVD2.rotateDegrees(inDegrees);
         this.circleOutline(this._lLineRVD.origin, this._lLineRVD.length, this._lViewportRDown);
         this._lViewportRDown.draw(ctx, 2, "white");
         this._lLineRVD.draw(ctx, 2, "blue", this._lViewportRDown);
+        this._lLineRVD2.draw(ctx, 2, "purple", this._lViewportRDown);
+        this.drawAngleText(this._lLineRVD, this._lLineRVD2, this._lLineRVD.origin, this._lViewportRDown);
 
         this._rRayRA = this._rRayRA.rotateDegreesAbout(rotDegrees, this._rCenterRA);
         this.circleOutline(this._rCenterRA, this._rRadiusRA);

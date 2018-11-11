@@ -79,6 +79,17 @@
 
     directionTo(target: Vector2D): Vector2D { return target.subtract(this); }
 
+    radiansBetween(target: Vector2D): number {
+        let result = target.radians - this.radians;
+
+        if (result < 0)
+            result = MathEx.TWO_PI + result;
+
+        return result;
+    }
+
+    degreesBetween(target: Vector2D): number { return MathEx.toDegrees(this.radiansBetween(target)); }
+
     rotateRadiansAboutCore(x: number, y: number, angle: number, centerX: number, centerY: number): Vector2D {
         let transX = x - centerX;
         let transY = y - centerY;
