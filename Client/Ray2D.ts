@@ -38,15 +38,24 @@
         //console.log(`length: ${length}  - (${this.origin.x}, ${this.origin.y}) -> (${this._endPoint.x}, ${this._endPoint.y})`);
     }
 
-    draw(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds): void {
-        this.drawLine(ctx, width, color, bounds);
+    rotateRadians(angle: number): Ray2D {
+        return new Ray2D(this.origin, this.direction.rotateRadians(angle), this.length);
+    }
 
-        let origin = bounds ? bounds.toScreen(this.origin) : this.origin;
+    rotateDegrees(angle: number): Ray2D {
+        return this.rotateRadians(MathEx.toRadians(angle));
+    }
 
-        ctx.beginPath();
-        ctx.fillStyle = color;
-        ctx.ellipse(origin.x, origin.y, width, width, 0, 0, 2 * Math.PI);
-        ctx.fill();
+    rotateRadiansAbout(angle: number, center: Vector2D): Ray2D {
+        let newOrigin = this.origin.rotateRadiansAbout(angle, center);
+        return new Ray2D(
+            newOrigin,
+            newOrigin.directionTo(this.endPoint.rotateRadiansAbout(angle, center)),
+            this.length);
+    }
+
+    rotateDegreesAbout(angle: number, center: Vector2D): Ray2D {
+        return this.rotateRadiansAbout(MathEx.toRadians(angle), center);
     }
 
     reflectViaNormal(normal: Vector2D): Ray2D {
@@ -60,5 +69,16 @@
 
     reflect(source: Ray2D): Ray2D {
         return source.reflectViaNormal(this.normal);
+    }
+
+    draw(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds): void {
+        this.drawLine(ctx, width, color, bounds);
+
+        let origin = bounds ? bounds.toScreen(this.origin) : this.origin;
+
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.ellipse(origin.x, origin.y, width, width, 0, 0, 2 * Math.PI);
+        ctx.fill();
     }
 }

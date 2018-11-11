@@ -3,8 +3,6 @@ var Polar2D = /** @class */ (function () {
     function Polar2D(_radius, _radians) {
         this._radius = _radius;
         this._radians = _radians;
-        this._degrees = -1;
-        this._vector = null;
     }
     Object.defineProperty(Polar2D.prototype, "radius", {
         get: function () { return this._radius; },
@@ -18,7 +16,7 @@ var Polar2D = /** @class */ (function () {
     });
     Object.defineProperty(Polar2D.prototype, "degrees", {
         get: function () {
-            if (this._degrees < 0)
+            if (!this._degrees)
                 this._degrees = MathEx.toDegrees(this.radians);
             return this._degrees;
         },

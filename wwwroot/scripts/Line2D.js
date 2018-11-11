@@ -16,12 +16,21 @@ var Line2D = /** @class */ (function (_super) {
     __extends(Line2D, _super);
     function Line2D(start, end) {
         var _this = this;
-        var direction = Vector2D.subtract(end, start);
+        var direction = start.directionTo(end);
         _this = _super.call(this, start, direction, direction.mag) || this;
         return _this;
     }
-    Line2D.prototype.draw = function (ctx, width, color, bounds) {
-        _super.prototype.drawLine.call(this, ctx, width, color, bounds);
+    Line2D.prototype.rotateRadians = function (angle) {
+        return new Line2D(this.origin, this.endPoint.rotateRadiansAbout(angle, this.origin));
+    };
+    Line2D.prototype.rotateDegrees = function (angle) {
+        return this.rotateRadians(MathEx.toRadians(angle));
+    };
+    Line2D.prototype.rotateRadiansAbout = function (angle, center) {
+        return new Line2D(this.origin.rotateRadiansAbout(angle, center), this.endPoint.rotateRadiansAbout(angle, center));
+    };
+    Line2D.prototype.rotateDegreesAbout = function (angle, center) {
+        return this.rotateRadiansAbout(MathEx.toRadians(angle), center);
     };
     Line2D.prototype.reflectViaNormal = function (normal) {
         var ray = _super.prototype.reflectViaNormal.call(this, normal);
@@ -35,6 +44,9 @@ var Line2D = /** @class */ (function (_super) {
     };
     Line2D.prototype.toRay = function () {
         return new Ray2D(this.origin, this.direction, this.length);
+    };
+    Line2D.prototype.draw = function (ctx, width, color, bounds) {
+        _super.prototype.drawLine.call(this, ctx, width, color, bounds);
     };
     Line2D.fromRay = function (ray) {
         return new Line2D(ray.origin, ray.endPoint);

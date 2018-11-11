@@ -1,6 +1,6 @@
 ﻿class Polar2D {
-    private _degrees: number = -1;
-    private _vector: Vector2D | null = null;
+    private _degrees: number;
+    private _vector: Vector2D;
 
     constructor(private readonly _radius: number, private _radians: number) {
     }
@@ -10,7 +10,7 @@
     get radians() { return this._radians; }
 
     get degrees() {
-        if (this._degrees < 0)
+        if (!this._degrees)
             this._degrees = MathEx.toDegrees(this.radians);
 
         return this._degrees;

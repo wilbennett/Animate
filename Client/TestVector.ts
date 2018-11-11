@@ -76,10 +76,54 @@ class TestVector {
     private _lLineStartVD: Vector2D;
     private _lLineInStartVD: Vector2D;
 
+    private _rRayR: Ray2D;
+
+    private _lLineR: Line2D;
+
+    private _rViewportRUp: Viewport2D;
+    private _rRayRVU: Ray2D;
+
+    private _rViewportRDown: Viewport2D;
+    private _rRayRVD: Ray2D;
+
+    private _lViewportRUp: Viewport2D;
+    private _lLineRVU: Line2D;
+
+    private _lViewportRDown: Viewport2D;
+    private _lLineRVD: Line2D;
+
+    private _rRayRA: Ray2D;
+    private _rCenterRA: Vector2D;
+    private _rRadiusRA: number;
+
+    private _lLineRA: Line2D;
+    private _lCenterRA: Vector2D;
+    private _lRadiusRA: number;
+
+    private _rViewportRAUp: Viewport2D;
+    private _rRayRAU: Ray2D;
+    private _rCenterRAU: Vector2D;
+    private _rRadiusRAU: number;
+
+    private _rViewportRADown: Viewport2D;
+    private _rRayRAD: Ray2D;
+    private _rCenterRAD: Vector2D;
+    private _rRadiusRAD: number;
+
+    private _lViewportRAUp: Viewport2D;
+    private _lLineRAU: Line2D;
+    private _lCenterRAU: Vector2D;
+    private _lRadiusRAU: number;
+
+    private _lViewportRADown: Viewport2D;
+    private _lLineRAD: Line2D;
+    private _lCenterRAD: Vector2D;
+    private _lRadiusRAD: number;
+
     constructor(private _canvas: HTMLCanvasElement) {
         this._ctx = <CanvasRenderingContext2D>this._canvas.getContext("2d");
 
-        let ss = 150;
+        let ss = 100;
         let sx = 10;
         let sy = 10;
         let sw = ss;
@@ -142,6 +186,103 @@ class TestVector {
         this._lViewportDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
         this._lLineStartVD = new Vector2D(-radius, 0);
         this._lLineInStartVD = this._lLineStartVD;
+
+        sx = sx + sw + sd;
+        x = sx;
+        y = sy;
+
+        let center = new Vector2D(x + radius, y + radius);
+        this._rRayR = new Ray2D(center, new Vector2D(1, 0), radius);
+
+        y = sy2;
+        center = new Vector2D(x + radius, y + radius);
+        this._lLineR = Line2D.fromRay(new Ray2D(center, new Vector2D(1, 0), radius));
+
+        sx = sx + sw + sd;
+        x = sx;
+        y = sy;
+
+        center = Vector2D.emptyVector;
+
+        this._rViewportRUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
+        this._rRayRVU = new Ray2D(center, new Vector2D(1, 0), radius);
+
+        y = sy2;
+
+        center = Vector2D.emptyVector;
+
+        this._rViewportRDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
+        this._rRayRVD = new Ray2D(center, new Vector2D(1, 0), radius);
+
+        sx = sx + sw + sd;
+        x = sx;
+        y = sy;
+
+        center = Vector2D.emptyVector;
+
+        this._lViewportRUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
+        this._lLineRVU = Line2D.fromRay(new Ray2D(center, new Vector2D(1, 0), radius));
+
+        y = sy2;
+
+        center = Vector2D.emptyVector;
+
+        this._lViewportRDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
+        this._lLineRVD = Line2D.fromRay(new Ray2D(center, new Vector2D(1, 0), radius));
+
+        sx = 10;
+        sy = sy2 + sh + sd;
+        sy2 = sy + sh + sd;
+
+        x = sx;
+        y = sy;
+
+        this._rCenterRA = new Vector2D(x + radius, y + radius);
+        this._rRadiusRA = radius;
+        let line = new Line2D(new Vector2D(x, this._rCenterRA.y), new Vector2D(this._rCenterRA.x, y + diameter));
+        this._rRayRA = new Ray2D(line.origin, line.direction, line.length);
+
+        y = sy2;
+
+        this._lCenterRA = new Vector2D(x + radius, y + radius);
+        this._lRadiusRA = radius;
+        this._lLineRA = new Line2D(new Vector2D(x, this._lCenterRA.y), new Vector2D(this._rCenterRA.x, y + diameter));
+
+        sx = sx + sw + sd;
+        x = sx;
+        y = sy;
+
+        center = Vector2D.emptyVector;
+
+        this._rViewportRAUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
+        this._rCenterRAU = center;
+        this._rRadiusRAU = radius;
+        line = new Line2D(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
+        this._rRayRAU = new Ray2D(line.origin, line.direction, line.length);
+
+        y = sy2;
+
+        this._rViewportRADown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
+        this._rCenterRAD = center;
+        this._rRadiusRAD = radius;
+        line = new Line2D(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
+        this._rRayRAD = new Ray2D(line.origin, line.direction, line.length);
+
+        sx = sx + sw + sd;
+        x = sx;
+        y = sy;
+
+        this._lViewportRAUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
+        this._lCenterRAU = center;
+        this._lRadiusRAU = radius;
+        this._lLineRAU = new Line2D(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
+
+        y = sy2;
+
+        this._lViewportRADown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
+        this._lCenterRAD = center;
+        this._lRadiusRAD = radius;
+        this._lLineRAD = new Line2D(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
     }
 
     circleOutline(center: Vector2D, radius: number, viewport?: Viewport2D) {
@@ -232,6 +373,62 @@ class TestVector {
         this._lLineInStartVD = this._lLineInStartVD.rotateDegreesAbout(inDegrees, this._lCenterVD);
         this._lViewportDown.draw(ctx, 2, "white");
         this.testLine(this._lLineStartVD, this._lLineInStartVD, this._lCenterVD, this._lRadiusVD, this._lViewportDown);
+
+        this._rRayR = this._rRayR.rotateDegrees(rotDegrees);
+        this.circleOutline(this._rRayR.origin, this._rRayR.length);
+        this._rRayR.draw(ctx, 2, "blue");
+
+        this._lLineR = this._lLineR.rotateDegrees(rotDegrees);
+        this.circleOutline(this._lLineR.origin, this._lLineR.length);
+        this._lLineR.draw(ctx, 2, "blue");
+
+        this._rRayRVU = this._rRayRVU.rotateDegrees(rotDegrees);
+        this.circleOutline(this._rRayRVU.origin, this._rRayRVU.length, this._rViewportRUp);
+        this._rViewportRUp.draw(ctx, 2, "white");
+        this._rRayRVU.draw(ctx, 2, "blue", this._rViewportRUp);
+
+        this._rRayRVD = this._rRayRVD.rotateDegrees(rotDegrees);
+        this.circleOutline(this._rRayRVD.origin, this._rRayRVD.length, this._rViewportRDown);
+        this._rViewportRDown.draw(ctx, 2, "white");
+        this._rRayRVD.draw(ctx, 2, "blue", this._rViewportRDown);
+
+        this._lLineRVU = this._lLineRVU.rotateDegrees(rotDegrees);
+        this.circleOutline(this._lLineRVU.origin, this._lLineRVU.length, this._lViewportRUp);
+        this._lViewportRUp.draw(ctx, 2, "white");
+        this._lLineRVU.draw(ctx, 2, "blue", this._lViewportRUp);
+
+        this._lLineRVD = this._lLineRVD.rotateDegrees(rotDegrees);
+        this.circleOutline(this._lLineRVD.origin, this._lLineRVD.length, this._lViewportRDown);
+        this._lViewportRDown.draw(ctx, 2, "white");
+        this._lLineRVD.draw(ctx, 2, "blue", this._lViewportRDown);
+
+        this._rRayRA = this._rRayRA.rotateDegreesAbout(rotDegrees, this._rCenterRA);
+        this.circleOutline(this._rCenterRA, this._rRadiusRA);
+        this._rRayRA.draw(ctx, 2, "blue");
+
+        this._lLineRA = this._lLineRA.rotateDegreesAbout(rotDegrees, this._lCenterRA);
+        this.circleOutline(this._lCenterRA, this._lRadiusRA);
+        this._lLineRA.draw(ctx, 2, "blue");
+
+        this._rRayRAU = this._rRayRAU.rotateDegreesAbout(rotDegrees, this._rCenterRAU);
+        this.circleOutline(this._rCenterRAU, this._rRadiusRAU, this._rViewportRAUp);
+        this._rViewportRAUp.draw(ctx, 2, "white");
+        this._rRayRAU.draw(ctx, 2, "blue", this._rViewportRAUp);
+
+        this._rRayRAD = this._rRayRAD.rotateDegreesAbout(rotDegrees, this._rCenterRAU);
+        this.circleOutline(this._rCenterRAD, this._rRadiusRAD, this._rViewportRADown);
+        this._rViewportRADown.draw(ctx, 2, "white");
+        this._rRayRAD.draw(ctx, 2, "blue", this._rViewportRADown);
+
+        this._lLineRAU = this._lLineRAU.rotateDegreesAbout(rotDegrees, this._lCenterRAU);
+        this.circleOutline(this._lCenterRAU, this._lRadiusRAU, this._lViewportRAUp);
+        this._lViewportRAUp.draw(ctx, 2, "white");
+        this._lLineRAU.draw(ctx, 2, "blue", this._lViewportRAUp);
+
+        this._lLineRAD = this._lLineRAD.rotateDegreesAbout(rotDegrees, this._lCenterRAU);
+        this.circleOutline(this._lCenterRAD, this._lRadiusRAD, this._lViewportRADown);
+        this._lViewportRADown.draw(ctx, 2, "white");
+        this._lLineRAD.draw(ctx, 2, "blue", this._lViewportRADown);
 
         requestAnimationFrame(this.animLoop);
     }

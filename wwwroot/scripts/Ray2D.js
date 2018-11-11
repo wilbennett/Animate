@@ -51,13 +51,18 @@ var Ray2D = /** @class */ (function () {
         ctx.stroke();
         //console.log(`length: ${length}  - (${this.origin.x}, ${this.origin.y}) -> (${this._endPoint.x}, ${this._endPoint.y})`);
     };
-    Ray2D.prototype.draw = function (ctx, width, color, bounds) {
-        this.drawLine(ctx, width, color, bounds);
-        var origin = bounds ? bounds.toScreen(this.origin) : this.origin;
-        ctx.beginPath();
-        ctx.fillStyle = color;
-        ctx.ellipse(origin.x, origin.y, width, width, 0, 0, 2 * Math.PI);
-        ctx.fill();
+    Ray2D.prototype.rotateRadians = function (angle) {
+        return new Ray2D(this.origin, this.direction.rotateRadians(angle), this.length);
+    };
+    Ray2D.prototype.rotateDegrees = function (angle) {
+        return this.rotateRadians(MathEx.toRadians(angle));
+    };
+    Ray2D.prototype.rotateRadiansAbout = function (angle, center) {
+        var newOrigin = this.origin.rotateRadiansAbout(angle, center);
+        return new Ray2D(newOrigin, newOrigin.directionTo(this.endPoint.rotateRadiansAbout(angle, center)), this.length);
+    };
+    Ray2D.prototype.rotateDegreesAbout = function (angle, center) {
+        return this.rotateRadiansAbout(MathEx.toRadians(angle), center);
     };
     Ray2D.prototype.reflectViaNormal = function (normal) {
         var reflection = this.direction.reflectViaNormal(normal);
@@ -68,6 +73,14 @@ var Ray2D = /** @class */ (function () {
     };
     Ray2D.prototype.reflect = function (source) {
         return source.reflectViaNormal(this.normal);
+    };
+    Ray2D.prototype.draw = function (ctx, width, color, bounds) {
+        this.drawLine(ctx, width, color, bounds);
+        var origin = bounds ? bounds.toScreen(this.origin) : this.origin;
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.ellipse(origin.x, origin.y, width, width, 0, 0, 2 * Math.PI);
+        ctx.fill();
     };
     return Ray2D;
 }());
