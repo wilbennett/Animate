@@ -59,7 +59,7 @@ var Vector2D = /** @class */ (function () {
     Object.defineProperty(Vector2D.prototype, "polar", {
         get: function () {
             if (!this._polar)
-                this._polar = new Polar(this.mag, this.radians);
+                this._polar = new Polar2D(this.mag, this.radians);
             return this._polar;
         },
         enumerable: true,

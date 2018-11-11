@@ -12,7 +12,7 @@ var Math2D = /** @class */ (function () {
         return result;
     };
     Math2D.degrees = function (x, y) { return MathEx.toDegrees(Math2D.radians(x, y)); };
-    Math2D.polar = function (x, y) { return new Polar(Math2D.magnitude(x, y), Math2D.radians(x, y)); };
+    Math2D.polar = function (x, y) { return new Polar2D(Math2D.magnitude(x, y), Math2D.radians(x, y)); };
     Math2D.inflateBoundsCore = function (bounds, dx, dy) {
         var newLeft = bounds[0] - dx;
         var newTop = bounds[1] - dy;

@@ -17,7 +17,7 @@ var Wind = /** @class */ (function (_super) {
     function Wind(position, degrees, strength) {
         var _this = _super.call(this, position, Vector2D.empty, Vector2D.empty, 0, strength) || this;
         _this._radiusPct = 0.10;
-        _this._polar = new Polar(strength, MathEx.toRadians(degrees));
+        _this._polar = new Polar2D(strength, MathEx.toRadians(degrees));
         _this.polarUpdated();
         return _this;
     }
@@ -30,7 +30,7 @@ var Wind = /** @class */ (function (_super) {
     Object.defineProperty(Wind.prototype, "radians", {
         get: function () { return this._polar.radians; },
         set: function (value) {
-            this._polar = new Polar(this._forceRadius, value);
+            this._polar = new Polar2D(this._forceRadius, value);
             this.polarUpdated();
         },
         enumerable: true,
@@ -39,7 +39,7 @@ var Wind = /** @class */ (function (_super) {
     Object.defineProperty(Wind.prototype, "strength", {
         get: function () { return this._polar.radius; },
         set: function (value) {
-            this._polar = new Polar(value, this.radians);
+            this._polar = new Polar2D(value, this.radians);
             this.polarUpdated();
         },
         enumerable: true,

@@ -1,5 +1,5 @@
 ﻿class Wind extends Character {
-    private _polar: Polar;
+    private _polar: Polar2D;
     private _radiusPct: number = 0.10;
 
     constructor(
@@ -8,7 +8,7 @@
         strength: number) {
         super(position, Vector2D.empty, Vector2D.empty, 0, strength);
 
-        this._polar = new Polar(strength, MathEx.toRadians(degrees));
+        this._polar = new Polar2D(strength, MathEx.toRadians(degrees));
         this.polarUpdated();
     }
 
@@ -18,14 +18,14 @@
     get radians() { return this._polar.radians; }
 
     set radians(value: number) {
-        this._polar = new Polar(this._forceRadius, value);
+        this._polar = new Polar2D(this._forceRadius, value);
         this.polarUpdated();
     }
 
     get strength() { return this._polar.radius; }
 
     set strength(value: number) {
-        this._polar = new Polar(value, this.radians);
+        this._polar = new Polar2D(value, this.radians);
         this.polarUpdated();
     }
 

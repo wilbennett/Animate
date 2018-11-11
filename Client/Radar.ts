@@ -1,5 +1,5 @@
 ﻿class Radar extends Character {
-    private _armManager: Polar;
+    private _armManager: Polar2D;
     private _armPos: Vector2D | null = null;
 
     constructor(
@@ -9,7 +9,7 @@
         private _angleVelocity: number) {
         super(position, Vector2D.empty, Vector2D.empty, 0, 0);
 
-        this._armManager = new Polar(this._radius * 0.95, 0);
+        this._armManager = new Polar2D(this._radius * 0.95, 0);
     }
 
     get radius() { return this._radius; }

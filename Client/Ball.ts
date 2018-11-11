@@ -57,7 +57,7 @@
 
         ctx.save();
 
-        let polar = new Polar(this._radius, this._rotateRadians);
+        let polar = new Polar2D(this._radius, this._rotateRadians);
         let highlightPos = polar.vector;
         highlightPos = highlightPos.add(this.position);
 

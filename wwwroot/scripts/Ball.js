@@ -60,7 +60,7 @@ var Ball = /** @class */ (function (_super) {
         var radiusX = this._radius;
         var radiusY = this._radius;
         ctx.save();
-        var polar = new Polar(this._radius, this._rotateRadians);
+        var polar = new Polar2D(this._radius, this._rotateRadians);
         var highlightPos = polar.vector;
         highlightPos = highlightPos.add(this.position);
         var gradient = ctx.createRadialGradient(highlightPos.x, highlightPos.y, this._radius * 0.01, highlightPos.x, highlightPos.y, this._radius);

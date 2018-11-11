@@ -3,7 +3,7 @@
     private _mag: number = -1;
     private _degrees: number = -1;
     private _radians: number = -1;
-    private _polar: Polar | null = null;
+    private _polar: Polar2D | null = null;
     private _normal: Vector2D | null = null;
     private static _empty: Vector2D;
 
@@ -43,7 +43,7 @@
 
     get polar() {
         if (!this._polar)
-            this._polar = new Polar(this.mag, this.radians);
+            this._polar = new Polar2D(this.mag, this.radians);
 
         return this._polar;
     }

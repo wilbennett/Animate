@@ -1,4 +1,4 @@
-﻿class Polar {
+﻿class Polar2D {
     private _degrees: number = -1;
     private _vector: Vector2D | null = null;
 
@@ -23,12 +23,12 @@
         return this._vector;
     }
 
-    addRadians(radiansDelta: number): Polar {
+    addRadians(radiansDelta: number): Polar2D {
         let newAngle = this._radians + radiansDelta;
 
         if (newAngle < 0 || newAngle > MathEx.TWO_PI)
             newAngle %= MathEx.TWO_PI;
 
-        return new Polar(this.radius, newAngle);
+        return new Polar2D(this.radius, newAngle);
     }
 }

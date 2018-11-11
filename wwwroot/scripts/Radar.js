@@ -20,7 +20,7 @@ var Radar = /** @class */ (function (_super) {
         _this._color = _color;
         _this._angleVelocity = _angleVelocity;
         _this._armPos = null;
-        _this._armManager = new Polar(_this._radius * 0.95, 0);
+        _this._armManager = new Polar2D(_this._radius * 0.95, 0);
         return _this;
     }
     Object.defineProperty(Radar.prototype, "radius", {
