@@ -142,6 +142,7 @@ class TestVector {
 
         let diameter = ss;
         let radius = diameter / 2;
+        let center0 = Vector2D.emptyVector;
         this._rCenter = new Vector2D(x + radius, y + radius);
         this._rRadius = radius;
 
@@ -159,7 +160,7 @@ class TestVector {
         sx = sx + sw + sd;
         x = sx;
         y = sy;
-        this._rCenterVU = new Vector2D(0, 0);
+        this._rCenterVU = center0;
         this._rRadiusVU = radius;
 
         this._rViewportUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
@@ -168,7 +169,7 @@ class TestVector {
 
         x = sx;
         y = sy2;
-        this._rCenterVD = new Vector2D(0, 0);
+        this._rCenterVD = center0;
         this._rRadiusVD = radius;
 
         this._rViewportDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
@@ -178,7 +179,7 @@ class TestVector {
         sx = sx + sw + sd;
         x = sx;
         y = sy;
-        this._lCenterVU = new Vector2D(0, 0);
+        this._lCenterVU = center0;
         this._lRadiusVU = radius;
 
         this._lViewportUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
@@ -186,7 +187,7 @@ class TestVector {
         this._lLineInStartVU = this._lLineStartVU;
 
         y = sy2;
-        this._lCenterVD = new Vector2D(0, 0);
+        this._lCenterVD = center0;
         this._lRadiusVD = radius;
 
         this._lViewportDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
@@ -210,36 +211,28 @@ class TestVector {
         x = sx;
         y = sy;
 
-        center = Vector2D.emptyVector;
-
         this._rViewportRUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
-        this._rRayRVU = new Ray2D(center, new Vector2D(1, 0), radius);
+        this._rRayRVU = new Ray2D(center0, new Vector2D(1, 0), radius);
         this._rRayRVU2 = this._rRayRVU;
 
         y = sy2;
 
-        center = Vector2D.emptyVector;
-
         this._rViewportRDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
-        this._rRayRVD = new Ray2D(center, new Vector2D(1, 0), radius);
+        this._rRayRVD = new Ray2D(center0, new Vector2D(1, 0), radius);
         this._rRayRVD2 = this._rRayRVD;
 
         sx = sx + sw + sd;
         x = sx;
         y = sy;
 
-        center = Vector2D.emptyVector;
-
         this._lViewportRUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
-        this._lLineRVU = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
+        this._lLineRVU = Line2D.fromDirection(center0, new Vector2D(1, 0), radius);
         this._lLineRVU2 = this._lLineRVU;
 
         y = sy2;
 
-        center = Vector2D.emptyVector;
-
         this._lViewportRDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
-        this._lLineRVD = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
+        this._lLineRVD = Line2D.fromDirection(center0, new Vector2D(1, 0), radius);
         this._lLineRVD2 = this._lLineRVD;
 
         sx = 10;
@@ -263,35 +256,33 @@ class TestVector {
         x = sx;
         y = sy;
 
-        center = Vector2D.emptyVector;
-
         this._rViewportRAUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
-        this._rCenterRAU = center;
+        this._rCenterRAU = center0;
         this._rRadiusRAU = radius;
-        this._rRayRAU = Ray2D.fromPoints(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
+        this._rRayRAU = Ray2D.fromPoints(new Vector2D(-radius, center0.y), new Vector2D(center0.x, radius));
 
         y = sy2;
 
         this._rViewportRADown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
-        this._rCenterRAD = center;
+        this._rCenterRAD = center0;
         this._rRadiusRAD = radius;
-        this._rRayRAD = Ray2D.fromPoints(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
+        this._rRayRAD = Ray2D.fromPoints(new Vector2D(-radius, center0.y), new Vector2D(center0.x, radius));
 
         sx = sx + sw + sd;
         x = sx;
         y = sy;
 
         this._lViewportRAUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
-        this._lCenterRAU = center;
+        this._lCenterRAU = center0;
         this._lRadiusRAU = radius;
-        this._lLineRAU = new Line2D(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
+        this._lLineRAU = new Line2D(new Vector2D(-radius, center0.y), new Vector2D(center0.x, radius));
 
         y = sy2;
 
         this._lViewportRADown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
-        this._lCenterRAD = center;
+        this._lCenterRAD = center0;
         this._lRadiusRAD = radius;
-        this._lLineRAD = new Line2D(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
+        this._lLineRAD = new Line2D(new Vector2D(-radius, center0.y), new Vector2D(center0.x, radius));
     }
 
     circleOutline(center: Vector2D, radius: number, viewport?: Viewport2D) {
