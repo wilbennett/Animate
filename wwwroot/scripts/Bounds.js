@@ -186,6 +186,9 @@ var Bounds = /** @class */ (function () {
     Bounds.prototype.bottomPenetration = function (y) { return y - this.bottom; };
     Bounds.prototype.isUp = function (y) { return y < 0; };
     Bounds.prototype.isDown = function (y) { return y > 0; };
+    Bounds.prototype.contains = function (point) {
+        return point.x >= this.x && point.x <= this.maxX && point.y >= this.y && point.y <= this.maxY;
+    };
     return Bounds;
 }());
 //# sourceMappingURL=Bounds.js.map
