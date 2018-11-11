@@ -51,6 +51,9 @@ var Line2D = /** @class */ (function (_super) {
     Line2D.fromRay = function (ray) {
         return new Line2D(ray.origin, ray.endPoint);
     };
+    Line2D.fromDirection = function (origin, direction, length) {
+        return this.fromRay(new Ray2D(origin, direction, length));
+    };
     return Line2D;
 }(Ray2D));
 //# sourceMappingURL=Line2D.js.map

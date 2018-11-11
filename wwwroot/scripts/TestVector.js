@@ -72,6 +72,8 @@ var TestVector = /** @class */ (function () {
             _this._rRayR = _this._rRayR.rotateDegrees(rotDegrees);
             _this.circleOutline(_this._rRayR.origin, _this._rRayR.length);
             _this._rRayR.draw(ctx, 2, "blue");
+            var vector = _this.getRayEndpointVector(_this._rRayR);
+            vector.draw(ctx, 3, "green");
             _this._lLineR = _this._lLineR.rotateDegrees(rotDegrees);
             _this.circleOutline(_this._lLineR.origin, _this._lLineR.length);
             _this._lLineR.draw(ctx, 2, "blue");
@@ -79,6 +81,8 @@ var TestVector = /** @class */ (function () {
             _this.circleOutline(_this._rRayRVU.origin, _this._rRayRVU.length, _this._rViewportRUp);
             _this._rViewportRUp.draw(ctx, 2, "white");
             _this._rRayRVU.draw(ctx, 2, "blue", _this._rViewportRUp);
+            vector = _this.getRayEndpointVector(_this._rRayRVU, _this._rViewportRUp);
+            vector.draw(ctx, 3, "green");
             _this._rRayRVD = _this._rRayRVD.rotateDegrees(rotDegrees);
             _this.circleOutline(_this._rRayRVD.origin, _this._rRayRVD.length, _this._rViewportRDown);
             _this._rViewportRDown.draw(ctx, 2, "white");
@@ -173,7 +177,7 @@ var TestVector = /** @class */ (function () {
         this._rRayR = new Ray2D(center, new Vector2D(1, 0), radius);
         y = sy2;
         center = new Vector2D(x + radius, y + radius);
-        this._lLineR = Line2D.fromRay(new Ray2D(center, new Vector2D(1, 0), radius));
+        this._lLineR = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
         sx = sx + sw + sd;
         x = sx;
         y = sy;
@@ -189,11 +193,11 @@ var TestVector = /** @class */ (function () {
         y = sy;
         center = Vector2D.emptyVector;
         this._lViewportRUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
-        this._lLineRVU = Line2D.fromRay(new Ray2D(center, new Vector2D(1, 0), radius));
+        this._lLineRVU = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
         y = sy2;
         center = Vector2D.emptyVector;
         this._lViewportRDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
-        this._lLineRVD = Line2D.fromRay(new Ray2D(center, new Vector2D(1, 0), radius));
+        this._lLineRVD = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
         sx = 10;
         sy = sy2 + sh + sd;
         sy2 = sy + sh + sd;
@@ -201,8 +205,7 @@ var TestVector = /** @class */ (function () {
         y = sy;
         this._rCenterRA = new Vector2D(x + radius, y + radius);
         this._rRadiusRA = radius;
-        var line = new Line2D(new Vector2D(x, this._rCenterRA.y), new Vector2D(this._rCenterRA.x, y + diameter));
-        this._rRayRA = new Ray2D(line.origin, line.direction, line.length);
+        this._rRayRA = Ray2D.fromPoints(new Vector2D(x, this._rCenterRA.y), new Vector2D(this._rCenterRA.x, y + diameter));
         y = sy2;
         this._lCenterRA = new Vector2D(x + radius, y + radius);
         this._lRadiusRA = radius;
@@ -214,14 +217,12 @@ var TestVector = /** @class */ (function () {
         this._rViewportRAUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
         this._rCenterRAU = center;
         this._rRadiusRAU = radius;
-        line = new Line2D(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
-        this._rRayRAU = new Ray2D(line.origin, line.direction, line.length);
+        this._rRayRAU = Ray2D.fromPoints(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
         y = sy2;
         this._rViewportRADown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
         this._rCenterRAD = center;
         this._rRadiusRAD = radius;
-        line = new Line2D(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
-        this._rRayRAD = new Ray2D(line.origin, line.direction, line.length);
+        this._rRayRAD = Ray2D.fromPoints(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
         sx = sx + sw + sd;
         x = sx;
         y = sy;
@@ -275,6 +276,13 @@ var TestVector = /** @class */ (function () {
         lineReflect.draw(ctx, 4, "gray", viewport);
         lineIn.draw(ctx, 4, "black", viewport);
         //console.log(`Origin (${lineReflect.origin.x}, ${lineReflect.origin.y}) - Endpoint (${lineReflect.endPoint.x}, ${lineReflect.endPoint.y})`);
+    };
+    TestVector.prototype.getRayEndpointVector = function (ray, viewport) {
+        var vector = Vector2D.fromDegrees(ray.direction.degrees).normalize();
+        vector = vector.mult(ray.length).add(ray.origin);
+        if (viewport)
+            vector = viewport.toScreen(vector);
+        return vector;
     };
     TestVector.prototype.start = function () {
         requestAnimationFrame(this.animLoop);

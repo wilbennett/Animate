@@ -136,6 +136,8 @@ var Vector2D = /** @class */ (function (_super) {
     };
     Vector2D.prototype.withX = function (x) { return new Vector2D(x, this.y); };
     Vector2D.prototype.withY = function (y) { return new Vector2D(this.x, y); };
+    Vector2D.fromRadians = function (angle) { return new Vector2D(Math.cos(angle), Math.sin(angle)); };
+    Vector2D.fromDegrees = function (angle) { return this.fromRadians(MathEx.toRadians(angle)); };
     Vector2D.add = function (v1, v2) { return v1.add(v2); };
     Vector2D.subtract = function (v1, v2) { return v1.subtract(v2); };
     Vector2D.normalize = function (v) { return v.normalize(); };

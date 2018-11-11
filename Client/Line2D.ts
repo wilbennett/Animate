@@ -47,4 +47,8 @@
     static fromRay(ray: Ray2D): Line2D {
         return new Line2D(ray.origin, ray.endPoint);
     }
+
+    static fromDirection(origin: Vector2D, direction: Vector2D, length: number) {
+        return this.fromRay(new Ray2D(origin, direction, length));
+    }
 }

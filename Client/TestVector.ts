@@ -196,7 +196,7 @@ class TestVector {
 
         y = sy2;
         center = new Vector2D(x + radius, y + radius);
-        this._lLineR = Line2D.fromRay(new Ray2D(center, new Vector2D(1, 0), radius));
+        this._lLineR = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
 
         sx = sx + sw + sd;
         x = sx;
@@ -221,14 +221,14 @@ class TestVector {
         center = Vector2D.emptyVector;
 
         this._lViewportRUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
-        this._lLineRVU = Line2D.fromRay(new Ray2D(center, new Vector2D(1, 0), radius));
+        this._lLineRVU = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
 
         y = sy2;
 
         center = Vector2D.emptyVector;
 
         this._lViewportRDown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
-        this._lLineRVD = Line2D.fromRay(new Ray2D(center, new Vector2D(1, 0), radius));
+        this._lLineRVD = Line2D.fromDirection(center, new Vector2D(1, 0), radius);
 
         sx = 10;
         sy = sy2 + sh + sd;
@@ -239,8 +239,7 @@ class TestVector {
 
         this._rCenterRA = new Vector2D(x + radius, y + radius);
         this._rRadiusRA = radius;
-        let line = new Line2D(new Vector2D(x, this._rCenterRA.y), new Vector2D(this._rCenterRA.x, y + diameter));
-        this._rRayRA = new Ray2D(line.origin, line.direction, line.length);
+        this._rRayRA = Ray2D.fromPoints(new Vector2D(x, this._rCenterRA.y), new Vector2D(this._rCenterRA.x, y + diameter));
 
         y = sy2;
 
@@ -257,16 +256,14 @@ class TestVector {
         this._rViewportRAUp = new Viewport2D(WorldOrientation.Up, -radius, -radius, diameter, diameter, x, y);
         this._rCenterRAU = center;
         this._rRadiusRAU = radius;
-        line = new Line2D(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
-        this._rRayRAU = new Ray2D(line.origin, line.direction, line.length);
+        this._rRayRAU = Ray2D.fromPoints(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
 
         y = sy2;
 
         this._rViewportRADown = new Viewport2D(WorldOrientation.Down, -radius, -radius, diameter, diameter, x, y);
         this._rCenterRAD = center;
         this._rRadiusRAD = radius;
-        line = new Line2D(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
-        this._rRayRAD = new Ray2D(line.origin, line.direction, line.length);
+        this._rRayRAD = Ray2D.fromPoints(new Vector2D(-radius, center.y), new Vector2D(center.x, radius));
 
         sx = sx + sw + sd;
         x = sx;
@@ -339,6 +336,16 @@ class TestVector {
         //console.log(`Origin (${lineReflect.origin.x}, ${lineReflect.origin.y}) - Endpoint (${lineReflect.endPoint.x}, ${lineReflect.endPoint.y})`);
     }
 
+    getRayEndpointVector(ray: Ray2D, viewport?: Viewport2D) {
+        let vector = Vector2D.fromDegrees(ray.direction.degrees).normalize();
+        vector = vector.mult(ray.length).add(ray.origin);
+
+        if (viewport)
+            vector = viewport.toScreen(vector);
+
+        return vector;
+    }
+
     animLoop = () => {
         const ctx = this._ctx;
         ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
@@ -377,6 +384,8 @@ class TestVector {
         this._rRayR = this._rRayR.rotateDegrees(rotDegrees);
         this.circleOutline(this._rRayR.origin, this._rRayR.length);
         this._rRayR.draw(ctx, 2, "blue");
+        let vector = this.getRayEndpointVector(this._rRayR);
+        vector.draw(ctx, 3, "green");
 
         this._lLineR = this._lLineR.rotateDegrees(rotDegrees);
         this.circleOutline(this._lLineR.origin, this._lLineR.length);
@@ -386,6 +395,8 @@ class TestVector {
         this.circleOutline(this._rRayRVU.origin, this._rRayRVU.length, this._rViewportRUp);
         this._rViewportRUp.draw(ctx, 2, "white");
         this._rRayRVU.draw(ctx, 2, "blue", this._rViewportRUp);
+        vector = this.getRayEndpointVector(this._rRayRVU, this._rViewportRUp);
+        vector.draw(ctx, 3, "green");
 
         this._rRayRVD = this._rRayRVD.rotateDegrees(rotDegrees);
         this.circleOutline(this._rRayRVD.origin, this._rRayRVD.length, this._rViewportRDown);

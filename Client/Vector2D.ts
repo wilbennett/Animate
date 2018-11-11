@@ -124,6 +124,9 @@
     withX(x: number) { return new Vector2D(x, this.y); }
     withY(y: number) { return new Vector2D(this.x, y); }
 
+    static fromRadians(angle: number) { return new Vector2D(Math.cos(angle), Math.sin(angle)); }
+    static fromDegrees(angle: number) { return this.fromRadians(MathEx.toRadians(angle)); }
+
     static add(v1: Vector2D, v2: Vector2D): Vector2D { return v1.add(v2); }
     static subtract(v1: Vector2D, v2: Vector2D): Vector2D { return v1.subtract(v2); }
     static normalize(v: Vector2D): Vector2D { return v.normalize(); }

@@ -82,6 +82,10 @@ var Ray2D = /** @class */ (function () {
         ctx.ellipse(origin.x, origin.y, width, width, 0, 0, 2 * Math.PI);
         ctx.fill();
     };
+    Ray2D.fromPoints = function (start, end) {
+        var direction = start.directionTo(end);
+        return new Ray2D(start, direction, direction.mag);
+    };
     return Ray2D;
 }());
 //# sourceMappingURL=Ray2D.js.map

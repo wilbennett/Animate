@@ -81,4 +81,9 @@
         ctx.ellipse(origin.x, origin.y, width, width, 0, 0, 2 * Math.PI);
         ctx.fill();
     }
+
+    static fromPoints(start: Vector2D, end: Vector2D) {
+        let direction = start.directionTo(end);
+        return new Ray2D(start, direction, direction.mag);
+    }
 }
