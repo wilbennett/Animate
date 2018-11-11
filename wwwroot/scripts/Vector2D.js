@@ -143,7 +143,7 @@ var Vector2D = /** @class */ (function (_super) {
     Vector2D.mult = function (scale, v) {
         var vec;
         var scalar;
-        if (typeof v === "object") {
+        if (v instanceof Vector2D) {
             vec = v;
             scalar = scale;
         }
@@ -156,7 +156,7 @@ var Vector2D = /** @class */ (function (_super) {
     Vector2D.div = function (scale, v) {
         var vec;
         var scalar;
-        if (typeof v === "object") {
+        if (v instanceof Vector2D) {
             vec = v;
             scalar = scale;
         }

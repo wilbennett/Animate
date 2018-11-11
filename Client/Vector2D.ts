@@ -135,7 +135,7 @@
         let vec: Vector2D;
         let scalar: number;
 
-        if (typeof v === "object") {
+        if (v instanceof Vector2D) {
             vec = v;
             scalar = scale;
         } else {
@@ -152,7 +152,7 @@
         let vec: Vector2D;
         let scalar: number;
 
-        if (typeof v === "object") {
+        if (v instanceof Vector2D) {
             vec = v;
             scalar = scale;
         } else {
