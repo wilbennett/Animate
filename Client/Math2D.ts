@@ -13,8 +13,8 @@
         return result;
     }
 
-    static degrees(x: number, y: number) { return MathEx.toDegrees(Math2D.radians(x, y)); }
-    static polar(x: number, y: number) { return new Polar2D(Math2D.magnitude(x, y), Math2D.radians(x, y)); }
+    static degrees(x: number, y: number) { return MathEx.toDegrees(this.radians(x, y)); }
+    static polar(x: number, y: number) { return new Polar2D(this.magnitude(x, y), this.radians(x, y)); }
 
     private static inflateBoundsCore(bounds: number[], dx: number, dy: number) {
         let newLeft = bounds[0] - dx;
