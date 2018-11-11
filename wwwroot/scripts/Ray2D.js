@@ -61,6 +61,49 @@ var Ray2D = /** @class */ (function () {
     Ray2D.prototype.reflect = function (source) {
         return source.reflectViaNormal(this.normal);
     };
+    //*
+    Ray2D.prototype.getInstersection = function (target) {
+        var thisOrigin = this.origin;
+        var targetOrigin = target.origin;
+        var thisDirection = this.direction;
+        var targetDirection = target.direction;
+        var det = thisDirection.y * targetDirection.x - thisDirection.x * targetDirection.y;
+        if (det === 0)
+            return null;
+        var dx = thisOrigin.x - targetOrigin.x;
+        var dy = targetOrigin.y - thisOrigin.y;
+        var t1 = (targetDirection.x * dy + targetDirection.y * dx) / det;
+        if (t1 < 0 || t1 > this.length)
+            return null;
+        //let t2 = (thisDirection.x * dy + thisDirection.y * dx) / det;
+        //if (t2 < 0 || t2 > target.length) return null;
+        return this.getPointAt(t1);
+    };
+    /*/
+    getInstersection(target: Ray2D): Vector2D | null {
+        let a1 = this.endPoint.y - this.origin.y;
+        let b1 = this.origin.x - this.endPoint.x;
+        let c1 = a1 * this.origin.x + b1 * this.origin.y;
+        let a2 = target.endPoint.y - target.origin.y;
+        let b2 = target.origin.x - target.endPoint.x;
+        let c2 = a2 * target.origin.x + b2 * target.origin.y;
+
+        let det = a1 * b2 - a2 * b1;
+
+        if (det === 0) return null;
+
+        let x = (b2 * c1 - b1 * c2) / det;
+        let y = (a1 * c2 - a2 * c1) / det;
+
+        if (x < Math.min(this.origin.x, this.endPoint.x) || x > Math.max(this.origin.x, this.endPoint.x)) return null;
+        if (y < Math.min(this.origin.y, this.endPoint.y) || y > Math.max(this.origin.y, this.endPoint.y)) return null;
+
+        //if (x < Math.min(target.origin.x, target.endPoint.x) || x > Math.max(target.origin.x, target.endPoint.x)) return null;
+        //if (y < Math.min(target.origin.y, target.endPoint.y) || y > Math.max(target.origin.y, target.endPoint.y)) return null;
+
+        return new Vector2D(x, y);
+    }
+    //*/
     Ray2D.prototype.drawLine = function (ctx, lineWidth, color, bounds) {
         var origin = this.origin;
         var endPoint = this.endPoint;
