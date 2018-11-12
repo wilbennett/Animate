@@ -98,30 +98,22 @@ var Bounds = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Bounds.prototype, "centerX", {
+    Object.defineProperty(Bounds.prototype, "center", {
         get: function () {
-            if (!this._centerX)
-                this._centerX = this.x + this.width / 2;
-            return this._centerX;
+            if (!this._center)
+                this._center = new Vector2D(this.x + this.width / 2, this.y + this.height / 2);
+            return this._center;
         },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "centerX", {
+        get: function () { return this.center.x; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Bounds.prototype, "centerY", {
-        get: function () {
-            if (!this._centerY)
-                this._centerY = this.y + this.height / 2;
-            return this._centerY;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Bounds.prototype, "center", {
-        get: function () {
-            if (!this._center)
-                this._center = new Vector2D(this.centerX, this.centerY);
-            return this._center;
-        },
+        get: function () { return this.center.y; },
         enumerable: true,
         configurable: true
     });

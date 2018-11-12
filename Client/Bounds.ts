@@ -1,10 +1,8 @@
 ﻿class Bounds {
-    private _maxX: number;
-    private _maxY: number;
-    private _centerX: number;
-    private _centerY: number;
+    private readonly _maxX: number;
+    private readonly _maxY: number;
     private _center: Vector2D;
-    private _origin: Vector2D;
+    private readonly _origin: Vector2D;
     protected _topLeft: Vector2D;
     protected _bottomLeft: Vector2D;
     protected _bottomRight: Vector2D;
@@ -59,23 +57,14 @@
     get top() { return this.topLeft.y; }
     get bottom() { return this.bottomLeft.y; }
 
-    get centerX() {
-        if (!this._centerX) this._centerX = this.x + this.width / 2;
-
-        return this._centerX;
-    }
-
-    get centerY() {
-        if (!this._centerY) this._centerY = this.y + this.height / 2;
-
-        return this._centerY;
-    }
-
     get center() {
-        if (!this._center) this._center = new Vector2D(this.centerX, this.centerY);
+        if (!this._center) this._center = new Vector2D(this.x + this.width / 2, this.y + this.height / 2);
 
         return this._center;
     }
+
+    get centerX() { return this.center.x; }
+    get centerY() { return this.center.y; }
 
     get boundsArray() {
         if (!this._boundsArray) this._boundsArray = [this.x, this.y, this.width, this.height];
