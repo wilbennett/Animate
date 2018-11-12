@@ -128,33 +128,33 @@
     private checkBoundary() {
         const boundary = this._boundary;
 
-        let leftPenetration = boundary.leftPenetration(this.position.x - this.radius);
-        let topPenetration = boundary.topPenetration(boundary.offsetAbove(this.position.y, this.radius));
-        let rightPenetration = boundary.rightPenetration(this.position.x + this.radius);
-        let bottomPenetration = boundary.bottomPenetration(boundary.offsetBelow(this.position.y, this.radius));
+        let leftPenetration = boundary.leftPenetration(this._position.x - this._radius);
+        let topPenetration = boundary.topPenetration(boundary.offsetAbove(this._position.y, this._radius));
+        let rightPenetration = boundary.rightPenetration(this._position.x + this._radius);
+        let bottomPenetration = boundary.bottomPenetration(boundary.offsetBelow(this._position.y, this._radius));
 
-        if (leftPenetration > 0 && this.velocity.x < 0) {
-            this.velocity = this.velocity.withX(this.velocity.x * -1);
-            this.position = this.position.withX(boundary.leftOffset(this.radius));
+        if (leftPenetration > 0) {
+            this._position = this._position.withX(boundary.leftOffset(this._radius));
+            this._velocity = boundary.reflectLeft(this._velocity);
         }
 
-        if (rightPenetration > 0 && this.velocity.x > 0) {
-            this.velocity = this.velocity.withX(this.velocity.x * -1);
-            this.position = this.position.withX(boundary.rightOffset(this.radius));
+        if (rightPenetration > 0) {
+            this._position = this._position.withX(boundary.rightOffset(this._radius));
+            this._velocity = boundary.reflectRight(this._velocity);
         }
 
-        if (topPenetration > 0 && boundary.isUp(this.velocity.y)) {
-            this.velocity = this.velocity.withY(this.velocity.y * -1);
-            this.position = this.position.withY(boundary.topOffsetBelow(this.radius));
+        if (topPenetration > 0) {
+            this._position = this._position.withY(boundary.topOffsetBelow(this._radius));
+            this._velocity = boundary.reflectTop(this._velocity);
         }
 
-        if (bottomPenetration > 0 && boundary.isDown(this.velocity.y)) {
-            this.velocity = this.velocity.withY(this.velocity.y * -1);
-            this.position = this.position.withY(boundary.bottomOffsetAbove(this.radius));
-            const force = Math.abs(this.velocity.y); // TODO: Calculate proper force.
+        if (bottomPenetration > 0) {
+            this._position = this._position.withY(boundary.bottomOffsetAbove(this._radius));
+            this._velocity = boundary.reflectBottom(this._velocity);
+            const force = Math.abs(this._velocity.y); // TODO: Calculate proper force.
 
             if (force <= Math.abs(this._gravityConst)) {
-                this.velocity = this.velocity.withY(0);
+                this._velocity = this._velocity.withY(0);
                 this._allowBounce = false;
             }
         }
