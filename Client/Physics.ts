@@ -1,6 +1,26 @@
 class Physics {
-    static readonly gravityScale = 0.04; // TODO: Temporary.
     static readonly gravityEarth = 9.8;
+    static readonly pixelsPerMeter = 0.1;
+
+    static metersToPixels(meters: number, pixelsPerMeter: number = this.pixelsPerMeter) {
+        return meters * pixelsPerMeter;
+    }
+
+    static pixelsToMeters(pixels: number, pixelsPerMeter: number = this.pixelsPerMeter) {
+        return pixels / pixelsPerMeter;
+    }
+
+    static toPixels(meters: Vector2D, pixelsPerMeter: number = this.pixelsPerMeter) {
+        return new Vector2D(
+            this.metersToPixels(meters.x, pixelsPerMeter),
+            this.metersToPixels(meters.y, pixelsPerMeter));
+    }
+
+    static toMeters(pixels: Vector2D, pixelsPerMeter: number = this.pixelsPerMeter) {
+        return new Vector2D(
+            this.pixelsToMeters(pixels.x, pixelsPerMeter),
+            this.pixelsToMeters(pixels.y, pixelsPerMeter));
+    }
 
     static calcGravityForce(mass: number, gravityStrength: Vector2D) {
         return gravityStrength.mult(mass);

@@ -67,13 +67,13 @@ var Game = /** @class */ (function () {
         var colors = this._settings.Balls.colors || ['blue', 'green', 'red', 'black', 'white'];
         var container = this._world.containerBounds;
         for (var i = 0; i < this._settings.Balls.count; i++) {
-            var mass = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
-            //mass = 4;
-            var radius = mass * 5;
+            var radius = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
+            radius = radius * 5;
+            var mass = radius * 2;
             var color = MathEx.random(colors);
             //color = "blue";
             var startY = this._world.viewport.topOffsetBelow(radius);
-            var ball = new Ball(radius, color, new Vector2D(MathEx.random(radius, this._width - radius * 2), startY), new Vector2D(MathEx.random(0, 5), 0), Vector2D.emptyVector, mass, 1500, this._world.gravity.gravityConst, container, this.addBallToRemove);
+            var ball = new Ball(radius, color, new Vector2D(MathEx.random(radius, this._width - radius * 2), startY), new Vector2D(MathEx.random(0, 150), 0), Vector2D.emptyVector, mass, 300, this._world.gravity.gravityConst, container, this.addBallToRemove);
             ball.addUniversalForce(this._world.gravity);
             ball.addUniversalForce(this._friction);
             ball.frictionCoeffecient = this._settings.Balls.frictionCoeffecient * (ball.radius * ball.radius / 2);

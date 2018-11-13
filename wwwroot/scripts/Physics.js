@@ -2,6 +2,22 @@
 var Physics = /** @class */ (function () {
     function Physics() {
     }
+    Physics.metersToPixels = function (meters, pixelsPerMeter) {
+        if (pixelsPerMeter === void 0) { pixelsPerMeter = this.pixelsPerMeter; }
+        return meters * pixelsPerMeter;
+    };
+    Physics.pixelsToMeters = function (pixels, pixelsPerMeter) {
+        if (pixelsPerMeter === void 0) { pixelsPerMeter = this.pixelsPerMeter; }
+        return pixels / pixelsPerMeter;
+    };
+    Physics.toPixels = function (meters, pixelsPerMeter) {
+        if (pixelsPerMeter === void 0) { pixelsPerMeter = this.pixelsPerMeter; }
+        return new Vector2D(this.metersToPixels(meters.x, pixelsPerMeter), this.metersToPixels(meters.y, pixelsPerMeter));
+    };
+    Physics.toMeters = function (pixels, pixelsPerMeter) {
+        if (pixelsPerMeter === void 0) { pixelsPerMeter = this.pixelsPerMeter; }
+        return new Vector2D(this.pixelsToMeters(pixels.x, pixelsPerMeter), this.pixelsToMeters(pixels.y, pixelsPerMeter));
+    };
     Physics.calcGravityForce = function (mass, gravityStrength) {
         return gravityStrength.mult(mass);
     };
@@ -51,8 +67,8 @@ var Physics = /** @class */ (function () {
     Physics.calcAverageVelocity = function (initialPosition, finalPosition, time) {
         return finalPosition.subtract(initialPosition).div(time);
     };
-    Physics.gravityScale = 0.04; // TODO: Temporary.
     Physics.gravityEarth = 9.8;
+    Physics.pixelsPerMeter = 0.1;
     return Physics;
 }());
 //# sourceMappingURL=Physics.js.map

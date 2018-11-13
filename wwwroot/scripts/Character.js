@@ -129,11 +129,14 @@ var Character = /** @class */ (function (_super) {
         this._acceleration = Vector2D.emptyVector;
         this._rotateAcceleration = 0;
     };
+    Character.prototype.adjustPosition = function (velocity) {
+        this._position = this._position.add(Physics.toPixels(velocity));
+    };
     Character.prototype.update = function (frame, timestamp, delta, characters) {
         this.applyUniversalForces();
         this.updateVelocity(frame, timestamp, delta);
         this.updateRotateVelocity(frame, timestamp, delta);
-        this._position = this._position.add(this._velocity.mult(delta));
+        this.adjustPosition(this._velocity.mult(delta));
         this._rotateRadians += this._rotateVelocity * delta;
         this._rotateRadians = this._rotateRadians % MathEx.TWO_PI;
         this._lastUpdateFrame = frame;

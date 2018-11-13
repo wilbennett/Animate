@@ -8,25 +8,23 @@ var TestBallPhysics = /** @class */ (function () {
         this.gameLoop = function (now) {
             var ctx = _this._ctx;
             ctx.clearRect(0, 0, _this._canvas.width, _this._canvas.height);
-            _this.testBall(_this._worldU, now);
-            _this.testBall(_this._worldD, now);
+            _this.testBall(_this._worldZeroGU, now);
+            _this.testBall(_this._worldZeroGD, now);
             _this._rafHandle = requestAnimationFrame(_this.gameLoop);
         };
         this._ctx = this._canvas.getContext("2d");
-        var box = new TestBox(10, 10, 100, 200, 10);
+        var box = new TestBox(10, 10, 40, 200, 10);
         var radius = 10;
         var ballColor = "blue";
-        this._worldU = new World2D(WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
-        //this._worldU.setGravity(0);
-        var ball = this.createBall(radius, ballColor, this._worldU);
-        ball.addUniversalForce(new Friction());
-        ball.frictionCoeffecient = ball.mass * 0.01;
+        this._worldZeroGU = new World2D(WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
+        this._worldZeroGU.setGravity(0);
+        var ball = this.createBall(this._worldZeroGU.center.x, radius, ballColor, this._worldZeroGU);
         box.moveDown();
-        this._worldD = new World2D(WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
-        this._worldD.setGravity(0);
-        ball = this.createBall(radius, ballColor, this._worldD);
-        ball.addUniversalForce(new Friction());
-        ball.frictionCoeffecient = ball.mass * 0.01;
+        this._worldZeroGD = new World2D(WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
+        this._worldZeroGD.setGravity(0);
+        ball = this.createBall(this._worldZeroGD.center.x, radius, ballColor, this._worldZeroGD);
+        box.moveUpRight();
+        box = new TestBox(box.x, box.y, 40, 200, 10);
     }
     TestBallPhysics.prototype.setup = function () {
         this._rafHandle = requestAnimationFrame(this.gameLoop);
@@ -39,12 +37,12 @@ var TestBallPhysics = /** @class */ (function () {
     TestBallPhysics.prototype.cancelFrame = function () {
         cancelAnimationFrame(this._rafHandle);
     };
-    TestBallPhysics.prototype.createBall = function (radius, color, world) {
+    TestBallPhysics.prototype.createBall = function (x, radius, color, world) {
         var _this = this;
-        var mass = radius * 1;
-        var ball = new Ball(radius, color, new Vector2D(world.center.x, world.topOffsetBelow(radius + 5)), new Vector2D(0, 0), Vector2D.emptyVector, mass, 1500, world.gravity.gravityConst, world.containerBounds, function (ball) {
+        var mass = radius * 5;
+        var ball = new Ball(radius, color, new Vector2D(x, world.topOffsetBelow(radius)), new Vector2D(0, 0), Vector2D.emptyVector, mass, 1500, world.gravity.gravityConst, world.containerBounds, function (ball) {
             world.removeCharacter(ball);
-            _this.createBall(radius, color, world);
+            _this.createBall(x, radius, color, world);
         });
         ball.addUniversalForce(world.gravity);
         world.addCharacter(ball);

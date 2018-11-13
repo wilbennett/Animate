@@ -94,9 +94,9 @@
         let container = this._world.containerBounds;
 
         for (var i = 0; i < this._settings.Balls.count; i++) {
-            let mass = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
-            //mass = 4;
-            let radius = mass * 5;
+            let radius = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
+            radius = radius * 5;
+            let mass = radius * 2;
             let color = MathEx.random(colors);
             //color = "blue";
             let startY = this._world.viewport.topOffsetBelow(radius);
@@ -104,10 +104,10 @@
                 radius,
                 color,
                 new Vector2D(MathEx.random(radius, this._width - radius * 2), startY),
-                new Vector2D(MathEx.random(0, 5), 0),
+                new Vector2D(MathEx.random(0, 150), 0),
                 Vector2D.emptyVector,
                 mass,
-                1500,
+                300,
                 this._world.gravity.gravityConst,
                 container,
                 this.addBallToRemove);

@@ -2,30 +2,29 @@
     private _ctx: CanvasRenderingContext2D;
     private _rafHandle = -1;
 
-    private _worldU: World2D;
+    private _worldZeroGU: World2D;
 
-    private _worldD: World2D;
+    private _worldZeroGD: World2D;
 
     constructor(private readonly _canvas: HTMLCanvasElement, private _settings: Dynamic) {
         this._ctx = <CanvasRenderingContext2D>this._canvas.getContext("2d");
 
-        let box = new TestBox(10, 10, 100, 200, 10);
+        let box = new TestBox(10, 10, 40, 200, 10);
 
         let radius = 10;
         let ballColor = "blue";
 
-        this._worldU = new World2D(WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
-        //this._worldU.setGravity(0);
-        let ball = this.createBall(radius, ballColor, this._worldU);
-        ball.addUniversalForce(new Friction());
-        ball.frictionCoeffecient = ball.mass * 0.01;
+        this._worldZeroGU = new World2D(WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
+        this._worldZeroGU.setGravity(0);
+        let ball = this.createBall(this._worldZeroGU.center.x, radius, ballColor, this._worldZeroGU);
 
         box.moveDown();
-        this._worldD = new World2D(WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
-        this._worldD.setGravity(0);
-        ball = this.createBall(radius, ballColor, this._worldD);
-        ball.addUniversalForce(new Friction());
-        ball.frictionCoeffecient = ball.mass * 0.01;
+        this._worldZeroGD = new World2D(WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
+        this._worldZeroGD.setGravity(0);
+        ball = this.createBall(this._worldZeroGD.center.x, radius, ballColor, this._worldZeroGD);
+
+        box.moveUpRight();
+        box = new TestBox(box.x, box.y, 40, 200, 10);
     }
 
     setup() {
@@ -44,13 +43,13 @@
         cancelAnimationFrame(this._rafHandle);
     }
 
-    private createBall(radius: number, color: string, world: World2D) {
-        let mass = radius * 1;
+    private createBall(x: number, radius: number, color: string, world: World2D) {
+        let mass = radius * 5;
 
         let ball = new Ball(
             radius,
             color,
-            new Vector2D(world.center.x, world.topOffsetBelow(radius + 5)),
+            new Vector2D(x, world.topOffsetBelow(radius)),
             new Vector2D(0, 0),
             Vector2D.emptyVector,
             mass,
@@ -59,7 +58,7 @@
             world.containerBounds,
             ball => {
                 world.removeCharacter(ball);
-                this.createBall(radius, color, world);
+                this.createBall(x, radius, color, world);
             });
 
         ball.addUniversalForce(world.gravity);
@@ -79,8 +78,8 @@
         const ctx = this._ctx;
         ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
-        this.testBall(this._worldU, now);
-        this.testBall(this._worldD, now);
+        this.testBall(this._worldZeroGU, now);
+        this.testBall(this._worldZeroGD, now);
 
         this._rafHandle = requestAnimationFrame(this.gameLoop);
     }

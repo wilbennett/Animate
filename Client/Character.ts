@@ -91,12 +91,16 @@
         this._rotateAcceleration = 0;
     }
 
+    adjustPosition(velocity: Vector2D) {
+        this._position = this._position.add(Physics.toPixels(velocity));
+    }
+
     update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {
         this.applyUniversalForces();
         this.updateVelocity(frame, timestamp, delta);
         this.updateRotateVelocity(frame, timestamp, delta);
 
-        this._position = this._position.add(this._velocity.mult(delta));
+        this.adjustPosition(this._velocity.mult(delta));
         this._rotateRadians += this._rotateVelocity * delta;
         this._rotateRadians = this._rotateRadians % MathEx.TWO_PI;
 
