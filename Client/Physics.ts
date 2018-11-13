@@ -1,6 +1,18 @@
 class Physics {
-    static calcAcceleration(force: Vector2D, mass: number) {
-        return Vector2D.div(force, mass);
+    static calcGravityForce(mass: number, gravityStrength: Vector2D) {
+        return gravityStrength.mult(mass);
+    }
+
+    static calcFrictionForce(coeffecient: number, normalForce: Vector2D) {
+        return normalForce.mult(coeffecient);
+    }
+
+    static calcNetForce(mass: number, acceleration: Vector2D) {
+        return acceleration.mult(mass);
+    }
+
+    static calcAcceleration(netForce: Vector2D, mass: number) {
+        return netForce.div(mass);
     }
 
     static calcVelocity(currentVelocity: Vector2D, acceleration: Vector2D) {
@@ -23,7 +35,7 @@ class Physics {
         let c = coeffecient;
         let magnitude = c * normal;
 
-        let friction = Vector2D.mult(velocity, -1); // Friction applies in the opposite direction of motion.
+        let friction = velocity.mult(-1); // Friction applies in the opposite direction of motion.
         friction = friction.normalize();
         friction = friction.mult(magnitude);
         return friction;
@@ -38,5 +50,17 @@ class Physics {
         drag = drag.mult(magnitude);
 
         return drag;
+    }
+
+    static calcAverageAcceleration(initialVelocity: Vector2D, finalVelocity: Vector2D, time: number) {
+        return finalVelocity.subtract(initialVelocity).div(time);
+    }
+
+    static calcAverageSpeed(distance: number, time: number) {
+        return distance / time;
+    }
+
+    static calcAverageVelocity(initialPosition: Vector2D, finalPosition: Vector2D, time: number) {
+        return finalPosition.subtract(initialPosition).div(time);
     }
 }

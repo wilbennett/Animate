@@ -2,8 +2,17 @@
 var Physics = /** @class */ (function () {
     function Physics() {
     }
-    Physics.calcAcceleration = function (force, mass) {
-        return Vector2D.div(force, mass);
+    Physics.calcGravityForce = function (mass, gravityStrength) {
+        return gravityStrength.mult(mass);
+    };
+    Physics.calcFrictionForce = function (coeffecient, normalForce) {
+        return normalForce.mult(coeffecient);
+    };
+    Physics.calcNetForce = function (mass, acceleration) {
+        return acceleration.mult(mass);
+    };
+    Physics.calcAcceleration = function (netForce, mass) {
+        return netForce.div(mass);
     };
     Physics.calcVelocity = function (currentVelocity, acceleration) {
         return Vector2D.add(currentVelocity, acceleration);
@@ -20,7 +29,7 @@ var Physics = /** @class */ (function () {
     Physics.calcFriction = function (coeffecient, normal, velocity) {
         var c = coeffecient;
         var magnitude = c * normal;
-        var friction = Vector2D.mult(velocity, -1); // Friction applies in the opposite direction of motion.
+        var friction = velocity.mult(-1); // Friction applies in the opposite direction of motion.
         friction = friction.normalize();
         friction = friction.mult(magnitude);
         return friction;
@@ -32,6 +41,15 @@ var Physics = /** @class */ (function () {
         drag = drag.normalize();
         drag = drag.mult(magnitude);
         return drag;
+    };
+    Physics.calcAverageAcceleration = function (initialVelocity, finalVelocity, time) {
+        return finalVelocity.subtract(initialVelocity).div(time);
+    };
+    Physics.calcAverageSpeed = function (distance, time) {
+        return distance / time;
+    };
+    Physics.calcAverageVelocity = function (initialPosition, finalPosition, time) {
+        return finalPosition.subtract(initialPosition).div(time);
     };
     return Physics;
 }());
