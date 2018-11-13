@@ -1,4 +1,7 @@
 class Physics {
+    static readonly gravityScale = 0.04; // TODO: Temporary.
+    static readonly gravityEarth = 9.8;
+
     static calcGravityForce(mass: number, gravityStrength: Vector2D) {
         return gravityStrength.mult(mass);
     }

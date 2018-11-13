@@ -106,9 +106,15 @@ var World2D = /** @class */ (function (_super) {
         _this._viewportHeight = Math.min(viewportHeight, _this.height);
         _this._screenWidth = screenWidth;
         _this._screenHeight = screenHeight;
+        _this.setGravity(Physics.gravityEarth);
         _this.createViewport(_this.x, _this.y);
         return _this;
     }
+    Object.defineProperty(World2D.prototype, "gravity", {
+        get: function () { return this._gravity; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(World2D.prototype, "viewport", {
         get: function () { return this._viewport; },
         enumerable: true,
@@ -125,6 +131,9 @@ var World2D = /** @class */ (function (_super) {
         configurable: true
     });
     World2D.prototype.restoreTransform = function (ctx) { this.viewport.restoreTransform(ctx); };
+    World2D.prototype.setGravity = function (gravityConst) {
+        this._gravity = new Gravity(this.orientation, gravityConst);
+    };
     World2D.prototype.createViewport = function (x, y) {
         this._viewport = new Viewport2D(this._orientation, x, y, this._viewportWidth, this._viewportHeight, this._screenX, this._screenY, this._screenWidth, this._screenHeight);
     };

@@ -4,6 +4,7 @@
     protected readonly _screenWidth: number;
     protected readonly _screenHeight: number;
     private _containerBounds: ContainerBounds;
+    private _gravity: Gravity;
     private _viewport: Viewport2D;
     private _characters: Character[] = [];
 
@@ -33,9 +34,11 @@
         this._screenWidth = screenWidth;
         this._screenHeight = screenHeight;
 
+        this.setGravity(Physics.gravityEarth);
         this.createViewport(this.x, this.y);
     }
 
+    get gravity() { return this._gravity; }
     get viewport() { return this._viewport; }
 
     get containerBounds() {
@@ -53,6 +56,10 @@
 
     applyTransform = function(ctx: CanvasRenderingContext2D) { this.viewport.applyTransform(ctx); }
     restoreTransform(ctx: CanvasRenderingContext2D) { this.viewport.restoreTransform(ctx); }
+
+    setGravity(gravityConst: number) {
+        this._gravity = new Gravity(this.orientation, gravityConst);
+    }
 
     protected createViewport(x: number, y: number) {
         this._viewport = new Viewport2D(

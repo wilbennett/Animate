@@ -4,7 +4,6 @@
     private _width: number = window.innerWidth;
     private _canvasMouse: MouseTracker;
     private _output: HTMLOutputElement;
-    private _gravity: Gravity;
     private _friction: Force;
     private _liquid: Liquid;
     private _radar: Radar;
@@ -40,7 +39,6 @@
 
         this._output = <HTMLOutputElement>document.getElementById("output");
         this._friction = new Friction();
-        this._gravity = new Gravity(world.orientation, 0.3);
         this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 0.05, world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
 
@@ -108,13 +106,13 @@
                 new Vector2D(MathEx.random(radius, this._width - radius * 2), startY),
                 new Vector2D(MathEx.random(0, 5), 0),
                 Vector2D.emptyVector,
-                mass * mass,
-                50,
-                this._gravity.gravityConst,
+                mass,
+                1500,
+                this._world.gravity.gravityConst,
                 container,
                 this.addBallToRemove);
 
-            ball.addUniversalForce(this._gravity);
+            ball.addUniversalForce(this._world.gravity);
             ball.addUniversalForce(this._friction);
             ball.frictionCoeffecient = this._settings.Balls.frictionCoeffecient * (ball.radius * ball.radius / 2);
             this._balls[i] = ball;
@@ -275,7 +273,7 @@
             //"velocity radians: " + ball.velocity.radians.toFixed(3) + "<br/>" +
             //"velocity angle: " + ball.velocity.degrees.toFixed(1) + "<br/>" +
             //"rotate velocity: " + ball.rotateVelocity.toFixed(2) + "<br/>" +
-            "gravity: " + this._gravity.gravityConst.toFixed(3) + "<br/>" +
+            "gravity: " + this._world.gravity.gravityConst.toFixed(3) + "<br/>" +
             "";
     }
 

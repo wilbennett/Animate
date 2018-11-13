@@ -28,7 +28,6 @@ var Game = /** @class */ (function () {
         this._canvasMouse = new MouseTracker(this._canvas);
         this._output = document.getElementById("output");
         this._friction = new Friction();
-        this._gravity = new Gravity(world.orientation, 0.3);
         this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 0.05, world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
         world.addCharacter(this._liquid);
@@ -74,8 +73,8 @@ var Game = /** @class */ (function () {
             var color = MathEx.random(colors);
             //color = "blue";
             var startY = this._world.viewport.topOffsetBelow(radius);
-            var ball = new Ball(radius, color, new Vector2D(MathEx.random(radius, this._width - radius * 2), startY), new Vector2D(MathEx.random(0, 5), 0), Vector2D.emptyVector, mass * mass, 50, this._gravity.gravityConst, container, this.addBallToRemove);
-            ball.addUniversalForce(this._gravity);
+            var ball = new Ball(radius, color, new Vector2D(MathEx.random(radius, this._width - radius * 2), startY), new Vector2D(MathEx.random(0, 5), 0), Vector2D.emptyVector, mass, 1500, this._world.gravity.gravityConst, container, this.addBallToRemove);
+            ball.addUniversalForce(this._world.gravity);
             ball.addUniversalForce(this._friction);
             ball.frictionCoeffecient = this._settings.Balls.frictionCoeffecient * (ball.radius * ball.radius / 2);
             this._balls[i] = ball;
@@ -202,7 +201,7 @@ var Game = /** @class */ (function () {
             //"velocity radians: " + ball.velocity.radians.toFixed(3) + "<br/>" +
             //"velocity angle: " + ball.velocity.degrees.toFixed(1) + "<br/>" +
             //"rotate velocity: " + ball.rotateVelocity.toFixed(2) + "<br/>" +
-            "gravity: " + this._gravity.gravityConst.toFixed(3) + "<br/>" +
+            "gravity: " + this._world.gravity.gravityConst.toFixed(3) + "<br/>" +
             "";
     };
     Game.prototype.stop = function () {

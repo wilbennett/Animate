@@ -51,6 +51,8 @@ var Physics = /** @class */ (function () {
     Physics.calcAverageVelocity = function (initialPosition, finalPosition, time) {
         return finalPosition.subtract(initialPosition).div(time);
     };
+    Physics.gravityScale = 0.04; // TODO: Temporary.
+    Physics.gravityEarth = 9.8;
     return Physics;
 }());
 //# sourceMappingURL=Physics.js.map

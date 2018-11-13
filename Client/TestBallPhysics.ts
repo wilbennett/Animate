@@ -3,10 +3,8 @@
     private _rafHandle = -1;
 
     private _worldU: World2D;
-    private _gravityU: Gravity;
 
     private _worldD: World2D;
-    private _gravityD: Gravity;
 
     constructor(private readonly _canvas: HTMLCanvasElement, private _settings: Dynamic) {
         this._ctx = <CanvasRenderingContext2D>this._canvas.getContext("2d");
@@ -16,14 +14,18 @@
         let radius = 10;
         let ballColor = "blue";
 
-        this._gravityU = new Gravity(WorldOrientation.Up, 0.3);
         this._worldU = new World2D(WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
-        this.createBall(radius, ballColor, this._worldU, this._gravityU);
+        //this._worldU.setGravity(0);
+        let ball = this.createBall(radius, ballColor, this._worldU);
+        ball.addUniversalForce(new Friction());
+        ball.frictionCoeffecient = ball.mass * 0.01;
 
         box.moveDown();
-        this._gravityD = new Gravity(WorldOrientation.Down, 0.3);
         this._worldD = new World2D(WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
-        this.createBall(radius, ballColor, this._worldD, this._gravityD);
+        this._worldD.setGravity(0);
+        ball = this.createBall(radius, ballColor, this._worldD);
+        ball.addUniversalForce(new Friction());
+        ball.frictionCoeffecient = ball.mass * 0.01;
     }
 
     setup() {
@@ -42,35 +44,43 @@
         cancelAnimationFrame(this._rafHandle);
     }
 
-    private createBall(radius: number, color: string, world: World2D, gravity: Gravity) {
-        let mass = radius * 5;
-        mass *= mass;
+    private createBall(radius: number, color: string, world: World2D) {
+        let mass = radius * 1;
 
         let ball = new Ball(
             radius,
             color,
-            new Vector2D(world.center.x, world.topOffsetBelow(radius)),
-            new Vector2D(MathEx.random(0, 5), 0),
+            new Vector2D(world.center.x, world.topOffsetBelow(radius + 5)),
+            new Vector2D(0, 0),
             Vector2D.emptyVector,
             mass,
-            50,
-            gravity.gravityConst,
+            1500,
+            world.gravity.gravityConst,
             world.containerBounds,
-            ball => { });
+            ball => {
+                world.removeCharacter(ball);
+                this.createBall(radius, color, world);
+            });
 
+        ball.addUniversalForce(world.gravity);
         world.addCharacter(ball);
+        return ball;
     }
 
-    private testBall(world: World2D) {
+    private testBall(world: World2D, now: number) {
         const ctx = this._ctx;
 
         world.viewport.draw(ctx, 2, "white");
+        world.update(0, now, 1);
         world.render(ctx, 0);
     }
 
-    private gameLoop = (timestamp: DOMHighResTimeStamp) => {
-        this.testBall(this._worldU);
-        this.testBall(this._worldD);
+    private gameLoop = (now: DOMHighResTimeStamp) => {
+        const ctx = this._ctx;
+        ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+
+        this.testBall(this._worldU, now);
+        this.testBall(this._worldD, now);
 
         this._rafHandle = requestAnimationFrame(this.gameLoop);
     }

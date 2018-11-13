@@ -14,10 +14,11 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Gravity = /** @class */ (function (_super) {
     __extends(Gravity, _super);
-    function Gravity(_orientation, _gravityConst) {
+    function Gravity(_orientation, gravityConst) {
         var _this = _super.call(this, new Vector2D(0, 0), new Vector2D(0, 0), -1) || this;
         _this._orientation = _orientation;
-        _this._gravityConst = _gravityConst;
+        // TODO: Temporary until proper adjustment.
+        _this._gravityConst = gravityConst * Physics.gravityScale;
         if (_this._orientation === WorldOrientation.Up)
             _this._gravityConst = -_this._gravityConst;
         return _this;
