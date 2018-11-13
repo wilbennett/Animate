@@ -1,4 +1,9 @@
 ﻿class World2D extends OrientedBounds {
+    protected readonly _viewportWidth: number;
+    protected readonly _viewportHeight: number;
+    protected readonly _screenWidth: number;
+    protected readonly _screenHeight: number;
+    private _containerBounds: ContainerBounds;
     private _viewport: Viewport2D;
     private _characters: Character[] = [];
 
@@ -8,21 +13,46 @@
         y: number,
         width: number,
         height: number,
-        protected readonly _viewportWidth: number,
-        protected readonly _viewportHeight: number,
         protected readonly _screenX: number,
         protected readonly _screenY: number,
-        protected readonly _screenWidth: number,
-        protected readonly _screenHeight: number) {
+        viewportWidth?: number,
+        viewportHeight?: number,
+        screenWidth?: number,
+        screenHeight?: number) {
         super(orientation, x, y, width, height);
 
-        this._viewportWidth = Math.min(this._viewportWidth, this.width);
-        this._viewportHeight = Math.min(this._viewportHeight, this.height);
+        if (!viewportWidth) viewportWidth = this.width;
+        if (!viewportHeight) viewportHeight = this.height;
+
+        if (!screenWidth) screenWidth = viewportWidth;
+        if (!screenHeight) screenHeight = viewportHeight;
+
+        this._viewportWidth = Math.min(viewportWidth, this.width);
+        this._viewportHeight = Math.min(viewportHeight, this.height);
+
+        this._screenWidth = screenWidth;
+        this._screenHeight = screenHeight;
 
         this.createViewport(this.x, this.y);
     }
 
     get viewport() { return this._viewport; }
+
+    get containerBounds() {
+        if (!this._containerBounds) {
+            this._containerBounds = new ContainerBounds(
+                this.orientation,
+                this.x,
+                this.y,
+                this.width,
+                this.height);
+        }
+
+        return this._containerBounds;
+    }
+
+    applyTransform = function(ctx: CanvasRenderingContext2D) { this.viewport.applyTransform(ctx); }
+    restoreTransform(ctx: CanvasRenderingContext2D) { this.viewport.restoreTransform(ctx); }
 
     protected createViewport(x: number, y: number) {
         this._viewport = new Viewport2D(
@@ -138,11 +168,11 @@
     }
 
     render(ctx: CanvasRenderingContext2D, frame: number) {
-        this._viewport.applyTransform(ctx);
+        this.applyTransform(ctx);
 
         this._characters.forEach(character => character.draw(ctx, frame));
 
-        this._viewport.restoreTransform(ctx);
+        this.restoreTransform(ctx);
     }
 
     localizeDegrees = this._isOrientedUp

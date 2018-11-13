@@ -1,5 +1,4 @@
-﻿var app: App;
-var list = <HTMLUListElement>document.getElementById("list");
+﻿var list = <HTMLUListElement>document.getElementById("list");
 var settings: Dynamic = new CustomEventTarget();
 var settingsChangeEvent = new Event("change");
 
@@ -75,28 +74,6 @@ function handleSettingsChanged() {
     log.innerHTML = JSON.stringify(settings);
 }
 
-var startApp = function () {
-    if (app) {
-        app.stop();
-    }
-
-    settings = new CustomEventTarget();
-    settings.addEventListener('change', handleSettingsChanged);
-
-    loadSettings();
-    let list = <HTMLUListElement>document.getElementById("list");
-
-    while (list.firstChild) {
-        list.removeChild(list.firstChild);
-    }
-
-    let canvas = <HTMLCanvasElement>document.getElementById("canvas");
-    canvas.width = Math.max(window.innerWidth - 20, 300);
-    canvas.height = 480;
-    app = new App(canvas, settings);
-    app.setup();
-}
-
 var attachSettingHandlers = function () {
     const elements = document.getElementsByClassName("setting");
 
@@ -110,9 +87,4 @@ var attachSettingHandlers = function () {
                 element.addEventListener("change", () => loadSettings());
         }
     }
-}
-
-window.onload = e => {
-    attachSettingHandlers();
-    startApp();
 }

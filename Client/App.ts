@@ -228,3 +228,32 @@
         this.showStats();
     }
 }
+
+var app: App;
+
+var startApp = function () {
+    if (app) {
+        app.stop();
+    }
+
+    settings = new CustomEventTarget();
+    settings.addEventListener('change', handleSettingsChanged);
+
+    loadSettings();
+    let list = <HTMLUListElement>document.getElementById("list");
+
+    while (list.firstChild) {
+        list.removeChild(list.firstChild);
+    }
+
+    let canvas = <HTMLCanvasElement>document.getElementById("canvas");
+    canvas.width = Math.max(window.innerWidth - 20, 300);
+    canvas.height = 480;
+    app = new App(canvas, settings);
+    app.setup();
+}
+
+window.onload = e => {
+    attachSettingHandlers();
+    startApp();
+}

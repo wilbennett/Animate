@@ -192,4 +192,26 @@ var App = /** @class */ (function () {
     };
     return App;
 }());
+var app;
+var startApp = function () {
+    if (app) {
+        app.stop();
+    }
+    settings = new CustomEventTarget();
+    settings.addEventListener('change', handleSettingsChanged);
+    loadSettings();
+    var list = document.getElementById("list");
+    while (list.firstChild) {
+        list.removeChild(list.firstChild);
+    }
+    var canvas = document.getElementById("canvas");
+    canvas.width = Math.max(window.innerWidth - 20, 300);
+    canvas.height = 480;
+    app = new App(canvas, settings);
+    app.setup();
+};
+window.onload = function (e) {
+    attachSettingHandlers();
+    startApp();
+};
 //# sourceMappingURL=App.js.map

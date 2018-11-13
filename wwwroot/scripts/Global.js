@@ -1,5 +1,4 @@
 "use strict";
-var app;
 var list = document.getElementById("list");
 var settings = new CustomEventTarget();
 var settingsChangeEvent = new Event("change");
@@ -62,23 +61,6 @@ function handleSettingsChanged() {
     var log = document.getElementById("temp");
     log.innerHTML = JSON.stringify(settings);
 }
-var startApp = function () {
-    if (app) {
-        app.stop();
-    }
-    settings = new CustomEventTarget();
-    settings.addEventListener('change', handleSettingsChanged);
-    loadSettings();
-    var list = document.getElementById("list");
-    while (list.firstChild) {
-        list.removeChild(list.firstChild);
-    }
-    var canvas = document.getElementById("canvas");
-    canvas.width = Math.max(window.innerWidth - 20, 300);
-    canvas.height = 480;
-    app = new App(canvas, settings);
-    app.setup();
-};
 var attachSettingHandlers = function () {
     var elements = document.getElementsByClassName("setting");
     for (var i = 0; i < elements.length; i++) {
@@ -90,9 +72,5 @@ var attachSettingHandlers = function () {
                 element.addEventListener("change", function () { return loadSettings(); });
         }
     }
-};
-window.onload = function (e) {
-    attachSettingHandlers();
-    startApp();
 };
 //# sourceMappingURL=Global.js.map

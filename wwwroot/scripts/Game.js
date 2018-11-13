@@ -23,7 +23,7 @@ var Game = /** @class */ (function () {
         var orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
         var worldWidth = _settings.World.wide ? width * 1.5 : width;
         var worldHeight = _settings.World.tall ? height * 1.5 : height;
-        this._world = new World2D(orientation, 0, 0, worldWidth, worldHeight, width, height, 0, 0, width, height);
+        this._world = new World2D(orientation, 0, 0, worldWidth, worldHeight, 0, 0);
         var world = this._world;
         this._canvasMouse = new MouseTracker(this._canvas);
         this._output = document.getElementById("output");
@@ -66,7 +66,7 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.createRandomBalls = function () {
         var colors = this._settings.Balls.colors || ['blue', 'green', 'red', 'black', 'white'];
-        var container = new ContainerBounds(this._world.orientation, this._world.x, this._world.y, this._world.width, this._world.height);
+        var container = this._world.containerBounds;
         for (var i = 0; i < this._settings.Balls.count; i++) {
             var mass = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
             //mass = 4;

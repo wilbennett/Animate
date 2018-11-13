@@ -14,15 +14,12 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var World2D = /** @class */ (function (_super) {
     __extends(World2D, _super);
-    function World2D(orientation, x, y, width, height, _viewportWidth, _viewportHeight, _screenX, _screenY, _screenWidth, _screenHeight) {
+    function World2D(orientation, x, y, width, height, _screenX, _screenY, viewportWidth, viewportHeight, screenWidth, screenHeight) {
         var _this = _super.call(this, orientation, x, y, width, height) || this;
-        _this._viewportWidth = _viewportWidth;
-        _this._viewportHeight = _viewportHeight;
         _this._screenX = _screenX;
         _this._screenY = _screenY;
-        _this._screenWidth = _screenWidth;
-        _this._screenHeight = _screenHeight;
         _this._characters = [];
+        _this.applyTransform = function (ctx) { this.viewport.applyTransform(ctx); };
         _this.setViewportTopLeft = _this._isOrientedUp
             ?
                 function (x, y) {
@@ -97,8 +94,18 @@ var World2D = /** @class */ (function (_super) {
                     degrees = degrees % 360;
                 return 360 - degrees;
             };
-        _this._viewportWidth = Math.min(_this._viewportWidth, _this.width);
-        _this._viewportHeight = Math.min(_this._viewportHeight, _this.height);
+        if (!viewportWidth)
+            viewportWidth = _this.width;
+        if (!viewportHeight)
+            viewportHeight = _this.height;
+        if (!screenWidth)
+            screenWidth = viewportWidth;
+        if (!screenHeight)
+            screenHeight = viewportHeight;
+        _this._viewportWidth = Math.min(viewportWidth, _this.width);
+        _this._viewportHeight = Math.min(viewportHeight, _this.height);
+        _this._screenWidth = screenWidth;
+        _this._screenHeight = screenHeight;
         _this.createViewport(_this.x, _this.y);
         return _this;
     }
@@ -107,6 +114,17 @@ var World2D = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(World2D.prototype, "containerBounds", {
+        get: function () {
+            if (!this._containerBounds) {
+                this._containerBounds = new ContainerBounds(this.orientation, this.x, this.y, this.width, this.height);
+            }
+            return this._containerBounds;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    World2D.prototype.restoreTransform = function (ctx) { this.viewport.restoreTransform(ctx); };
     World2D.prototype.createViewport = function (x, y) {
         this._viewport = new Viewport2D(this._orientation, x, y, this._viewportWidth, this._viewportHeight, this._screenX, this._screenY, this._screenWidth, this._screenHeight);
     };
@@ -127,9 +145,9 @@ var World2D = /** @class */ (function (_super) {
         this._characters.forEach(function (character) { return character.update(frame, timestamp, delta, _this._characters); }, this);
     };
     World2D.prototype.render = function (ctx, frame) {
-        this._viewport.applyTransform(ctx);
+        this.applyTransform(ctx);
         this._characters.forEach(function (character) { return character.draw(ctx, frame); });
-        this._viewport.restoreTransform(ctx);
+        this.restoreTransform(ctx);
     };
     return World2D;
 }(OrientedBounds));

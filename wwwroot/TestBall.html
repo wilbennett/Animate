@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="scripts/css/Tester.css" />
+</head>
+<body>
+    <div class="container">
+        <canvas id="canvas"></canvas>
+        <div class="settingsContainer" id="settingsContainer">
+            <div class="settings" name="App">
+                <label>
+                    Target FPS
+                    <input class="setting" name="targetFPS" type="number" min="1" max="150" value="60" />
+                </label>
+                <label>
+                    Stat Avg Period
+                    <input class="setting" name="statAvgPeriod" type="number" min="1" max="20" value="4" />
+                </label>
+                <label>
+                    <span>Update Via</span>
+                    <label class="nw"><input class="setting" name="frameMode" type="radio" value="raf" checked />RAF</label>
+                    <label class="nw">
+                        <input class="setting" name="frameMode" type="radio" value="timeout" />SetTimeout
+                        <label class="autohide"><input class="setting" name="slowTimeout" type="checkbox" />Slow</label>
+                    </label>
+                </label>
+                <label>
+                    <input class="setting" name="pauseInactive" type="checkbox" checked />
+                    Pause Inactive
+                    <label class="autohide">
+                        Cutoff
+                        <input class="setting" name="inactiveCutoff" type="number" min="2" max="1000" value="10" />
+                    </label>
+                </label>
+                <label>
+                    <input class="setting" name="fixedTimeStep" type="checkbox" checked />
+                    Fixed Time Step
+                </label>
+                <label>
+                    <input class="setting" name="interpolate" type="checkbox" />
+                    Interpolate
+                </label>
+                <label>
+                    <span>Show</span>
+                    <label class="nw"><input class="setting" name="showTime" type="checkbox" checked />Time</label>
+                    <label class="nw"><input class="setting" name="showFPS" type="checkbox" checked />FPS</label>
+                    <label class="nw"><input class="setting" name="showSkipped" type="checkbox" checked />Skipped</label>
+                    <label class="nw"><input class="setting" name="showUpdates" type="checkbox" checked />Updates</label>
+                    <label class="nw"><input class="setting" name="showConsUpdates" type="checkbox" checked />Cons. Updates</label>
+                    <label class="nw"><input class="setting" name="showFrameCount" type="checkbox" checked />Frames</label>
+                    <label class="nw"><input class="setting" name="showUpdateTime" type="checkbox" checked />Update Time</label>
+                    <label class="nw"><input class="setting" name="showElapsedTime" type="checkbox" checked />Elapsed Time</label>
+                </label>
+            </div>
+            <div class="settings" name="World">
+                <label>
+                    <input class="setting" name="up" restart type="checkbox" checked />
+                    Orient Up
+                </label>
+                <label>
+                    <input class="setting" name="wide" restart type="checkbox" />
+                    Wide
+                </label>
+                <label>
+                    <input class="setting" name="tall" restart type="checkbox" />
+                    Tall
+                </label>
+                <label>
+                    Background
+                    <input class="setting" name="backColorStart" type="color" value="#0000ff" />
+                    <input class="setting" name="backColorEnd" type="color" value="#88ff88" />
+                </label>
+            </div>
+            <div class="settings" name="Balls">
+                <label>
+                    Count
+                    <input class="setting" name="count" type="range" min="1" max="50" value="10" />
+                </label>
+                <label>
+                    Min Size
+                    <input class="setting" name="minSize" type="number" min="1" max="50" value="1" />
+                </label>
+                <label>
+                    Max Size
+                    <input class="setting" name="maxSize" type="number" min="1" max="50" value="5" />
+                </label>
+                <label>
+                    Friction Coeffecient
+                    <input class="setting" restart name="frictionCoeffecient" type="number" value="0.0001" />
+                </label>
+                <label>
+                    Colors
+                    <input class="setting" name="colors" array type="text" value="blue green red black white" />
+                </label>
+            </div>
+            <div class="settings" name="LeftFan">
+                <label>
+                    Position
+                    <input class="setting" name="position" type="range" min="0.0" max="1" step="0.01" value="0.30" />
+                </label>
+                <label>
+                    Angle
+                    <input class="setting" name="angle" type="number" min="0" max="359" step="1" value="45" />
+                </label>
+                <label>
+                    Strength
+                    <input class="setting" name="strength" type="number" min="1" max="1000" value="100" />
+                </label>
+            </div>
+            <div class="settings" name="RightFan">
+                <label>
+                    Position
+                    <input class="setting" name="position" type="range" min="0.0" max="1" step="0.01" value="0.30" />
+                </label>
+                <label>
+                    Angle
+                    <input class="setting" name="angle" type="number" min="0" max="359" step="1" value="135" />
+                </label>
+                <label>
+                    Strength
+                    <input class="setting" name="strength" type="number" min="1" max="1000" value="100" />
+                </label>
+            </div>
+            <div class="settings" name="Viewport">
+                <label>
+                    <span>Movement</span>
+                    <label class="nw"><input class="setting" name="movement" type="radio" value="Horizontal" />Horizontal</label>
+                    <label class="nw"><input class="setting" name="movement" type="radio" value="Vertical" />Vertical</label>
+                    <label class="nw"><input class="setting" name="movement" type="radio" value="Rotate" checked />Rotate</label>
+                </label>
+                <label>
+                    Horizontal Increment
+                    <input class="setting" name="deltaX" type="number" min="1" max="50" value="1" />
+                </label>
+                <label>
+                    Vertical Increment
+                    <input class="setting" name="deltaY" type="number" min="1" max="50" value="1" />
+                </label>
+            </div>
+        </div>
+        <button onclick="startApp()">Reload</button>
+        <div class="debug">
+            <output id="output">Testing</output>
+            <span id="temp">Testing</span>
+        </div>
+        <ul id="list"></ul>
+    </div>
+
+    <footer>
+        <script type="text/javascript" src="./scripts/Dynamic.js"></script>
+        <script type="text/javascript" src="./scripts/CustomEventTarget.js"></script>
+        <script type="text/javascript" src="./scripts/MathEx.js"></script>
+        <script type="text/javascript" src="./scripts/Math2D.js"></script>
+        <script type="text/javascript" src="./scripts/MouseTracker.js"></script>
+        <script type="text/javascript" src="./scripts/Polar2D.js"></script>
+        <script type="text/javascript" src="./scripts/Point2D.js"></script>
+        <script type="text/javascript" src="./scripts/Vector2D.js"></script>
+        <script type="text/javascript" src="./scripts/Ray2D.js"></script>
+        <script type="text/javascript" src="./scripts/Line2D.js"></script>
+        <script type="text/javascript" src="./scripts/Physics.js"></script>
+        <script type="text/javascript" src="./scripts/Force.js"></script>
+        <script type="text/javascript" src="./scripts/Gravity.js"></script>
+        <script type="text/javascript" src="./scripts/Friction.js"></script>
+        <script type="text/javascript" src="./scripts/Character.js"></script>
+        <script type="text/javascript" src="./scripts/Wind.js"></script>
+        <script type="text/javascript" src="./scripts/Liquid.js"></script>
+        <script type="text/javascript" src="./scripts/Radar.js"></script>
+        <script type="text/javascript" src="./scripts/Ball.js"></script>
+        <script type="text/javascript" src="./scripts/WorldOrientation.js"></script>
+        <script type="text/javascript" src="./scripts/Bounds.js"></script>
+        <script type="text/javascript" src="./scripts/OrientedBounds.js"></script>
+        <script type="text/javascript" src="./scripts/ContainerBounds.js"></script>
+        <script type="text/javascript" src="./scripts/ScreenBounds.js"></script>
+        <script type="text/javascript" src="./scripts/Viewport2D.js"></script>
+        <script type="text/javascript" src="./scripts/World2D.js"></script>
+        <script type="text/javascript" src="./scripts/TestBox.js"></script>
+        <script type="text/javascript" src="./scripts/TestBallPhysics.js"></script>
+        <script type="text/javascript" src="./scripts/Global.js"></script>
+    </footer>
+</body>
+</html>

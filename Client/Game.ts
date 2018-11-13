@@ -33,18 +33,7 @@
         const orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
         const worldWidth = _settings.World.wide ? width * 1.5 : width;
         const worldHeight = _settings.World.tall ? height * 1.5 : height;
-        this._world = new World2D(
-            orientation,
-            0,
-            0,
-            worldWidth,
-            worldHeight,
-            width,
-            height,
-            0,
-            0,
-            width,
-            height);
+        this._world = new World2D(orientation, 0, 0, worldWidth, worldHeight, 0, 0);
 
         const world = this._world;
         this._canvasMouse = new MouseTracker(this._canvas);
@@ -104,13 +93,7 @@
 
     private createRandomBalls() {
         let colors: string[] = this._settings.Balls.colors || ['blue', 'green', 'red', 'black', 'white'];
-
-        let container = new ContainerBounds(
-            this._world.orientation,
-            this._world.x,
-            this._world.y,
-            this._world.width,
-            this._world.height);
+        let container = this._world.containerBounds;
 
         for (var i = 0; i < this._settings.Balls.count; i++) {
             let mass = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
