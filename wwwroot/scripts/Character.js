@@ -14,10 +14,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Character = /** @class */ (function (_super) {
     __extends(Character, _super);
-    function Character(position, _velocity, _mass) {
-        var _this = _super.call(this, position, Vector2D.emptyVector, 0) || this;
+    function Character(position, _velocity, mass) {
+        var _this = _super.call(this, position, mass) || this;
         _this._velocity = _velocity;
-        _this._mass = _mass;
         _this._universalForces = [];
         _this._frictionCoeffecient = 0.01;
         _this._lastUpdateFrame = -1;
@@ -30,12 +29,6 @@ var Character = /** @class */ (function (_super) {
         _this._squashY = 1;
         return _this;
     }
-    Object.defineProperty(Character.prototype, "position", {
-        get: function () { return this._position; },
-        set: function (value) { this._position = value; },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(Character.prototype, "velocity", {
         get: function () { return this._velocity; },
         enumerable: true,
@@ -44,11 +37,6 @@ var Character = /** @class */ (function (_super) {
     Object.defineProperty(Character.prototype, "maxSpeed", {
         get: function () { return this._maxSpeed; },
         set: function (value) { this._maxSpeed = value; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Character.prototype, "acceleration", {
-        get: function () { return this._acceleration; },
         enumerable: true,
         configurable: true
     });
@@ -65,11 +53,6 @@ var Character = /** @class */ (function (_super) {
     });
     Object.defineProperty(Character.prototype, "rotateAcceleration", {
         get: function () { return this._rotateAcceleration; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Character.prototype, "mass", {
-        get: function () { return this._mass; },
         enumerable: true,
         configurable: true
     });

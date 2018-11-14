@@ -15,11 +15,11 @@ var __extends = (this && this.__extends) || (function () {
 var Friction = /** @class */ (function (_super) {
     __extends(Friction, _super);
     function Friction() {
-        return _super.call(this, Vector2D.emptyVector, Vector2D.emptyVector, -1) || this;
+        return _super.call(this, Vector2D.emptyVector, -1) || this;
     }
     Friction.prototype.applyForceTo = function (character) {
         var normal = 1; // TODO: Calculate the proper normal;
-        this._forceVector = Physics.calcFriction(character.frictionCoeffecient, normal, character.velocity);
+        this._force = Physics.calcFriction(character.frictionCoeffecient, normal, character.velocity);
         _super.prototype.applyForceTo.call(this, character);
     };
     return Friction;

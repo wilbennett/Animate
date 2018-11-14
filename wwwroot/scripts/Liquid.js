@@ -28,12 +28,11 @@ var Liquid = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Liquid.prototype.applyForceTo = function (character) {
+    Liquid.prototype.calculateForceForCharacter = function (character) {
         if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y))
             return;
         var c = this._frictionCoeffecient + character.frictionCoeffecient;
-        this._forceVector = Physics.calcDrag(c, character.velocity);
-        _super.prototype.applyForceTo.call(this, character);
+        this._force = Physics.calcDrag(c, character.velocity);
     };
     Liquid.prototype.update = function (frame, timestamp, delta, characters) {
         //super.update(frame, timestamp, delta, characters);

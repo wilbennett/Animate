@@ -30,7 +30,7 @@ var Wind = /** @class */ (function (_super) {
     Object.defineProperty(Wind.prototype, "radians", {
         get: function () { return this._polar.radians; },
         set: function (value) {
-            this._polar = new Polar2D(this._forceRadius, value);
+            this._polar = this._polar.withRadians(value);
             this.polarUpdated();
         },
         enumerable: true,
@@ -46,18 +46,14 @@ var Wind = /** @class */ (function (_super) {
         configurable: true
     });
     Wind.prototype.polarUpdated = function () {
-        this._forceRadius = this._polar.radius;
         this._velocity = Vector2D.normalize(this._polar.vector);
     };
-    Wind.prototype.applyForceTo = function (character) {
-        if (character === this)
-            return;
+    Wind.prototype.calculateForceForCharacter = function (character) {
         var pos = Vector2D.subtract(character.position, this.position);
-        if (pos.mag > this._forceRadius)
+        if (pos.mag > this._polar.radius)
             return;
-        this._forceVector = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
-        this._forceVector = this._forceVector.div(character.velocity.mag);
-        _super.prototype.applyForceTo.call(this, character);
+        this._force = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
+        this._force = this._force.div(character.velocity.mag);
     };
     Wind.prototype.update = function (frame, timestamp, delta, characters) {
         //super.update(frame, timestamp, delta, characters);
@@ -72,7 +68,7 @@ var Wind = /** @class */ (function (_super) {
         ctx.fillStyle = "purple";
         ctx.fill();
         ctx.closePath();
-        var v = Vector2D.mult(this._velocity, this._forceRadius * 0.5);
+        var v = Vector2D.mult(this._velocity, this._polar.radius * 0.5);
         v = v.add(this._position);
         ctx.beginPath();
         ctx.strokeStyle = "purple";
@@ -83,7 +79,7 @@ var Wind = /** @class */ (function (_super) {
         ctx.beginPath();
         ctx.globalAlpha = 0.6;
         ctx.globalAlpha = this._radiusPct;
-        ctx.arc(this.position.x, this.position.y, this._forceRadius * this._radiusPct, 0, MathEx.TWO_PI);
+        ctx.arc(this.position.x, this.position.y, this._polar.radius * this._radiusPct, 0, MathEx.TWO_PI);
         ctx.strokeStyle = "yellow";
         ctx.stroke();
         ctx.closePath();

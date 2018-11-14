@@ -23,6 +23,7 @@
         return this._vector;
     }
 
+    withRadius(radius: number) { return new Polar2D(radius, this.radians); }
     withRadians(radians: number) { return new Polar2D(this.radius, radians); }
     withDegrees(degrees: number) { return this.withRadians(MathEx.toRadians(degrees)); }
     addRadians(radiansDelta: number): Polar2D { return this.withRadians(this._radians + radiansDelta); }

@@ -32,6 +32,7 @@ var Polar2D = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Polar2D.prototype.withRadius = function (radius) { return new Polar2D(radius, this.radians); };
     Polar2D.prototype.withRadians = function (radians) { return new Polar2D(this.radius, radians); };
     Polar2D.prototype.withDegrees = function (degrees) { return this.withRadians(MathEx.toRadians(degrees)); };
     Polar2D.prototype.addRadians = function (radiansDelta) { return this.withRadians(this._radians + radiansDelta); };

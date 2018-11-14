@@ -1,15 +1,29 @@
 ﻿class Force {
-    protected twoPI: number = 2 * Math.PI;
+    protected _force: Vector2D;
+    protected _acceleration: Vector2D;
 
-    constructor(
-        protected _position: Vector2D,
-        protected _forceVector: Vector2D,
-        protected _forceRadius: number) {
+    constructor(protected _position: Vector2D, protected readonly _mass: number) {
+        this._force = Vector2D.emptyVector;
+        this._acceleration = Vector2D.emptyVector;
     }
 
-    get forceVector() { return this._forceVector; }
+    get position() { return this._position; }
+    set position(value) { this._position = value; }
+
+    get force() { return this._force; }
+    get mass() { return this._mass; }
+    get acceleration() { return this._acceleration; }
+
+    calculateForce() {
+    }
+
+    protected calculateForceForCharacter(character: Character) {
+    }
 
     applyForceTo(character: Character) {
-        character.applyForce(this._forceVector);
+        if (<Force>character === this) return;
+
+        this.calculateForceForCharacter(character);
+        character.applyForce(this._force);
     }
 }

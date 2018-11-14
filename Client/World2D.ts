@@ -170,7 +170,11 @@
     }
 
     update(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
-        this._characters.forEach(character => character.preUpdate(frame, timestamp, delta), this);
+        this._characters.forEach(character => {
+            character.preUpdate(frame, timestamp, delta);
+            character.calculateForce();
+        }, this);
+
         this._characters.forEach(character => character.update(frame, timestamp, delta, this._characters), this);
     }
 

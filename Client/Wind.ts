@@ -18,7 +18,7 @@
     get radians() { return this._polar.radians; }
 
     set radians(value: number) {
-        this._polar = new Polar2D(this._forceRadius, value);
+        this._polar = this._polar.withRadians(value);
         this.polarUpdated();
     }
 
@@ -30,21 +30,16 @@
     }
 
     private polarUpdated() {
-        this._forceRadius = this._polar.radius;
         this._velocity = Vector2D.normalize(this._polar.vector);
     }
 
-    applyForceTo(character: Character) {
-        if (character === this) return;
-
+    protected calculateForceForCharacter(character: Character) {
         let pos = Vector2D.subtract(character.position, this.position);
 
-        if (pos.mag > this._forceRadius) return;
+        if (pos.mag > this._polar.radius) return;
 
-        this._forceVector = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
-        this._forceVector = this._forceVector.div(character.velocity.mag);
-
-        super.applyForceTo(character);
+        this._force = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
+        this._force = this._force.div(character.velocity.mag);
     }
 
     update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {
@@ -64,7 +59,7 @@
         ctx.fill();
         ctx.closePath();
 
-        let v = Vector2D.mult(this._velocity, this._forceRadius * 0.5);
+        let v = Vector2D.mult(this._velocity, this._polar.radius * 0.5);
         v = v.add(this._position);
         ctx.beginPath();
         ctx.strokeStyle = "purple";
@@ -76,7 +71,7 @@
         ctx.beginPath();
         ctx.globalAlpha = 0.6;
         ctx.globalAlpha = this._radiusPct;
-        ctx.arc(this.position.x, this.position.y, this._forceRadius * this._radiusPct, 0, MathEx.TWO_PI);
+        ctx.arc(this.position.x, this.position.y, this._polar.radius * this._radiusPct, 0, MathEx.TWO_PI);
         ctx.strokeStyle = "yellow";
         ctx.stroke();
         ctx.closePath();

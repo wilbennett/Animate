@@ -2,7 +2,6 @@
     private _universalForces: Force[] = [];
     protected _frictionCoeffecient: number = 0.01;
     protected _lastUpdateFrame: number = -1;
-    protected _acceleration: Vector2D;
     protected _maxSpeed: number = -1;
     protected _rotateRadians: number = 0;
     protected _rotateVelocity: number = 0;
@@ -13,22 +12,14 @@
     protected _squashX: number = 1;
     protected _squashY: number = 1;
 
-    constructor(
-        position: Vector2D,
-        protected _velocity: Vector2D,
-        protected readonly _mass: number) {
-        super(position, Vector2D.emptyVector, 0);
+    constructor(position: Vector2D, protected _velocity: Vector2D, mass: number) {
+        super(position, mass);
     }
-
-    get position() { return this._position; }
-    set position(value) { this._position = value; }
 
     get velocity() { return this._velocity; }
 
     get maxSpeed() { return this._maxSpeed; }
     set maxSpeed(value) { this._maxSpeed = value; }
-
-    get acceleration() { return this._acceleration; }
 
     get rotateVelocity() { return this._rotateVelocity; }
 
@@ -36,8 +27,6 @@
     set maxRotateVelocity(value) { this._maxRotateVelocity = value; }
 
     get rotateAcceleration() { return this._rotateAcceleration; }
-
-    get mass() { return this._mass; }
 
     get frictionCoeffecient() { return this._frictionCoeffecient; }
     set frictionCoeffecient(value) { this._frictionCoeffecient = value; }

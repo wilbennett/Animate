@@ -11,13 +11,11 @@
         return new Bounds(this._position.x, this._position.y, this._width, this._height);
     }
 
-    applyForceTo(character: Character) {
+    protected calculateForceForCharacter(character: Character) {
         if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y)) return;
 
         let c = this._frictionCoeffecient + character.frictionCoeffecient;
-        this._forceVector = Physics.calcDrag(c, character.velocity);
-
-        super.applyForceTo(character);
+        this._force = Physics.calcDrag(c, character.velocity);
     }
 
     update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {

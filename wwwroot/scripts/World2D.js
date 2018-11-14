@@ -150,7 +150,10 @@ var World2D = /** @class */ (function (_super) {
     };
     World2D.prototype.update = function (frame, timestamp, delta) {
         var _this = this;
-        this._characters.forEach(function (character) { return character.preUpdate(frame, timestamp, delta); }, this);
+        this._characters.forEach(function (character) {
+            character.preUpdate(frame, timestamp, delta);
+            character.calculateForce();
+        }, this);
         this._characters.forEach(function (character) { return character.update(frame, timestamp, delta, _this._characters); }, this);
     };
     World2D.prototype.render = function (ctx, frame) {
