@@ -7,13 +7,12 @@
         private _color: string,
         position: Vector2D,
         velocity: Vector2D,
-        acceleration: Vector2D,
         mass: number,
         maxVelocity: number,
         private _gravityConst: number,
         private _boundary: ContainerBounds,
         private readonly completeCallback: (ball: Ball) => void) {
-        super(position, velocity, acceleration, mass, maxVelocity);
+        super(position, velocity, mass, maxVelocity);
 
         this._maxRotateVelocity = 0.1;
     }
@@ -23,7 +22,6 @@
 
     
     adjustRotateAcceleration() {
-        //this._rotateAcceleration = this.acceleration.x / 10;
         this.applyRotateForce(this.acceleration.x / 5);
 
         super.adjustRotateAcceleration();

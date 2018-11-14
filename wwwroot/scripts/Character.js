@@ -14,10 +14,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Character = /** @class */ (function (_super) {
     __extends(Character, _super);
-    function Character(position, _velocity, _acceleration, _mass, _maxVelocity) {
+    function Character(position, _velocity, _mass, _maxVelocity) {
         var _this = _super.call(this, position, new Vector2D(0, 0), 0) || this;
         _this._velocity = _velocity;
-        _this._acceleration = _acceleration;
         _this._mass = _mass;
         _this._maxVelocity = _maxVelocity;
         _this._universalForces = [];

@@ -4,7 +4,7 @@
         protected readonly _frictionCoeffecient: number,
         private readonly _width: number,
         private readonly _height: number) {
-        super(position, new Vector2D(0, 0), new Vector2D(0, 0), 0, 0);
+        super(position, Vector2D.emptyVector, 0, 0);
     }
 
     get bounds() {

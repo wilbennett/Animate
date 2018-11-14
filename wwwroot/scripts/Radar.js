@@ -15,10 +15,11 @@ var __extends = (this && this.__extends) || (function () {
 var Radar = /** @class */ (function (_super) {
     __extends(Radar, _super);
     function Radar(position, _radius, _color, rotateVelocity) {
-        var _this = _super.call(this, position, Vector2D.emptyVector, Vector2D.emptyVector, 0, 0) || this;
+        var _this = _super.call(this, position, Vector2D.emptyVector, 0, 0) || this;
         _this._radius = _radius;
         _this._color = _color;
         _this._armPos = null;
+        _this._maxRotateVelocity = MathEx.TWO_PI;
         _this._rotateVelocity = rotateVelocity;
         _this._armManager = new Polar2D(_this._radius * 0.95, 0);
         return _this;

@@ -6,7 +6,7 @@
         position: Vector2D,
         degrees: number,
         strength: number) {
-        super(position, Vector2D.emptyVector, Vector2D.emptyVector, 0, strength);
+        super(position, Vector2D.emptyVector, 0, strength);
 
         this._polar = new Polar2D(strength, MathEx.toRadians(degrees));
         this.polarUpdated();

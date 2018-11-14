@@ -14,8 +14,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Ball = /** @class */ (function (_super) {
     __extends(Ball, _super);
-    function Ball(_radius, _color, position, velocity, acceleration, mass, maxVelocity, _gravityConst, _boundary, completeCallback) {
-        var _this = _super.call(this, position, velocity, acceleration, mass, maxVelocity) || this;
+    function Ball(_radius, _color, position, velocity, mass, maxVelocity, _gravityConst, _boundary, completeCallback) {
+        var _this = _super.call(this, position, velocity, mass, maxVelocity) || this;
         _this._radius = _radius;
         _this._color = _color;
         _this._gravityConst = _gravityConst;
@@ -37,7 +37,6 @@ var Ball = /** @class */ (function (_super) {
         configurable: true
     });
     Ball.prototype.adjustRotateAcceleration = function () {
-        //this._rotateAcceleration = this.acceleration.x / 10;
         this.applyRotateForce(this.acceleration.x / 5);
         _super.prototype.adjustRotateAcceleration.call(this);
     };

@@ -7,8 +7,9 @@
         private readonly _radius: number,
         private readonly _color: string,
         rotateVelocity: number) {
-        super(position, Vector2D.emptyVector, Vector2D.emptyVector, 0, 0);
+        super(position, Vector2D.emptyVector, 0, 0);
 
+        this._maxRotateVelocity = MathEx.TWO_PI;
         this._rotateVelocity = rotateVelocity;
         this._armManager = new Polar2D(this._radius * 0.95, 0);
     }

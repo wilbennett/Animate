@@ -2,6 +2,7 @@
     private _universalForces: Force[] = [];
     protected _frictionCoeffecient: number = 0.01;
     protected _lastUpdateFrame: number = -1;
+    protected _acceleration: Vector2D;
     protected _rotateRadians: number = 0;
     protected _rotateVelocity: number = 0;
     protected _rotateAcceleration: number = 0;
@@ -14,7 +15,6 @@
     constructor(
         position: Vector2D,
         protected _velocity: Vector2D,
-        protected _acceleration: Vector2D,
         protected readonly _mass: number,
         protected _maxVelocity: number) {
         super(position, new Vector2D(0, 0), 0);

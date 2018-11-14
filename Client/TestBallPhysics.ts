@@ -51,7 +51,6 @@
             color,
             new Vector2D(x, world.topOffsetBelow(radius)),
             new Vector2D(0, 0),
-            Vector2D.emptyVector,
             mass,
             1500,
             world.gravity.gravityConst,
