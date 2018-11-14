@@ -14,14 +14,14 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Character = /** @class */ (function (_super) {
     __extends(Character, _super);
-    function Character(position, _velocity, _mass, _maxVelocity) {
-        var _this = _super.call(this, position, new Vector2D(0, 0), 0) || this;
+    function Character(position, _velocity, _mass) {
+        var _this = _super.call(this, position, Vector2D.emptyVector, 0) || this;
         _this._velocity = _velocity;
         _this._mass = _mass;
-        _this._maxVelocity = _maxVelocity;
         _this._universalForces = [];
         _this._frictionCoeffecient = 0.01;
         _this._lastUpdateFrame = -1;
+        _this._maxSpeed = -1;
         _this._rotateRadians = 0;
         _this._rotateVelocity = 0;
         _this._rotateAcceleration = 0;
@@ -41,9 +41,9 @@ var Character = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Character.prototype, "maxVelocity", {
-        get: function () { return this._maxVelocity; },
-        set: function (value) { this._maxVelocity = value; },
+    Object.defineProperty(Character.prototype, "maxSpeed", {
+        get: function () { return this._maxSpeed; },
+        set: function (value) { this._maxSpeed = value; },
         enumerable: true,
         configurable: true
     });
@@ -119,7 +119,7 @@ var Character = /** @class */ (function (_super) {
     };
     Character.prototype.adjustVelocity = function () {
         var newVelocity = Physics.calcVelocity(this.velocity, this.acceleration);
-        if (newVelocity.mag < this.maxVelocity)
+        if (this.maxSpeed < 0 || newVelocity.mag < this.maxSpeed)
             this._velocity = newVelocity;
     };
     Character.prototype.adjustPosition = function (velocity) {

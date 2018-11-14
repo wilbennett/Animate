@@ -106,7 +106,6 @@
                 new Vector2D(MathEx.random(radius, this._width - radius * 2), startY),
                 new Vector2D(MathEx.random(0, 150), 0),
                 mass,
-                300,
                 this._world.gravity.gravityConst,
                 container,
                 this.addBallToRemove);

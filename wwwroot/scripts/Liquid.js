@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 var Liquid = /** @class */ (function (_super) {
     __extends(Liquid, _super);
     function Liquid(position, _frictionCoeffecient, _width, _height) {
-        var _this = _super.call(this, position, Vector2D.emptyVector, 0, 0) || this;
+        var _this = _super.call(this, position, Vector2D.emptyVector, 0) || this;
         _this._frictionCoeffecient = _frictionCoeffecient;
         _this._width = _width;
         _this._height = _height;

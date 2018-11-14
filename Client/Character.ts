@@ -3,6 +3,7 @@
     protected _frictionCoeffecient: number = 0.01;
     protected _lastUpdateFrame: number = -1;
     protected _acceleration: Vector2D;
+    protected _maxSpeed: number = -1;
     protected _rotateRadians: number = 0;
     protected _rotateVelocity: number = 0;
     protected _rotateAcceleration: number = 0;
@@ -15,9 +16,8 @@
     constructor(
         position: Vector2D,
         protected _velocity: Vector2D,
-        protected readonly _mass: number,
-        protected _maxVelocity: number) {
-        super(position, new Vector2D(0, 0), 0);
+        protected readonly _mass: number) {
+        super(position, Vector2D.emptyVector, 0);
     }
 
     get position() { return this._position; }
@@ -25,8 +25,8 @@
 
     get velocity() { return this._velocity; }
 
-    get maxVelocity() { return this._maxVelocity; }
-    set maxVelocity(value) { this._maxVelocity = value; }
+    get maxSpeed() { return this._maxSpeed; }
+    set maxSpeed(value) { this._maxSpeed = value; }
 
     get acceleration() { return this._acceleration; }
 
@@ -82,7 +82,7 @@
     adjustVelocity() {
         let newVelocity = Physics.calcVelocity(this.velocity, this.acceleration);
 
-        if (newVelocity.mag < this.maxVelocity)
+        if (this.maxSpeed < 0 || newVelocity.mag < this.maxSpeed)
             this._velocity = newVelocity;
     }
 

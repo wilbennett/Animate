@@ -14,8 +14,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Ball = /** @class */ (function (_super) {
     __extends(Ball, _super);
-    function Ball(_radius, _color, position, velocity, mass, maxVelocity, _gravityConst, _boundary, completeCallback) {
-        var _this = _super.call(this, position, velocity, mass, maxVelocity) || this;
+    function Ball(_radius, _color, position, velocity, mass, _gravityConst, _boundary, completeCallback) {
+        var _this = _super.call(this, position, velocity, mass) || this;
         _this._radius = _radius;
         _this._color = _color;
         _this._gravityConst = _gravityConst;

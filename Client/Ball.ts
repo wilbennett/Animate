@@ -8,11 +8,10 @@
         position: Vector2D,
         velocity: Vector2D,
         mass: number,
-        maxVelocity: number,
         private _gravityConst: number,
         private _boundary: ContainerBounds,
         private readonly completeCallback: (ball: Ball) => void) {
-        super(position, velocity, mass, maxVelocity);
+        super(position, velocity, mass);
 
         this._maxRotateVelocity = 0.1;
     }

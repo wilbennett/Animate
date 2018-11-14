@@ -7,7 +7,7 @@
         private readonly _radius: number,
         private readonly _color: string,
         rotateVelocity: number) {
-        super(position, Vector2D.emptyVector, 0, 0);
+        super(position, Vector2D.emptyVector, 0);
 
         this._maxRotateVelocity = MathEx.TWO_PI;
         this._rotateVelocity = rotateVelocity;
