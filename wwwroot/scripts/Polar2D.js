@@ -32,12 +32,9 @@ var Polar2D = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Polar2D.prototype.addRadians = function (radiansDelta) {
-        var newAngle = this._radians + radiansDelta;
-        if (newAngle < 0 || newAngle > MathEx.TWO_PI)
-            newAngle %= MathEx.TWO_PI;
-        return new Polar2D(this.radius, newAngle);
-    };
+    Polar2D.prototype.withRadians = function (radians) { return new Polar2D(this.radius, radians); };
+    Polar2D.prototype.withDegrees = function (degrees) { return this.withRadians(MathEx.toRadians(degrees)); };
+    Polar2D.prototype.addRadians = function (radiansDelta) { return this.withRadians(this._radians + radiansDelta); };
     return Polar2D;
 }());
 //# sourceMappingURL=Polar2D.js.map

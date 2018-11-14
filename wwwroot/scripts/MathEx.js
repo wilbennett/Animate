@@ -2,8 +2,13 @@
 var MathEx = /** @class */ (function () {
     function MathEx() {
     }
-    MathEx.toRadians = function (degrees) { return degrees * MathEx.RADIANS_RATIO; };
-    MathEx.toDegrees = function (radians) { return radians * MathEx.DEGREES_RATIO; };
+    MathEx.toRadians = function (degrees) { return degrees * this.RADIANS_RATIO; };
+    MathEx.toDegrees = function (radians) { return radians * this.DEGREES_RATIO; };
+    MathEx.constrainRadians = function (radians) {
+        if (radians < 0 || radians > this.TWO_PI)
+            radians %= this.TWO_PI;
+        return radians;
+    };
     MathEx.random = function (min, max, array) {
         if (typeof min === "object") {
             array = min;

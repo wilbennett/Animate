@@ -60,14 +60,10 @@
 
     applyForce(force: Vector2D) {
         this._appliedForce = this._appliedForce.add(force);
-        //let a = Physics.calcAcceleration(force, this._mass);
-        //this._acceleration = this._acceleration.add(a);
     }
 
     applyRotateForce(force: number) {
         this._appliedRotateForce = this._appliedRotateForce + force;
-        //let a = Physics.calcRotationAcceleration(force, this._mass);
-        //this._rotateAcceleration += a;
     }
 
     applyUniversalForces() { this._universalForces.forEach((f, i, fs) => f.applyForceTo(this)); }
@@ -83,7 +79,7 @@
         this._acceleration = Physics.calcAcceleration(this._appliedForce, this.mass);
     }
 
-    adjustVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
+    adjustVelocity() {
         let newVelocity = Physics.calcVelocity(this.velocity, this.acceleration);
 
         if (newVelocity.mag < this.maxVelocity)
@@ -98,23 +94,22 @@
         this._rotateAcceleration = Physics.calcRotationAcceleration(this._appliedRotateForce, this._mass);
     }
 
-    adjustRotateVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
+    adjustRotateVelocity() {
         let newVelocity = Physics.calcRotationVelocity(this.rotateVelocity, this.rotateAcceleration);
 
         if (Math.abs(newVelocity) < this.maxRotateVelocity)
             this._rotateVelocity = newVelocity;
     }
 
-    update(frame: number, now: DOMHighResTimeStamp, delta: number, characters: Character[]) {
+    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, characters: Character[]) {
         this.applyUniversalForces();
         this.adjustAcceleration();
-        this.adjustVelocity(frame, now, delta);
+        this.adjustVelocity();
         this.adjustRotateAcceleration();
-        this.adjustRotateVelocity(frame, now, delta);
+        this.adjustRotateVelocity();
 
-        this.adjustPosition(this._velocity.mult(delta));
-        this._rotateRadians += this._rotateVelocity * delta;
-        this._rotateRadians = this._rotateRadians % MathEx.TWO_PI;
+        this.adjustPosition(this._velocity.mult(timeDelta));
+        this._rotateRadians = MathEx.constrainRadians(this._rotateRadians + this._rotateVelocity * timeDelta);
 
         this._lastUpdateFrame = frame;
     }

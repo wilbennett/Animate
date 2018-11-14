@@ -2,7 +2,7 @@
     private _degrees: number;
     private _vector: Vector2D;
 
-    constructor(private readonly _radius: number, private _radians: number) {
+    constructor(private readonly _radius: number, private readonly _radians: number) {
     }
 
     get radius() { return this._radius; }
@@ -23,12 +23,7 @@
         return this._vector;
     }
 
-    addRadians(radiansDelta: number): Polar2D {
-        let newAngle = this._radians + radiansDelta;
-
-        if (newAngle < 0 || newAngle > MathEx.TWO_PI)
-            newAngle %= MathEx.TWO_PI;
-
-        return new Polar2D(this.radius, newAngle);
-    }
+    withRadians(radians: number) { return new Polar2D(this.radius, radians); }
+    withDegrees(degrees: number) { return this.withRadians(MathEx.toRadians(degrees)); }
+    addRadians(radiansDelta: number): Polar2D { return this.withRadians(this._radians + radiansDelta); }
 }

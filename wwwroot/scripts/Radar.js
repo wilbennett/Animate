@@ -14,12 +14,12 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Radar = /** @class */ (function (_super) {
     __extends(Radar, _super);
-    function Radar(position, _radius, _color, _angleVelocity) {
+    function Radar(position, _radius, _color, rotateVelocity) {
         var _this = _super.call(this, position, Vector2D.emptyVector, Vector2D.emptyVector, 0, 0) || this;
         _this._radius = _radius;
         _this._color = _color;
-        _this._angleVelocity = _angleVelocity;
         _this._armPos = null;
+        _this._rotateVelocity = rotateVelocity;
         _this._armManager = new Polar2D(_this._radius * 0.95, 0);
         return _this;
     }
@@ -52,8 +52,11 @@ var Radar = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Radar.prototype.adjustRotateVelocity = function (frame, timestamp, delta) {
-        this._armManager = this._armManager.addRadians(this._angleVelocity * delta);
+    Radar.prototype.applyForce = function (force) { };
+    Radar.prototype.applyRotateForce = function (force) { };
+    Radar.prototype.update = function (frame, now, timeDelta, characters) {
+        _super.prototype.update.call(this, frame, now, timeDelta, characters);
+        this._armManager = this._armManager.withRadians(this._rotateRadians);
         this._armPos = null;
     };
     Radar.prototype.draw = function (ctx, frame) {

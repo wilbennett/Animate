@@ -4,11 +4,12 @@
 
     constructor(
         position: Vector2D,
-        private _radius: number,
-        private _color: string,
-        private _angleVelocity: number) {
+        private readonly _radius: number,
+        private readonly _color: string,
+        rotateVelocity: number) {
         super(position, Vector2D.emptyVector, Vector2D.emptyVector, 0, 0);
 
+        this._rotateVelocity = rotateVelocity;
         this._armManager = new Polar2D(this._radius * 0.95, 0);
     }
 
@@ -24,8 +25,13 @@
         return this._armPos;
     }
 
-    adjustRotateVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
-        this._armManager = this._armManager.addRadians(this._angleVelocity * delta);
+    applyForce(force: Vector2D) { }
+    applyRotateForce(force: number) { }
+
+    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, characters: Character[]) {
+        super.update(frame, now, timeDelta, characters);
+
+        this._armManager = this._armManager.withRadians(this._rotateRadians);
         this._armPos = null;
     }
 
