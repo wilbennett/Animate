@@ -24,7 +24,7 @@
         return this._armPos;
     }
 
-    updateRotateVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
+    adjustRotateVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
         this._armManager = this._armManager.addRadians(this._angleVelocity * delta);
         this._armPos = null;
     }

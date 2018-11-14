@@ -28,17 +28,17 @@ var Liquid = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Liquid.prototype.applyTo = function (character) {
+    Liquid.prototype.applyForceTo = function (character) {
         if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y))
             return;
         var c = this._frictionCoeffecient + character.frictionCoeffecient;
         this._forceVector = Physics.calcDrag(c, character.velocity);
-        _super.prototype.applyTo.call(this, character);
+        _super.prototype.applyForceTo.call(this, character);
     };
     Liquid.prototype.update = function (frame, timestamp, delta, characters) {
         //super.update(frame, timestamp, delta, characters);
         var _this = this;
-        characters.forEach(function (character) { return _this.applyTo(character); }, this);
+        characters.forEach(function (character) { return _this.applyForceTo(character); }, this);
     };
     Liquid.prototype.draw = function (ctx) {
         var origAlpha = ctx.globalAlpha;

@@ -22,11 +22,11 @@
     get color() { return this._color; }
 
     
-    updateRotateVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
-        //this._rotateAcceleration = this._acceleration.x / 10;
-        this.applyRotateForce(this._acceleration.x / 5);
+    adjustRotateAcceleration() {
+        //this._rotateAcceleration = this.acceleration.x / 10;
+        this.applyRotateForce(this.acceleration.x / 5);
 
-        super.updateRotateVelocity(frame, timestamp, delta);
+        super.adjustRotateAcceleration();
     }
 
     update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {
@@ -36,7 +36,7 @@
 
         if (!this._allowBounce) {
             this.position = this.position.withY(origY);
-            this.velocity = this.velocity.withY(0);
+            this._velocity = this.velocity.withY(0);
 
             if (this._opacity > 0.2)
                 this._opacity = Math.max(this._opacity - 0.01, 0);

@@ -27,13 +27,13 @@ var Gravity = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Gravity.prototype.applyTo = function (character) {
+    Gravity.prototype.applyForceTo = function (character) {
         //this._forceVector = new Vector2D(0, 0);
         //this._forceVector = new Vector2D(0, this._gravityConst);
         // Gravity applies along the y axis.
         // All objects fall at the same rate because the effect of gravity is proportional to the mass of the object.
         this._forceVector = new Vector2D(0, this._gravityConst * character.mass);
-        _super.prototype.applyTo.call(this, character);
+        _super.prototype.applyForceTo.call(this, character);
     };
     return Gravity;
 }(Force));

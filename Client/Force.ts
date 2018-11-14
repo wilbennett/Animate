@@ -9,7 +9,7 @@
 
     get forceVector() { return this._forceVector; }
 
-    applyTo(character: Character) {
+    applyForceTo(character: Character) {
         character.applyForce(this._forceVector);
     }
 }

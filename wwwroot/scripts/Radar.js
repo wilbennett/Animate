@@ -52,7 +52,7 @@ var Radar = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Radar.prototype.updateRotateVelocity = function (frame, timestamp, delta) {
+    Radar.prototype.adjustRotateVelocity = function (frame, timestamp, delta) {
         this._armManager = this._armManager.addRadians(this._angleVelocity * delta);
         this._armPos = null;
     };

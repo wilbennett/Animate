@@ -11,7 +11,7 @@ var Force = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Force.prototype.applyTo = function (character) {
+    Force.prototype.applyForceTo = function (character) {
         character.applyForce(this._forceVector);
     };
     return Force;

@@ -6,6 +6,8 @@
     protected _rotateVelocity: number = 0;
     protected _rotateAcceleration: number = 0;
     protected _maxRotateVelocity: number = 2;
+    protected _appliedForce: Vector2D;
+    protected _appliedRotateForce: number;
     protected _squashX: number = 1;
     protected _squashY: number = 1;
 
@@ -22,22 +24,18 @@
     set position(value) { this._position = value; }
 
     get velocity() { return this._velocity; }
-    set velocity(value) { this._velocity = value; }
 
     get maxVelocity() { return this._maxVelocity; }
     set maxVelocity(value) { this._maxVelocity = value; }
 
     get acceleration() { return this._acceleration; }
-    set acceleration(value) { this._acceleration = value; }
 
     get rotateVelocity() { return this._rotateVelocity; }
-    set rotateVelocity(value) { this._rotateVelocity = value; }
 
     get maxRotateVelocity() { return this._maxRotateVelocity; }
     set maxRotateVelocity(value) { this._maxRotateVelocity = value; }
 
     get rotateAcceleration() { return this._rotateAcceleration; }
-    set rotateAcceleration(value) { this._rotateAcceleration = value; }
 
     get mass() { return this._mass; }
 
@@ -61,44 +59,58 @@
     }
 
     applyForce(force: Vector2D) {
-        let a = Physics.calcAcceleration(force, this._mass);
-        this._acceleration = this._acceleration.add(a);
+        this._appliedForce = this._appliedForce.add(force);
+        //let a = Physics.calcAcceleration(force, this._mass);
+        //this._acceleration = this._acceleration.add(a);
     }
 
     applyRotateForce(force: number) {
-        let a = Physics.calcRotationAcceleration(force, this._mass);
-        this._rotateAcceleration += a;
+        this._appliedRotateForce = this._appliedRotateForce + force;
+        //let a = Physics.calcRotationAcceleration(force, this._mass);
+        //this._rotateAcceleration += a;
     }
 
-    applyUniversalForces() { this._universalForces.forEach((f, i, fs) => f.applyTo(this)); }
-
-    updateVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
-        let newVelocity = Physics.calcVelocity(this._velocity, this._acceleration);
-
-        if (newVelocity.mag < this._maxVelocity)
-            this._velocity = newVelocity;
-    }
-
-    updateRotateVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
-        let newVelocity = Physics.calcRotationVelocity(this._rotateVelocity, this._rotateAcceleration);
-
-        if (Math.abs(newVelocity) < this._maxRotateVelocity)
-            this._rotateVelocity = newVelocity;
-    }
+    applyUniversalForces() { this._universalForces.forEach((f, i, fs) => f.applyForceTo(this)); }
 
     preUpdate(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
+        this._appliedForce = Vector2D.emptyVector;
         this._acceleration = Vector2D.emptyVector;
+        this._appliedRotateForce = 0;
         this._rotateAcceleration = 0;
+    }
+
+    adjustAcceleration() {
+        this._acceleration = Physics.calcAcceleration(this._appliedForce, this.mass);
+    }
+
+    adjustVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
+        let newVelocity = Physics.calcVelocity(this.velocity, this.acceleration);
+
+        if (newVelocity.mag < this.maxVelocity)
+            this._velocity = newVelocity;
     }
 
     adjustPosition(velocity: Vector2D) {
         this._position = this._position.add(Physics.toPixels(velocity));
     }
 
-    update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {
+    adjustRotateAcceleration() {
+        this._rotateAcceleration = Physics.calcRotationAcceleration(this._appliedRotateForce, this._mass);
+    }
+
+    adjustRotateVelocity(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
+        let newVelocity = Physics.calcRotationVelocity(this.rotateVelocity, this.rotateAcceleration);
+
+        if (Math.abs(newVelocity) < this.maxRotateVelocity)
+            this._rotateVelocity = newVelocity;
+    }
+
+    update(frame: number, now: DOMHighResTimeStamp, delta: number, characters: Character[]) {
         this.applyUniversalForces();
-        this.updateVelocity(frame, timestamp, delta);
-        this.updateRotateVelocity(frame, timestamp, delta);
+        this.adjustAcceleration();
+        this.adjustVelocity(frame, now, delta);
+        this.adjustRotateAcceleration();
+        this.adjustRotateVelocity(frame, now, delta);
 
         this.adjustPosition(this._velocity.mult(delta));
         this._rotateRadians += this._rotateVelocity * delta;

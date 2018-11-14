@@ -34,7 +34,7 @@
         this._velocity = Vector2D.normalize(this._polar.vector);
     }
 
-    applyTo(character: Character) {
+    applyForceTo(character: Character) {
         if (character === this) return;
 
         let pos = Vector2D.subtract(character.position, this.position);
@@ -44,13 +44,13 @@
         this._forceVector = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
         this._forceVector = this._forceVector.div(character.velocity.mag);
 
-        super.applyTo(character);
+        super.applyForceTo(character);
     }
 
     update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {
         //super.update(frame, timestamp, delta, characters);
 
-        characters.forEach(character => this.applyTo(character), this);
+        characters.forEach(character => this.applyForceTo(character), this);
 
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     }

@@ -17,10 +17,10 @@ var Friction = /** @class */ (function (_super) {
     function Friction() {
         return _super.call(this, Vector2D.emptyVector, Vector2D.emptyVector, -1) || this;
     }
-    Friction.prototype.applyTo = function (character) {
+    Friction.prototype.applyForceTo = function (character) {
         var normal = 1; // TODO: Calculate the proper normal;
         this._forceVector = Physics.calcFriction(character.frictionCoeffecient, normal, character.velocity);
-        _super.prototype.applyTo.call(this, character);
+        _super.prototype.applyForceTo.call(this, character);
     };
     return Friction;
 }(Force));

@@ -36,17 +36,17 @@ var Ball = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Ball.prototype.updateRotateVelocity = function (frame, timestamp, delta) {
-        //this._rotateAcceleration = this._acceleration.x / 10;
-        this.applyRotateForce(this._acceleration.x / 5);
-        _super.prototype.updateRotateVelocity.call(this, frame, timestamp, delta);
+    Ball.prototype.adjustRotateAcceleration = function () {
+        //this._rotateAcceleration = this.acceleration.x / 10;
+        this.applyRotateForce(this.acceleration.x / 5);
+        _super.prototype.adjustRotateAcceleration.call(this);
     };
     Ball.prototype.update = function (frame, timestamp, delta, characters) {
         var origY = this._position.y;
         _super.prototype.update.call(this, frame, timestamp, delta, characters);
         if (!this._allowBounce) {
             this.position = this.position.withY(origY);
-            this.velocity = this.velocity.withY(0);
+            this._velocity = this.velocity.withY(0);
             if (this._opacity > 0.2)
                 this._opacity = Math.max(this._opacity - 0.01, 0);
             if (this._opacity <= 0.2)
