@@ -14,11 +14,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Ball = /** @class */ (function (_super) {
     __extends(Ball, _super);
-    function Ball(_radius, _color, position, velocity, mass, _gravityConst, _boundary, completeCallback) {
+    function Ball(_radius, _color, position, velocity, mass, _boundary, completeCallback) {
         var _this = _super.call(this, position, velocity, mass) || this;
         _this._radius = _radius;
         _this._color = _color;
-        _this._gravityConst = _gravityConst;
         _this._boundary = _boundary;
         _this.completeCallback = completeCallback;
         _this._opacity = 1;
@@ -53,7 +52,7 @@ var Ball = /** @class */ (function (_super) {
             if (this._opacity <= 0.2)
                 this.completeCallback(this);
         }
-        this.checkBoundary();
+        this.checkBoundary(world.gravity);
     };
     //*
     Ball.prototype.draw = function (ctx, frame) {
@@ -153,7 +152,7 @@ var Ball = /** @class */ (function (_super) {
         ctx.restore();
     }
     //*/
-    Ball.prototype.checkBoundary = function () {
+    Ball.prototype.checkBoundary = function (gravity) {
         var boundary = this._boundary;
         var leftPenetration = boundary.leftPenetration(this._position.x - this._radius);
         var topPenetration = boundary.topPenetration(boundary.offsetAbove(this._position.y, this._radius));
@@ -175,7 +174,7 @@ var Ball = /** @class */ (function (_super) {
             this._position = this._position.withY(boundary.bottomOffsetAbove(this._radius));
             this._velocity = boundary.reflectBottom(this._velocity);
             var force = Math.abs(this._velocity.y); // TODO: Calculate proper force.
-            if (force <= Math.abs(this._gravityConst)) {
+            if (force <= Math.abs(gravity.gravityConst)) {
                 this._velocity = this._velocity.withY(0);
                 this._allowBounce = false;
             }

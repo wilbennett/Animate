@@ -52,7 +52,6 @@
             new Vector2D(x, world.topOffsetBelow(radius)),
             new Vector2D(0, 0),
             mass,
-            world.gravity.gravityConst,
             world.containerBounds,
             ball => {
                 world.removeCharacter(ball);

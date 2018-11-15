@@ -40,7 +40,7 @@ var TestBallPhysics = /** @class */ (function () {
     TestBallPhysics.prototype.createBall = function (x, radius, color, world) {
         var _this = this;
         var mass = radius * 5;
-        var ball = new Ball(radius, color, new Vector2D(x, world.topOffsetBelow(radius)), new Vector2D(0, 0), mass, world.gravity.gravityConst, world.containerBounds, function (ball) {
+        var ball = new Ball(radius, color, new Vector2D(x, world.topOffsetBelow(radius)), new Vector2D(0, 0), mass, world.containerBounds, function (ball) {
             world.removeCharacter(ball);
             _this.createBall(x, radius < 30 ? radius + 5 : 10, color, world);
         });

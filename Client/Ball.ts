@@ -8,7 +8,6 @@
         position: Vector2D,
         velocity: Vector2D,
         mass: number,
-        private _gravityConst: number,
         private _boundary: ContainerBounds,
         private readonly completeCallback: (ball: Ball) => void) {
         super(position, velocity, mass);
@@ -42,7 +41,7 @@
                 this.completeCallback(this);
         }
 
-        this.checkBoundary();
+        this.checkBoundary(world.gravity);
     }
 
     private priorUp = false;
@@ -166,7 +165,7 @@
     }
     //*/
 
-    private checkBoundary() {
+    private checkBoundary(gravity: Gravity) {
         const boundary = this._boundary;
 
         let leftPenetration = boundary.leftPenetration(this._position.x - this._radius);
@@ -194,7 +193,7 @@
             this._velocity = boundary.reflectBottom(this._velocity);
             const force = Math.abs(this._velocity.y); // TODO: Calculate proper force.
 
-            if (force <= Math.abs(this._gravityConst)) {
+            if (force <= Math.abs(gravity.gravityConst)) {
                 this._velocity = this._velocity.withY(0);
                 this._allowBounce = false;
             }
