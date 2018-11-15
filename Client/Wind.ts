@@ -35,14 +35,13 @@
 
     calculateForce() { }
 
-    protected calculateForceForCharacter(character: Character) {
-        this._force = Vector2D.emptyVector;
+    calculateForceForCharacter(character: Character): Vector2D {
         let pos = Vector2D.subtract(character.position, this.position);
 
-        if (pos.mag > this._polar.radius) return;
+        if (pos.mag > this._polar.radius) return Vector2D.emptyVector;
 
-        this._force = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
-        this._force = this._force.div(character.velocity.mag);
+        let force = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
+        return force.div(character.velocity.mag);
     }
 
     update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {

@@ -30,12 +30,11 @@ var Force = /** @class */ (function () {
     Force.prototype.calculateForce = function () {
         this._force = Physics.calcNetForce(this._mass, this._acceleration);
     };
-    Force.prototype.calculateForceForCharacter = function (character) {
-    };
+    Force.prototype.calculateForceForCharacter = function (character) { return this._force; };
     Force.prototype.applyForceTo = function (character) {
         if (character === this)
             return;
-        this.calculateForceForCharacter(character);
+        this._force = this.calculateForceForCharacter(character);
         character.applyForce(this);
     };
     Force.prototype.getName = function (obj) {

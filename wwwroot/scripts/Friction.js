@@ -20,7 +20,7 @@ var Friction = /** @class */ (function (_super) {
     Friction.prototype.calculateForce = function () { };
     Friction.prototype.calculateForceForCharacter = function (character) {
         var normal = 1; // TODO: Calculate the proper normal;
-        this._force = Physics.calcFriction(character.frictionCoeffecient, normal, character.velocity);
+        return Physics.calcFriction(character.frictionCoeffecient, normal, character.velocity);
     };
     return Friction;
 }(Force));

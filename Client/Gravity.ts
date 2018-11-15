@@ -10,7 +10,7 @@
 
     calculateForce() { }
 
-    protected calculateForceForCharacter(character: Character) {
-        this._force = new Vector2D(0, this._gravityConst * character.mass);
+    calculateForceForCharacter(character: Character): Vector2D {
+        return new Vector2D(0, this._gravityConst * character.mass);
     }
 }

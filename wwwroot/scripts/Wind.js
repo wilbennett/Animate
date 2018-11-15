@@ -50,12 +50,11 @@ var Wind = /** @class */ (function (_super) {
     };
     Wind.prototype.calculateForce = function () { };
     Wind.prototype.calculateForceForCharacter = function (character) {
-        this._force = Vector2D.emptyVector;
         var pos = Vector2D.subtract(character.position, this.position);
         if (pos.mag > this._polar.radius)
-            return;
-        this._force = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
-        this._force = this._force.div(character.velocity.mag);
+            return Vector2D.emptyVector;
+        var force = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
+        return force.div(character.velocity.mag);
     };
     Wind.prototype.update = function (frame, timestamp, delta, characters) {
         //super.update(frame, timestamp, delta, characters);

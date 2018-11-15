@@ -29,7 +29,7 @@ var Gravity = /** @class */ (function (_super) {
     });
     Gravity.prototype.calculateForce = function () { };
     Gravity.prototype.calculateForceForCharacter = function (character) {
-        this._force = new Vector2D(0, this._gravityConst * character.mass);
+        return new Vector2D(0, this._gravityConst * character.mass);
     };
     return Gravity;
 }(Force));

@@ -13,13 +13,12 @@
 
     calculateForce() { }
 
-    protected calculateForceForCharacter(character: Character) {
-        this._force = Vector2D.emptyVector;
-
-        if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y)) return;
+    calculateForceForCharacter(character: Character): Vector2D {
+        if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y))
+            return Vector2D.emptyVector;
 
         let c = this._frictionCoeffecient + character.frictionCoeffecient;
-        this._force = Physics.calcDrag(c, character.velocity);
+        return Physics.calcDrag(c, character.velocity);
     }
 
     update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {
