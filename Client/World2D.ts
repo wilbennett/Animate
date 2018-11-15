@@ -18,17 +18,17 @@
         height: number,
         protected readonly _screenX: number,
         protected readonly _screenY: number,
-        viewportWidth?: number,
-        viewportHeight?: number,
         screenWidth?: number,
-        screenHeight?: number) {
+        screenHeight?: number,
+        viewportWidth?: number,
+        viewportHeight?: number) {
         super(orientation, x, y, width, height);
 
-        if (!viewportWidth) viewportWidth = this.width;
-        if (!viewportHeight) viewportHeight = this.height;
+        if (!screenWidth) screenWidth = this.width;
+        if (!screenHeight) screenHeight = this.height;
 
-        if (!screenWidth) screenWidth = viewportWidth;
-        if (!screenHeight) screenHeight = viewportHeight;
+        if (!viewportWidth) viewportWidth = screenWidth;
+        if (!viewportHeight) viewportHeight = screenHeight;
 
         this._viewportWidth = Math.min(viewportWidth, this.width);
         this._viewportHeight = Math.min(viewportHeight, this.height);

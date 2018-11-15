@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var World2D = /** @class */ (function (_super) {
     __extends(World2D, _super);
-    function World2D(orientation, x, y, width, height, _screenX, _screenY, viewportWidth, viewportHeight, screenWidth, screenHeight) {
+    function World2D(orientation, x, y, width, height, _screenX, _screenY, screenWidth, screenHeight, viewportWidth, viewportHeight) {
         var _this = _super.call(this, orientation, x, y, width, height) || this;
         _this._screenX = _screenX;
         _this._screenY = _screenY;
@@ -96,14 +96,14 @@ var World2D = /** @class */ (function (_super) {
                     degrees = degrees % 360;
                 return 360 - degrees;
             };
-        if (!viewportWidth)
-            viewportWidth = _this.width;
-        if (!viewportHeight)
-            viewportHeight = _this.height;
         if (!screenWidth)
-            screenWidth = viewportWidth;
+            screenWidth = _this.width;
         if (!screenHeight)
-            screenHeight = viewportHeight;
+            screenHeight = _this.height;
+        if (!viewportWidth)
+            viewportWidth = screenWidth;
+        if (!viewportHeight)
+            viewportHeight = screenHeight;
         _this._viewportWidth = Math.min(viewportWidth, _this.width);
         _this._viewportHeight = Math.min(viewportHeight, _this.height);
         _this._screenWidth = screenWidth;
