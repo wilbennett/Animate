@@ -20,6 +20,7 @@ var World2D = /** @class */ (function (_super) {
         _this._screenX = _screenX;
         _this._screenY = _screenY;
         _this._pixelsPerMeter = Physics.pixelsPerMeter;
+        _this._viewports = [];
         _this._forces = [];
         _this._characters = [];
         _this.setViewportTopLeft = _this._isOrientedUp
@@ -123,7 +124,7 @@ var World2D = /** @class */ (function (_super) {
         configurable: true
     });
     Object.defineProperty(World2D.prototype, "viewport", {
-        get: function () { return this._viewport; },
+        get: function () { return this._viewports[0]; },
         enumerable: true,
         configurable: true
     });
@@ -156,11 +157,17 @@ var World2D = /** @class */ (function (_super) {
         this._gravity = new Gravity(this.orientation, gravityConst);
         this.addForce(this._gravity);
     };
+    World2D.prototype.setViewport = function (viewport) {
+        if (this._viewports.length > 0)
+            this._viewports.shift();
+        this._viewports.unshift(viewport);
+    };
     World2D.prototype.createViewport = function (x, y) {
-        this._viewport = new Viewport2D(this._ctx, this._orientation, x, y, this._viewportWidth, this._viewportHeight, this._screenX, this._screenY, this._screenWidth, this._screenHeight);
+        var viewport = new Viewport2D(this._ctx, this._orientation, x, y, this._viewportWidth, this._viewportHeight, this._screenX, this._screenY, this._screenWidth, this._screenHeight);
+        this.setViewport(viewport);
     };
     World2D.prototype.moveViewportHorizontal = function (dx) {
-        return this.setViewportTopLeft(this._viewport.left + dx, this.viewport.top);
+        return this.setViewportTopLeft(this.viewport.left + dx, this.viewport.top);
     };
     World2D.prototype.addForce = function (force) {
         this._forces.push(force);

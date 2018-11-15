@@ -6,7 +6,7 @@
     private _pixelsPerMeter: number = Physics.pixelsPerMeter;
     private _containerBounds: ContainerBounds;
     private _gravity: Gravity;
-    private _viewport: Viewport2D;
+    private _viewports: Viewport2D[] = [];
     private _forces: Force[] = [];
     private _characters: Character[] = [];
 
@@ -43,7 +43,7 @@
 
     get ctx() { return this._ctx; }
     get gravity() { return this._gravity; }
-    get viewport() { return this._viewport; }
+    get viewport() { return this._viewports[0]; }
     get characters() { return this._characters; }
 
     get pixelsPerMeter() { return this._pixelsPerMeter; }
@@ -72,8 +72,15 @@
         this.addForce(this._gravity);
     }
 
+    private setViewport(viewport: Viewport2D) {
+        if (this._viewports.length > 0)
+            this._viewports.shift();
+
+        this._viewports.unshift(viewport);
+    }
+
     protected createViewport(x: number, y: number) {
-        this._viewport = new Viewport2D(
+        let viewport = new Viewport2D(
             this._ctx,
             this._orientation,
             x,
@@ -84,6 +91,8 @@
             this._screenY,
             this._screenWidth,
             this._screenHeight);
+
+        this.setViewport(viewport);
     }
 
     setViewportTopLeft = this._isOrientedUp
@@ -147,7 +156,7 @@
         };
 
     moveViewportHorizontal(dx: number) {
-        return this.setViewportTopLeft(this._viewport.left + dx, this.viewport.top);
+        return this.setViewportTopLeft(this.viewport.left + dx, this.viewport.top);
     }
 
     moveViewportVertical = this._isOrientedUp
