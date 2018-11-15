@@ -17,7 +17,6 @@ var Character = /** @class */ (function (_super) {
     function Character(position, _velocity, mass) {
         var _this = _super.call(this, position, mass) || this;
         _this._velocity = _velocity;
-        _this._universalForces = [];
         _this._frictionCoeffecient = 0.01;
         _this._lastUpdateFrame = -1;
         _this._maxSpeed = -1;
@@ -27,6 +26,7 @@ var Character = /** @class */ (function (_super) {
         _this._maxRotateVelocity = 2;
         _this._squashX = 1;
         _this._squashY = 1;
+        _this.resetParams();
         return _this;
     }
     Object.defineProperty(Character.prototype, "velocity", {
@@ -74,30 +74,27 @@ var Character = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Character.prototype.addUniversalForce = function (force) { this._universalForces.push(force); };
-    Character.prototype.removeUniversalForce = function (force) {
-        var index = this._universalForces.indexOf(force);
-        if (index > -1) {
-            this._universalForces.splice(index, 1);
-        }
-    };
     Character.prototype.applyForce = function (force) {
-        this._appliedForce = this._appliedForce.add(force);
+        //console.log(this.getName(this) + " applying force from " + this.getName(force) + ": "
+        //    + this._appliedForce.x.toFixed(2) + ", " + this._appliedForce.y.toFixed(2) + "  :  "
+        //    + force.force.x.toFixed(2) + ", " + force.force.y.toFixed(2));
+        this._appliedForce = this._appliedForce.add(force.force);
     };
     Character.prototype.applyRotateForce = function (force) {
         this._appliedRotateForce = this._appliedRotateForce + force;
     };
-    Character.prototype.applyUniversalForces = function () {
-        var _this = this;
-        this._universalForces.forEach(function (f, i, fs) { return f.applyForceTo(_this); });
-    };
-    Character.prototype.preUpdate = function (frame, timestamp, delta) {
+    Character.prototype.resetParams = function () {
         this._appliedForce = Vector2D.emptyVector;
         this._acceleration = Vector2D.emptyVector;
         this._appliedRotateForce = 0;
         this._rotateAcceleration = 0;
     };
+    Character.prototype.preUpdate = function (frame, timestamp, delta) {
+        this.resetParams();
+    };
     Character.prototype.adjustAcceleration = function () {
+        //console.log("**** " + this.getName(this) + " calc acceleration with force: "
+        //    + this._appliedForce.x.toFixed(2) + ", " + this._appliedForce.y.toFixed(2));
         this._acceleration = Physics.calcAcceleration(this._appliedForce, this.mass);
     };
     Character.prototype.adjustVelocity = function () {
@@ -117,7 +114,6 @@ var Character = /** @class */ (function (_super) {
             this._rotateVelocity = newVelocity;
     };
     Character.prototype.update = function (frame, now, timeDelta, characters) {
-        this.applyUniversalForces();
         this.adjustAcceleration();
         this.adjustVelocity();
         this.adjustRotateAcceleration();

@@ -33,7 +33,10 @@
         this._velocity = Vector2D.normalize(this._polar.vector);
     }
 
+    calculateForce() { }
+
     protected calculateForceForCharacter(character: Character) {
+        this._force = Vector2D.emptyVector;
         let pos = Vector2D.subtract(character.position, this.position);
 
         if (pos.mag > this._polar.radius) return;
@@ -44,8 +47,6 @@
 
     update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {
         //super.update(frame, timestamp, delta, characters);
-
-        characters.forEach(character => this.applyForceTo(character), this);
 
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     }

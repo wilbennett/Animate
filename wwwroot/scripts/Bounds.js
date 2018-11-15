@@ -3,6 +3,8 @@ var Bounds = /** @class */ (function () {
     function Bounds(x, y, _width, _height) {
         this._width = _width;
         this._height = _height;
+        this.isAbove = function (sourceY, targetY) { return sourceY < targetY; };
+        this.isBelow = function (sourceY, targetY) { return sourceY > targetY; };
         this._origin = new Vector2D(x, y);
         this._maxX = this.x + this.width - 1;
         this._maxY = this.y + this.height - 1;

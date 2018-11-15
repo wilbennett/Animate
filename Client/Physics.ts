@@ -1,6 +1,7 @@
 class Physics {
     static readonly gravityEarth = 9.8;
-    static readonly pixelsPerMeter = 0.1;
+    //static readonly pixelsPerMeter = 0.1;
+    static readonly pixelsPerMeter = 0.07;
 
     static metersToPixels(meters: number, pixelsPerMeter: number = this.pixelsPerMeter) {
         return meters * pixelsPerMeter;

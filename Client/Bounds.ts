@@ -130,6 +130,8 @@
     bottomPenetration(y: number) { return y - this.bottom; }
     isUp(y: number) { return y < 0; }
     isDown(y: number) { return y > 0; }
+    isAbove = function(sourceY: number, targetY: number) { return sourceY < targetY; };
+    isBelow = function(sourceY: number, targetY: number) { return sourceY > targetY; };
 
     contains(point: Point2D) {
         return point.x >= this.x && point.x <= this.maxX && point.y >= this.y && point.y <= this.maxY;

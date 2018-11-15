@@ -23,6 +23,8 @@ var Ball = /** @class */ (function (_super) {
         _this.completeCallback = completeCallback;
         _this._opacity = 1;
         _this._allowBounce = true;
+        _this.priorUp = false;
+        _this.priorVelocity = Vector2D.emptyVector;
         _this._maxRotateVelocity = 0.1;
         return _this;
     }
@@ -56,6 +58,32 @@ var Ball = /** @class */ (function (_super) {
     //*
     Ball.prototype.draw = function (ctx, frame) {
         _super.prototype.draw.call(this, ctx, frame);
+        var ballStrokeColor = "#bbbbbb";
+        var ballStrokeWidth = 1;
+        /*
+        let isUp = this._boundary.isUp(this.velocity.y);
+        let isDown = this._boundary.isDown(this.velocity.y);
+        let highColor = "black";
+
+        if (this.priorUp && isDown) {
+            this.highY = this.priorY;
+        }
+
+        if (this._boundary.isAbove(this.position.y, this.highY)) {
+            this.highY = this.position.y;
+            highColor = "white";
+        }
+
+        //if (this.velocity.mag > this.priorVelocity.mag) {
+        if (this.velocity.withY(0).mag > this.priorVelocity.withY(0).mag) {
+            ballStrokeColor = "yellow";
+            ballStrokeWidth = 4;
+        }
+
+        this.priorY = this.position.y;
+        this.priorUp = isUp;
+        this.priorVelocity = this.velocity;
+        //*/
         var radiusX = this._radius;
         var radiusY = this._radius;
         ctx.save();
@@ -74,10 +102,20 @@ var Ball = /** @class */ (function (_super) {
         ctx.closePath();
         ctx.beginPath();
         ctx.globalAlpha = ctx.globalAlpha * 0.7;
-        ctx.strokeStyle = "#bbbbbb";
+        ctx.strokeStyle = ballStrokeColor;
+        ctx.lineWidth = ballStrokeWidth;
         ctx.ellipse(this.position.x, this.position.y, radiusX * 0.95, radiusY * 0.95, 0, 1 + 0, MathEx.TWO_PI - 0.5);
         ctx.stroke();
         ctx.closePath();
+        /*
+        ctx.beginPath();
+        ctx.strokeStyle = highColor;
+        ctx.lineWidth = 2;
+        let y = this._boundary.offsetAbove(this.highY, this.radius);
+        ctx.moveTo(this.position.x - this.radius * 2, y);
+        ctx.lineTo(this.position.x + this.radius * 2, y);
+        ctx.stroke();
+        //*/
         ctx.restore();
     };
     /*/

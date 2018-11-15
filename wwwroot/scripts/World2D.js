@@ -18,6 +18,7 @@ var World2D = /** @class */ (function (_super) {
         var _this = _super.call(this, orientation, x, y, width, height) || this;
         _this._screenX = _screenX;
         _this._screenY = _screenY;
+        _this._forces = [];
         _this._characters = [];
         _this.applyTransform = function (ctx) { this.viewport.applyTransform(ctx); };
         _this.setViewportTopLeft = _this._isOrientedUp
@@ -132,13 +133,24 @@ var World2D = /** @class */ (function (_super) {
     });
     World2D.prototype.restoreTransform = function (ctx) { this.viewport.restoreTransform(ctx); };
     World2D.prototype.setGravity = function (gravityConst) {
+        if (this._gravity)
+            this.removeForce(this._gravity);
         this._gravity = new Gravity(this.orientation, gravityConst);
+        this.addForce(this._gravity);
     };
     World2D.prototype.createViewport = function (x, y) {
         this._viewport = new Viewport2D(this._orientation, x, y, this._viewportWidth, this._viewportHeight, this._screenX, this._screenY, this._screenWidth, this._screenHeight);
     };
     World2D.prototype.moveViewportHorizontal = function (dx) {
         return this.setViewportTopLeft(this._viewport.left + dx, this.viewport.top);
+    };
+    World2D.prototype.addForce = function (force) {
+        this._forces.push(force);
+    };
+    World2D.prototype.removeForce = function (force) {
+        var index = this._forces.indexOf(force);
+        if (index >= 0)
+            this._forces.splice(index, 1);
     };
     World2D.prototype.addCharacter = function (character) {
         this._characters.push(character);
@@ -148,13 +160,14 @@ var World2D = /** @class */ (function (_super) {
         if (index >= 0)
             this._characters.splice(index, 1);
     };
-    World2D.prototype.update = function (frame, timestamp, delta) {
+    World2D.prototype.update = function (frame, now, timeDelta) {
         var _this = this;
-        this._characters.forEach(function (character) {
-            character.preUpdate(frame, timestamp, delta);
-            character.calculateForce();
+        this._characters.forEach(function (character) { return character.preUpdate(frame, now, timeDelta); }, this);
+        this._forces.forEach(function (force) {
+            force.calculateForce();
+            _this._characters.forEach(function (character) { return force.applyForceTo(character); }, _this);
         }, this);
-        this._characters.forEach(function (character) { return character.update(frame, timestamp, delta, _this._characters); }, this);
+        this._characters.forEach(function (character) { return character.update(frame, now, timeDelta, _this._characters); }, this);
     };
     World2D.prototype.render = function (ctx, frame) {
         this.applyTransform(ctx);

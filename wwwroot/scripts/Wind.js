@@ -48,7 +48,9 @@ var Wind = /** @class */ (function (_super) {
     Wind.prototype.polarUpdated = function () {
         this._velocity = Vector2D.normalize(this._polar.vector);
     };
+    Wind.prototype.calculateForce = function () { };
     Wind.prototype.calculateForceForCharacter = function (character) {
+        this._force = Vector2D.emptyVector;
         var pos = Vector2D.subtract(character.position, this.position);
         if (pos.mag > this._polar.radius)
             return;
@@ -57,8 +59,6 @@ var Wind = /** @class */ (function (_super) {
     };
     Wind.prototype.update = function (frame, timestamp, delta, characters) {
         //super.update(frame, timestamp, delta, characters);
-        var _this = this;
-        characters.forEach(function (character) { return _this.applyForceTo(character); }, this);
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     };
     Wind.prototype.draw = function (ctx, frame) {

@@ -33,6 +33,7 @@
         const worldWidth = _settings.World.wide ? width * 1.5 : width;
         const worldHeight = _settings.World.tall ? height * 1.5 : height;
         this._world = new World2D(orientation, 0, 0, worldWidth, worldHeight, 0, 0);
+        //this._world.setGravity(5);
 
         const world = this._world;
         this._canvasMouse = new MouseTracker(this._canvas);
@@ -42,11 +43,14 @@
         this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 0.05, world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
 
+        world.addForce(this._liquid);
         world.addCharacter(this._liquid);
         world.addCharacter(this._radar);
 
         this._leftFan = this.createFan(world.left, this._settings.LeftFan);
         this._rightFan = this.createFan(world.right, this._settings.RightFan);
+        world.addForce(this._leftFan);
+        world.addForce(this._rightFan);
         world.addCharacter(this._leftFan);
         world.addCharacter(this._rightFan);
 
@@ -92,8 +96,10 @@
     private createRandomBalls() {
         let colors: string[] = this._settings.Balls.colors || ['blue', 'green', 'red', 'black', 'white'];
         let container = this._world.containerBounds;
+        let ballCount = this._settings.Balls.count;
+        //ballCount = 1;
 
-        for (var i = 0; i < this._settings.Balls.count; i++) {
+        for (var i = 0; i < ballCount; i++) {
             let radius = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
             radius = radius * 5;
             let mass = radius * 2;
@@ -110,8 +116,6 @@
                 container,
                 this.addBallToRemove);
 
-            ball.addUniversalForce(this._world.gravity);
-            ball.addUniversalForce(this._friction);
             ball.frictionCoeffecient = this._settings.Balls.frictionCoeffecient * (ball.radius * ball.radius / 2);
             this._balls[i] = ball;
             this._world.addCharacter(ball);

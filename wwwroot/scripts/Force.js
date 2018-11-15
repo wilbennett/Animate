@@ -28,6 +28,7 @@ var Force = /** @class */ (function () {
         configurable: true
     });
     Force.prototype.calculateForce = function () {
+        this._force = Physics.calcNetForce(this._mass, this._acceleration);
     };
     Force.prototype.calculateForceForCharacter = function (character) {
     };
@@ -35,7 +36,11 @@ var Force = /** @class */ (function () {
         if (character === this)
             return;
         this.calculateForceForCharacter(character);
-        character.applyForce(this._force);
+        character.applyForce(this);
+    };
+    Force.prototype.getName = function (obj) {
+        var match = /function (\w+)/.exec(obj.constructor.toString());
+        return match ? match[1] : "*UNKNOWN*";
     };
     return Force;
 }());

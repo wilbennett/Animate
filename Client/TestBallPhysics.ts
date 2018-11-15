@@ -56,10 +56,9 @@
             world.containerBounds,
             ball => {
                 world.removeCharacter(ball);
-                this.createBall(x, radius, color, world);
+                this.createBall(x, radius < 30 ? radius + 5 : 10, color, world);
             });
 
-        ball.addUniversalForce(world.gravity);
         world.addCharacter(ball);
         return ball;
     }

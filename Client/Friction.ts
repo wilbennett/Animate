@@ -3,10 +3,10 @@
         super(Vector2D.emptyVector, -1);
     }
 
-    applyForceTo(character: Character) {
+    calculateForce() { }
+
+    protected calculateForceForCharacter(character: Character) {
         let normal = 1; // TODO: Calculate the proper normal;
         this._force = Physics.calcFriction(character.frictionCoeffecient, normal, character.velocity);
-
-        super.applyForceTo(character);
     }
 }

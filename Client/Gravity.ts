@@ -8,6 +8,8 @@
 
     get gravityConst() { return this._gravityConst; }
 
+    calculateForce() { }
+
     protected calculateForceForCharacter(character: Character) {
         this._force = new Vector2D(0, this._gravityConst * character.mass);
     }

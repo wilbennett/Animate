@@ -90,6 +90,14 @@
     isUp(y: number) { return this._isOrientedUp ? y > 0 : y < 0; }
     isDown(y: number) { return this._isOrientedUp ? y < 0 : y > 0; }
 
+    isAbove = function (sourceY: number, targetY: number) {
+        return this._isOrientedUp ? sourceY > targetY : sourceY < targetY;
+    };
+
+    isBelow = function (sourceY: number, targetY: number) {
+        return this._isOrientedUp ? sourceY < targetY : sourceY > targetY;
+    };
+
     draw(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds) {
         let topLeft = this._screenTopLeft;
         let bottomRight = this._screenBottomRight;

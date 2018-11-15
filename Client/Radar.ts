@@ -26,7 +26,7 @@
         return this._armPos;
     }
 
-    applyForce(force: Vector2D) { }
+    applyForce(force: Force) { }
     applyRotateForce(force: number) { }
 
     update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, characters: Character[]) {

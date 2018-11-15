@@ -19,6 +19,12 @@ var OrientedBounds = /** @class */ (function (_super) {
         _this._orientation = _orientation;
         _this._isOrientedUp = _this._orientation === WorldOrientation.Up;
         _this._isTransformed = false;
+        _this.isAbove = function (sourceY, targetY) {
+            return this._isOrientedUp ? sourceY > targetY : sourceY < targetY;
+        };
+        _this.isBelow = function (sourceY, targetY) {
+            return this._isOrientedUp ? sourceY < targetY : sourceY > targetY;
+        };
         _this.applyTransform = _this._isOrientedUp
             ?
                 function (ctx) {

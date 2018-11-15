@@ -45,9 +45,42 @@
         this.checkBoundary();
     }
 
+    private priorUp = false;
+    private priorY: number;
+    private highY: number;
+    private priorVelocity: Vector2D = Vector2D.emptyVector;
+
     //*
     draw(ctx: CanvasRenderingContext2D, frame: number) {
         super.draw(ctx, frame);
+
+        let ballStrokeColor = "#bbbbbb";
+        let ballStrokeWidth = 1;
+
+        /*
+        let isUp = this._boundary.isUp(this.velocity.y);
+        let isDown = this._boundary.isDown(this.velocity.y);
+        let highColor = "black";
+
+        if (this.priorUp && isDown) {
+            this.highY = this.priorY;
+        }
+
+        if (this._boundary.isAbove(this.position.y, this.highY)) {
+            this.highY = this.position.y;
+            highColor = "white";
+        }
+
+        //if (this.velocity.mag > this.priorVelocity.mag) {
+        if (this.velocity.withY(0).mag > this.priorVelocity.withY(0).mag) {
+            ballStrokeColor = "yellow";
+            ballStrokeWidth = 4;
+        }
+
+        this.priorY = this.position.y;
+        this.priorUp = isUp;
+        this.priorVelocity = this.velocity;
+        //*/
 
         let radiusX = this._radius;
         let radiusY = this._radius;
@@ -79,10 +112,21 @@
 
         ctx.beginPath();
         ctx.globalAlpha = ctx.globalAlpha * 0.7;
-        ctx.strokeStyle = "#bbbbbb";
+        ctx.strokeStyle = ballStrokeColor;
+        ctx.lineWidth = ballStrokeWidth;
         ctx.ellipse(this.position.x, this.position.y, radiusX * 0.95, radiusY * 0.95, 0, 1 + 0, MathEx.TWO_PI - 0.5);
         ctx.stroke();
         ctx.closePath();
+
+        /*
+        ctx.beginPath();
+        ctx.strokeStyle = highColor;
+        ctx.lineWidth = 2;
+        let y = this._boundary.offsetAbove(this.highY, this.radius);
+        ctx.moveTo(this.position.x - this.radius * 2, y);
+        ctx.lineTo(this.position.x + this.radius * 2, y);
+        ctx.stroke();
+        //*/
 
         ctx.restore();
     }

@@ -68,7 +68,8 @@ var Physics = /** @class */ (function () {
         return finalPosition.subtract(initialPosition).div(time);
     };
     Physics.gravityEarth = 9.8;
-    Physics.pixelsPerMeter = 0.1;
+    //static readonly pixelsPerMeter = 0.1;
+    Physics.pixelsPerMeter = 0.07;
     return Physics;
 }());
 //# sourceMappingURL=Physics.js.map

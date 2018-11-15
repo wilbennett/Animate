@@ -11,7 +11,11 @@
         return new Bounds(this._position.x, this._position.y, this._width, this._height);
     }
 
+    calculateForce() { }
+
     protected calculateForceForCharacter(character: Character) {
+        this._force = Vector2D.emptyVector;
+
         if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y)) return;
 
         let c = this._frictionCoeffecient + character.frictionCoeffecient;
@@ -19,12 +23,9 @@
     }
 
     update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {
-        //super.update(frame, timestamp, delta, characters);
-
-        characters.forEach(character => this.applyForceTo(character), this);
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D, frame: number) {
         let origAlpha = ctx.globalAlpha;
         ctx.globalAlpha = 0.5;
         ctx.beginPath();

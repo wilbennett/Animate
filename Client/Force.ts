@@ -15,6 +15,7 @@
     get acceleration() { return this._acceleration; }
 
     calculateForce() {
+        this._force = Physics.calcNetForce(this._mass, this._acceleration);
     }
 
     protected calculateForceForCharacter(character: Character) {
@@ -24,6 +25,11 @@
         if (<Force>character === this) return;
 
         this.calculateForceForCharacter(character);
-        character.applyForce(this._force);
+        character.applyForce(this);
+    }
+
+    getName(obj: object) {
+        let match = /function (\w+)/.exec(obj.constructor.toString());
+        return match ? match[1] : "*UNKNOWN*";
     }
 }

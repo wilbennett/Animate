@@ -4,12 +4,12 @@
     "alwaysStrict": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
-    "noEmitOnError": true,
+    "noEmitOnError": false,
     "removeComments": false,
     "sourceMap": true,
     "allowJs": true,
     "outDir": "wwwroot/scripts",
-    "target": "es5",
+    "target": "es2018",
     "module": "none"
   },
   "include": [

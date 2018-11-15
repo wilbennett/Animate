@@ -6,6 +6,7 @@
     private _containerBounds: ContainerBounds;
     private _gravity: Gravity;
     private _viewport: Viewport2D;
+    private _forces: Force[] = [];
     private _characters: Character[] = [];
 
     constructor(
@@ -58,7 +59,10 @@
     restoreTransform(ctx: CanvasRenderingContext2D) { this.viewport.restoreTransform(ctx); }
 
     setGravity(gravityConst: number) {
+        if (this._gravity) this.removeForce(this._gravity);
+
         this._gravity = new Gravity(this.orientation, gravityConst);
+        this.addForce(this._gravity);
     }
 
     protected createViewport(x: number, y: number) {
@@ -158,6 +162,17 @@
             return this.setViewportTopLeft(x - this.viewport.width / 2, y - this.viewport.height / 2);
         };
 
+    addForce(force: Force) {
+        this._forces.push(force);
+    }
+
+    removeForce(force: Force) {
+        let index = this._forces.indexOf(force);
+
+        if (index >= 0)
+            this._forces.splice(index, 1);
+    }
+
     addCharacter(character: Character) {
         this._characters.push(character);
     }
@@ -169,13 +184,15 @@
             this._characters.splice(index, 1);
     }
 
-    update(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
-        this._characters.forEach(character => {
-            character.preUpdate(frame, timestamp, delta);
-            character.calculateForce();
+    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number) {
+        this._characters.forEach(character => character.preUpdate(frame, now, timeDelta), this);
+
+        this._forces.forEach(force => {
+            force.calculateForce();
+            this._characters.forEach(character => force.applyForceTo(character), this);
         }, this);
 
-        this._characters.forEach(character => character.update(frame, timestamp, delta, this._characters), this);
+        this._characters.forEach(character => character.update(frame, now, timeDelta, this._characters), this);
     }
 
     render(ctx: CanvasRenderingContext2D, frame: number) {

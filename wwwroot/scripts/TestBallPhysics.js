@@ -42,9 +42,8 @@ var TestBallPhysics = /** @class */ (function () {
         var mass = radius * 5;
         var ball = new Ball(radius, color, new Vector2D(x, world.topOffsetBelow(radius)), new Vector2D(0, 0), mass, world.gravity.gravityConst, world.containerBounds, function (ball) {
             world.removeCharacter(ball);
-            _this.createBall(x, radius, color, world);
+            _this.createBall(x, radius < 30 ? radius + 5 : 10, color, world);
         });
-        ball.addUniversalForce(world.gravity);
         world.addCharacter(ball);
         return ball;
     };
