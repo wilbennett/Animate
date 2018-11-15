@@ -29,8 +29,8 @@
     applyForce(force: Force) { }
     applyRotateForce(force: number) { }
 
-    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, characters: Character[]) {
-        super.update(frame, now, timeDelta, characters);
+    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {
+        super.update(frame, now, timeDelta, world);
 
         this._armManager = this._armManager.withRadians(this._rotateRadians);
         this._armPos = null;

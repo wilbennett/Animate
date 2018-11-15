@@ -26,10 +26,10 @@
         super.adjustRotateAcceleration();
     }
 
-    update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {
+    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {
         let origY = this._position.y;
 
-        super.update(frame, timestamp, delta, characters);
+        super.update(frame, now, timeDelta, world);
 
         if (!this._allowBounce) {
             this.position = this.position.withY(origY);

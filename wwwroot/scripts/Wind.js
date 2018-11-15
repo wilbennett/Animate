@@ -56,8 +56,8 @@ var Wind = /** @class */ (function (_super) {
         var force = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
         return force.div(character.velocity.mag);
     };
-    Wind.prototype.update = function (frame, timestamp, delta, characters) {
-        //super.update(frame, timestamp, delta, characters);
+    Wind.prototype.update = function (frame, now, timeDelta, world) {
+        //super.update(frame, timestamp, delta, world);
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     };
     Wind.prototype.draw = function (ctx, frame) {

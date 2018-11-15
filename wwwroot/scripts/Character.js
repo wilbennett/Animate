@@ -113,7 +113,7 @@ var Character = /** @class */ (function (_super) {
         if (Math.abs(newVelocity) < this.maxRotateVelocity)
             this._rotateVelocity = newVelocity;
     };
-    Character.prototype.update = function (frame, now, timeDelta, characters) {
+    Character.prototype.update = function (frame, now, timeDelta, world) {
         this.adjustAcceleration();
         this.adjustVelocity();
         this.adjustRotateAcceleration();

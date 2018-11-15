@@ -41,6 +41,7 @@
 
     get gravity() { return this._gravity; }
     get viewport() { return this._viewport; }
+    get characters() { return this._characters; }
 
     get containerBounds() {
         if (!this._containerBounds) {
@@ -192,7 +193,7 @@
             this._characters.forEach(character => force.applyForceTo(character), this);
         }, this);
 
-        this._characters.forEach(character => character.update(frame, now, timeDelta, this._characters), this);
+        this._characters.forEach(character => character.update(frame, now, timeDelta, this), this);
     }
 
     render(ctx: CanvasRenderingContext2D, frame: number) {

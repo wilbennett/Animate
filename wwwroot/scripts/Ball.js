@@ -42,9 +42,9 @@ var Ball = /** @class */ (function (_super) {
         this.applyRotateForce(this.acceleration.x / 5);
         _super.prototype.adjustRotateAcceleration.call(this);
     };
-    Ball.prototype.update = function (frame, timestamp, delta, characters) {
+    Ball.prototype.update = function (frame, now, timeDelta, world) {
         var origY = this._position.y;
-        _super.prototype.update.call(this, frame, timestamp, delta, characters);
+        _super.prototype.update.call(this, frame, now, timeDelta, world);
         if (!this._allowBounce) {
             this.position = this.position.withY(origY);
             this._velocity = this.velocity.withY(0);

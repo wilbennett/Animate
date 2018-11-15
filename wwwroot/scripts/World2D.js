@@ -121,6 +121,11 @@ var World2D = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(World2D.prototype, "characters", {
+        get: function () { return this._characters; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(World2D.prototype, "containerBounds", {
         get: function () {
             if (!this._containerBounds) {
@@ -167,7 +172,7 @@ var World2D = /** @class */ (function (_super) {
             force.calculateForce();
             _this._characters.forEach(function (character) { return force.applyForceTo(character); }, _this);
         }, this);
-        this._characters.forEach(function (character) { return character.update(frame, now, timeDelta, _this._characters); }, this);
+        this._characters.forEach(function (character) { return character.update(frame, now, timeDelta, _this); }, this);
     };
     World2D.prototype.render = function (ctx, frame) {
         this.applyTransform(ctx);

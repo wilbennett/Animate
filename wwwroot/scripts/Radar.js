@@ -55,8 +55,8 @@ var Radar = /** @class */ (function (_super) {
     });
     Radar.prototype.applyForce = function (force) { };
     Radar.prototype.applyRotateForce = function (force) { };
-    Radar.prototype.update = function (frame, now, timeDelta, characters) {
-        _super.prototype.update.call(this, frame, now, timeDelta, characters);
+    Radar.prototype.update = function (frame, now, timeDelta, world) {
+        _super.prototype.update.call(this, frame, now, timeDelta, world);
         this._armManager = this._armManager.withRadians(this._rotateRadians);
         this._armPos = null;
     };

@@ -88,7 +88,7 @@
             this._rotateVelocity = newVelocity;
     }
 
-    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, characters: Character[]) {
+    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {
         this.adjustAcceleration();
         this.adjustVelocity();
         this.adjustRotateAcceleration();

@@ -35,7 +35,7 @@ var Liquid = /** @class */ (function (_super) {
         var c = this._frictionCoeffecient + character.frictionCoeffecient;
         return Physics.calcDrag(c, character.velocity);
     };
-    Liquid.prototype.update = function (frame, timestamp, delta, characters) {
+    Liquid.prototype.update = function (frame, now, timeDelta, world) {
     };
     Liquid.prototype.draw = function (ctx, frame) {
         var origAlpha = ctx.globalAlpha;

@@ -21,7 +21,7 @@
         return Physics.calcDrag(c, character.velocity);
     }
 
-    update(frame: number, timestamp: DOMHighResTimeStamp, delta: number, characters: Character[]) {
+    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {
     }
 
     draw(ctx: CanvasRenderingContext2D, frame: number) {
