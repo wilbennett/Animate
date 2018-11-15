@@ -95,6 +95,11 @@
         this.setViewport(viewport);
     }
 
+    addViewport() {
+    }
+
+    removeViewport(viewport: Viewport2D) { this._viewports.remove(viewport); }
+
     setViewportTopLeft = this._isOrientedUp
         ?
         function (x: number, y: number) {
@@ -179,27 +184,11 @@
             return this.setViewportTopLeft(x - this.viewport.width / 2, y - this.viewport.height / 2);
         };
 
-    addForce(force: Force) {
-        this._forces.push(force);
-    }
+    addForce(force: Force) { this._forces.push(force); }
+    removeForce(force: Force) { this._forces.remove(force); }
 
-    removeForce(force: Force) {
-        let index = this._forces.indexOf(force);
-
-        if (index >= 0)
-            this._forces.splice(index, 1);
-    }
-
-    addCharacter(character: Character) {
-        this._characters.push(character);
-    }
-
-    removeCharacter(character: Character) {
-        let index = this._characters.indexOf(character);
-
-        if (index >= 0)
-            this._characters.splice(index, 1);
-    }
+    addCharacter(character: Character) { this._characters.push(character); }
+    removeCharacter(character: Character) { this._characters.remove(character); }
 
     update(frame: number, now: DOMHighResTimeStamp, timeDelta: number) {
         this._characters.forEach(character => character.preUpdate(frame, now, timeDelta), this);

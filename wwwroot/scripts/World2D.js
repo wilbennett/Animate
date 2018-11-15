@@ -166,25 +166,16 @@ var World2D = /** @class */ (function (_super) {
         var viewport = new Viewport2D(this._ctx, this._orientation, x, y, this._viewportWidth, this._viewportHeight, this._screenX, this._screenY, this._screenWidth, this._screenHeight);
         this.setViewport(viewport);
     };
+    World2D.prototype.addViewport = function () {
+    };
+    World2D.prototype.removeViewport = function (viewport) { this._viewports.remove(viewport); };
     World2D.prototype.moveViewportHorizontal = function (dx) {
         return this.setViewportTopLeft(this.viewport.left + dx, this.viewport.top);
     };
-    World2D.prototype.addForce = function (force) {
-        this._forces.push(force);
-    };
-    World2D.prototype.removeForce = function (force) {
-        var index = this._forces.indexOf(force);
-        if (index >= 0)
-            this._forces.splice(index, 1);
-    };
-    World2D.prototype.addCharacter = function (character) {
-        this._characters.push(character);
-    };
-    World2D.prototype.removeCharacter = function (character) {
-        var index = this._characters.indexOf(character);
-        if (index >= 0)
-            this._characters.splice(index, 1);
-    };
+    World2D.prototype.addForce = function (force) { this._forces.push(force); };
+    World2D.prototype.removeForce = function (force) { this._forces.remove(force); };
+    World2D.prototype.addCharacter = function (character) { this._characters.push(character); };
+    World2D.prototype.removeCharacter = function (character) { this._characters.remove(character); };
     World2D.prototype.update = function (frame, now, timeDelta) {
         var _this = this;
         this._characters.forEach(function (character) { return character.preUpdate(frame, now, timeDelta); }, this);
