@@ -11,6 +11,7 @@
     private _characters: Character[] = [];
 
     constructor(
+        private _ctx: CanvasRenderingContext2D,
         orientation: WorldOrientation,
         x: number,
         y: number,
@@ -40,6 +41,7 @@
         this.createViewport(this.x, this.y);
     }
 
+    get ctx() { return this._ctx; }
     get gravity() { return this._gravity; }
     get viewport() { return this._viewport; }
     get characters() { return this._characters; }
@@ -60,8 +62,8 @@
         return this._containerBounds;
     }
 
-    applyTransform = function(ctx: CanvasRenderingContext2D) { this.viewport.applyTransform(ctx); }
-    restoreTransform(ctx: CanvasRenderingContext2D) { this.viewport.restoreTransform(ctx); }
+    applyTransform() { this.viewport.applyTransform(); }
+    restoreTransform() { this.viewport.restoreTransform(); }
 
     setGravity(gravityConst: number) {
         if (this._gravity) this.removeForce(this._gravity);
@@ -72,6 +74,7 @@
 
     protected createViewport(x: number, y: number) {
         this._viewport = new Viewport2D(
+            this._ctx,
             this._orientation,
             x,
             y,
@@ -201,11 +204,11 @@
     }
 
     render(ctx: CanvasRenderingContext2D, frame: number) {
-        this.applyTransform(ctx);
+        this.applyTransform();
 
         this._characters.forEach(character => character.draw(ctx, frame));
 
-        this.restoreTransform(ctx);
+        this.restoreTransform();
     }
 
     localizeDegrees = this._isOrientedUp

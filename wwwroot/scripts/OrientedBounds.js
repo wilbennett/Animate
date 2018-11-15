@@ -25,24 +25,6 @@ var OrientedBounds = /** @class */ (function (_super) {
         _this.isBelow = function (sourceY, targetY) {
             return this._isOrientedUp ? sourceY < targetY : sourceY > targetY;
         };
-        _this.applyTransform = _this._isOrientedUp
-            ?
-                function (ctx) {
-                    if (this.isTransformed)
-                        return;
-                    ctx.save();
-                    ctx.transform(1, 0, 0, -1, 0, this.maxY + this.y);
-                    this.applyClipRegion(ctx);
-                    this._isTransformed = true;
-                }
-            :
-                function (ctx) {
-                    if (this.isTransformed)
-                        return;
-                    ctx.save();
-                    this.applyClipRegion(ctx);
-                    this._isTransformed = true;
-                };
         _this.flipBoundsToScreenY = _this._isOrientedUp
             ? function (y) { return this._boundsToScreenOffsetY - y; }
             : function (y) { return y; };
@@ -177,13 +159,23 @@ var OrientedBounds = /** @class */ (function (_super) {
         //ctx.lineTo(topLeft.x, topLeft.y);
         //ctx.stroke();
     };
-    OrientedBounds.prototype.applyClipRegion = function (ctx) {
+    OrientedBounds.prototype.applyClipRegionToContext = function (ctx) {
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.clip();
         ctx.closePath();
     };
-    OrientedBounds.prototype.restoreTransform = function (ctx) {
+    OrientedBounds.prototype.applyTransformToContext = function (ctx) {
+        if (this.isTransformed)
+            return;
+        ctx.save();
+        if (this._isOrientedUp) {
+            ctx.transform(1, 0, 0, -1, 0, this.maxY + this.y);
+        }
+        this.applyClipRegionToContext(ctx);
+        this._isTransformed = true;
+    };
+    OrientedBounds.prototype.restoreTransformToContext = function (ctx) {
         if (!this.isTransformed)
             return;
         ctx.restore();

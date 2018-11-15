@@ -151,16 +151,16 @@ class TestBounds {
         box.moveUpRight();
 
         //* // Normal.
-        this._viewportUp = new Viewport2D(WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
+        this._viewportUp = new Viewport2D(this._ctx, WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
 
         box.moveDown();
-        this._viewportDown = new Viewport2D(WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
+        this._viewportDown = new Viewport2D(this._ctx, WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
 
         box.moveUpRight();
-        this._viewportUpT = new Viewport2D(WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
+        this._viewportUpT = new Viewport2D(this._ctx, WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
 
         box.moveDown();
-        this._viewportDownT = new Viewport2D(WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
+        this._viewportDownT = new Viewport2D(this._ctx, WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
 
         this._boundsUp = new ContainerBounds(WorldOrientation.Up, 10, 10, this._viewportUp.width - 20, this._viewportUp.height - 20);
         this._boundsDown = new ContainerBounds(WorldOrientation.Down, 10, 10, this._viewportDown.width - 20, this._viewportDown.height - 20);
@@ -180,16 +180,16 @@ class TestBounds {
         box.moveDown();
 
         let scale = 0.75;
-        this._viewportUpU = new Viewport2D(WorldOrientation.Up, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
+        this._viewportUpU = new Viewport2D(this._ctx, WorldOrientation.Up, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
 
         box.moveDown();
-        this._viewportDownU = new Viewport2D(WorldOrientation.Down, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
+        this._viewportDownU = new Viewport2D(this._ctx, WorldOrientation.Down, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
 
         box.moveUpRight();
-        this._viewportUpUT = new Viewport2D(WorldOrientation.Up, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
+        this._viewportUpUT = new Viewport2D(this._ctx, WorldOrientation.Up, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
 
         box.moveDown();
-        this._viewportDownUT = new Viewport2D(WorldOrientation.Down, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
+        this._viewportDownUT = new Viewport2D(this._ctx, WorldOrientation.Down, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
 
         this._boundsUpU = new ContainerBounds(WorldOrientation.Up, 10, 10, this._viewportUpU.width - 20, this._viewportUpU.height - 20);
         this._boundsDownU = new ContainerBounds(WorldOrientation.Down, 10, 10, this._viewportDownU.width - 20, this._viewportDownU.height - 20);
@@ -206,16 +206,16 @@ class TestBounds {
         // Scale down.
         scale = 2;
         box.moveUpRight();
-        this._viewportUpD = new Viewport2D(WorldOrientation.Up, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
+        this._viewportUpD = new Viewport2D(this._ctx, WorldOrientation.Up, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
 
         box.moveDown();
-        this._viewportDownD = new Viewport2D(WorldOrientation.Down, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
+        this._viewportDownD = new Viewport2D(this._ctx, WorldOrientation.Down, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
 
         box.moveUpRight();
-        this._viewportUpDT = new Viewport2D(WorldOrientation.Up, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
+        this._viewportUpDT = new Viewport2D(this._ctx, WorldOrientation.Up, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
 
         box.moveDown();
-        this._viewportDownDT = new Viewport2D(WorldOrientation.Down, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
+        this._viewportDownDT = new Viewport2D(this._ctx, WorldOrientation.Down, 0, 0, box.w * scale, box.h * scale, box.x, box.y, box.w, box.h);
 
         this._boundsUpD = new ContainerBounds(WorldOrientation.Up, 10, 10, this._viewportUpD.width - 20, this._viewportUpD.height - 20);
         this._boundsDownD = new ContainerBounds(WorldOrientation.Down, 10, 10, this._viewportDownD.width - 20, this._viewportDownD.height - 20);
@@ -242,10 +242,10 @@ class TestBounds {
     testOrientedBoundsT(bounds: OrientedBounds, line: Line2D, color: string) {
         const ctx = this._ctx;
 
-        bounds.applyTransform(ctx);
+        bounds.applyTransformToContext(ctx);
         bounds.draw(ctx, 2, color);
         line.draw(ctx, 2, color);
-        bounds.restoreTransform(ctx);
+        bounds.restoreTransformToContext(ctx);
     }
 
     testViewport(
@@ -270,12 +270,12 @@ class TestBounds {
         boundsColor: string) {
         const ctx = this._ctx;
 
-        viewport.applyTransform(ctx);
+        viewport.applyTransform();
         ball.update();
         viewport.draw(ctx, 2, viewportColor);
         bounds.draw(ctx, 2, boundsColor);
         ball.draw(ctx);
-        viewport.restoreTransform(ctx);
+        viewport.restoreTransform();
     }
 
     drawGuideLine(bounds: OrientedBounds) {

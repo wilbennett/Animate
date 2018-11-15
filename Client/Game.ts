@@ -32,7 +32,7 @@
         const orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
         const worldWidth = _settings.World.wide ? width * 1.5 : width;
         const worldHeight = _settings.World.tall ? height * 1.5 : height;
-        this._world = new World2D(orientation, 0, 0, worldWidth, worldHeight, 0, 0);
+        this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, 0, 0);
         //this._world.setGravity(5);
 
         const world = this._world;
@@ -160,7 +160,7 @@
         const viewport = world.viewport;
         const center = world.center;
 
-        viewport.applyTransform(ctx);
+        viewport.applyTransform();
 
         this._backgroundOffset += this._backgroundDelta;
 
@@ -180,7 +180,7 @@
         this._backgroundGradient.addColorStop(this._backgroundOffset, this._backColorEnd);
         //this.backgroundGradient.addColorStop(1, this.paintedBackStart);
 
-        viewport.restoreTransform(ctx);
+        viewport.restoreTransform();
     }
 
     private paintBackground() {
@@ -189,7 +189,7 @@
         const viewport = world.viewport;
         const center = world.center;
 
-        viewport.applyTransform(ctx);
+        viewport.applyTransform();
 
         ctx.fillStyle = this._backgroundGradient;
         let bounds: Bounds = viewport;
@@ -204,7 +204,7 @@
         ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
         ctx.closePath();
 
-        viewport.restoreTransform(ctx);
+        viewport.restoreTransform();
     }
 
     private updateFan(fan: Wind, settings: Dynamic) {

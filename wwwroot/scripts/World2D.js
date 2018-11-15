@@ -14,14 +14,14 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var World2D = /** @class */ (function (_super) {
     __extends(World2D, _super);
-    function World2D(orientation, x, y, width, height, _screenX, _screenY, screenWidth, screenHeight, viewportWidth, viewportHeight) {
+    function World2D(_ctx, orientation, x, y, width, height, _screenX, _screenY, screenWidth, screenHeight, viewportWidth, viewportHeight) {
         var _this = _super.call(this, orientation, x, y, width, height) || this;
+        _this._ctx = _ctx;
         _this._screenX = _screenX;
         _this._screenY = _screenY;
         _this._pixelsPerMeter = Physics.pixelsPerMeter;
         _this._forces = [];
         _this._characters = [];
-        _this.applyTransform = function (ctx) { this.viewport.applyTransform(ctx); };
         _this.setViewportTopLeft = _this._isOrientedUp
             ?
                 function (x, y) {
@@ -112,6 +112,11 @@ var World2D = /** @class */ (function (_super) {
         _this.createViewport(_this.x, _this.y);
         return _this;
     }
+    Object.defineProperty(World2D.prototype, "ctx", {
+        get: function () { return this._ctx; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(World2D.prototype, "gravity", {
         get: function () { return this._gravity; },
         enumerable: true,
@@ -143,7 +148,8 @@ var World2D = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    World2D.prototype.restoreTransform = function (ctx) { this.viewport.restoreTransform(ctx); };
+    World2D.prototype.applyTransform = function () { this.viewport.applyTransform(); };
+    World2D.prototype.restoreTransform = function () { this.viewport.restoreTransform(); };
     World2D.prototype.setGravity = function (gravityConst) {
         if (this._gravity)
             this.removeForce(this._gravity);
@@ -151,7 +157,7 @@ var World2D = /** @class */ (function (_super) {
         this.addForce(this._gravity);
     };
     World2D.prototype.createViewport = function (x, y) {
-        this._viewport = new Viewport2D(this._orientation, x, y, this._viewportWidth, this._viewportHeight, this._screenX, this._screenY, this._screenWidth, this._screenHeight);
+        this._viewport = new Viewport2D(this._ctx, this._orientation, x, y, this._viewportWidth, this._viewportHeight, this._screenX, this._screenY, this._screenWidth, this._screenHeight);
     };
     World2D.prototype.moveViewportHorizontal = function (dx) {
         return this.setViewportTopLeft(this._viewport.left + dx, this.viewport.top);
@@ -182,9 +188,9 @@ var World2D = /** @class */ (function (_super) {
         this._characters.forEach(function (character) { return character.update(frame, now, timeDelta, _this); }, this);
     };
     World2D.prototype.render = function (ctx, frame) {
-        this.applyTransform(ctx);
+        this.applyTransform();
         this._characters.forEach(function (character) { return character.draw(ctx, frame); });
-        this.restoreTransform(ctx);
+        this.restoreTransform();
     };
     return World2D;
 }(OrientedBounds));

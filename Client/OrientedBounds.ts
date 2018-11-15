@@ -122,20 +122,19 @@
         //ctx.stroke();
     }
 
-    protected applyClipRegion(ctx: CanvasRenderingContext2D) {
+    protected applyClipRegionToContext(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.clip();
         ctx.closePath();
     }
 
-    applyTransform = this._isOrientedUp
-        ?
-        function (ctx: CanvasRenderingContext2D) {
-            if (this.isTransformed) return;
+    applyTransformToContext(ctx: CanvasRenderingContext2D) {
+        if (this.isTransformed) return;
 
-            ctx.save();
+        ctx.save();
 
+        if (this._isOrientedUp) {
             ctx.transform(
                 1,
                 0,
@@ -143,20 +142,13 @@
                 -1,
                 0,
                 this.maxY + this.y);
-
-            this.applyClipRegion(ctx);
-            this._isTransformed = true;
         }
-        :
-        function (ctx: CanvasRenderingContext2D) {
-            if (this.isTransformed) return;
 
-            ctx.save();
-            this.applyClipRegion(ctx);
-            this._isTransformed = true;
-        };
+        this.applyClipRegionToContext(ctx);
+        this._isTransformed = true;
+    }
 
-    restoreTransform(ctx: CanvasRenderingContext2D) {
+    restoreTransformToContext(ctx: CanvasRenderingContext2D) {
         if (!this.isTransformed) return;
 
         ctx.restore();

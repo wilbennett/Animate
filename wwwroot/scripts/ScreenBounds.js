@@ -16,25 +16,6 @@ var ScreenBounds = /** @class */ (function (_super) {
     __extends(ScreenBounds, _super);
     function ScreenBounds(orientation, x, y, width, height, screenX, screenY, screenWidth, screenHeight) {
         var _this = _super.call(this, orientation, x, y, width, height) || this;
-        _this.applyTransform = _this._isOrientedUp
-            ?
-                function (ctx) {
-                    if (this.isTransformed)
-                        return;
-                    ctx.save();
-                    ctx.transform(this._boundsToScreenScaleX, 0, 0, -this._boundsToScreenScaleY, this.screenLeft + this.x, this.screenTop + this.y + this.screenHeight - 1);
-                    this.applyClipRegion(ctx);
-                    this._isTransformed = true;
-                }
-            :
-                function (ctx) {
-                    if (this.isTransformed)
-                        return;
-                    ctx.save();
-                    ctx.transform(this._boundsToScreenScaleX, 0, 0, this._boundsToScreenScaleY, this.screenLeft + this.x, this.screenTop + this.y);
-                    this.applyClipRegion(ctx);
-                    this._isTransformed = true;
-                };
         if (!screenWidth)
             screenWidth = width;
         if (!screenHeight)
@@ -45,11 +26,24 @@ var ScreenBounds = /** @class */ (function (_super) {
         _this.calcScreenOffsets();
         return _this;
     }
-    ScreenBounds.prototype.applyClipRegion = function (ctx) {
+    ScreenBounds.prototype.applyClipRegionToContext = function (ctx) {
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.clip();
         ctx.closePath();
+    };
+    ScreenBounds.prototype.applyTransformToContext = function (ctx) {
+        if (this.isTransformed)
+            return;
+        ctx.save();
+        if (this._isOrientedUp) {
+            ctx.transform(this._boundsToScreenScaleX, 0, 0, -this._boundsToScreenScaleY, this.screenLeft + this.x, this.screenTop + this.y + this.screenHeight - 1);
+        }
+        else {
+            ctx.transform(this._boundsToScreenScaleX, 0, 0, this._boundsToScreenScaleY, this.screenLeft + this.x, this.screenTop + this.y);
+        }
+        this.applyClipRegionToContext(ctx);
+        this._isTransformed = true;
     };
     return ScreenBounds;
 }(OrientedBounds));

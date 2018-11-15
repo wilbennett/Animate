@@ -21,19 +21,19 @@
         this.calcScreenOffsets();
     }
 
-    protected applyClipRegion(ctx: CanvasRenderingContext2D) {
+    protected applyClipRegionToContext(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.clip();
         ctx.closePath();
     }
 
-    applyTransform = this._isOrientedUp
-        ?
-        function (ctx: CanvasRenderingContext2D) {
-            if (this.isTransformed) return;
+    applyTransformToContext(ctx: CanvasRenderingContext2D) {
+        if (this.isTransformed) return;
 
-            ctx.save();
+        ctx.save();
+
+        if (this._isOrientedUp) {
             ctx.transform(
                 this._boundsToScreenScaleX,
                 0,
@@ -41,15 +41,8 @@
                 -this._boundsToScreenScaleY,
                 this.screenLeft + this.x,
                 this.screenTop + this.y + this.screenHeight - 1);
-
-            this.applyClipRegion(ctx);
-            this._isTransformed = true;
         }
-        :
-        function (ctx: CanvasRenderingContext2D) {
-            if (this.isTransformed) return;
-
-            ctx.save();
+        else {
             ctx.transform(
                 this._boundsToScreenScaleX,
                 0,
@@ -57,8 +50,9 @@
                 this._boundsToScreenScaleY,
                 this.screenLeft + this.x,
                 this.screenTop + this.y);
+        }
 
-            this.applyClipRegion(ctx);
-            this._isTransformed = true;
-        };
+        this.applyClipRegionToContext(ctx);
+        this._isTransformed = true;
+    }
 }

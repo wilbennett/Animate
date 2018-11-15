@@ -23,7 +23,7 @@ var Game = /** @class */ (function () {
         var orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
         var worldWidth = _settings.World.wide ? width * 1.5 : width;
         var worldHeight = _settings.World.tall ? height * 1.5 : height;
-        this._world = new World2D(orientation, 0, 0, worldWidth, worldHeight, 0, 0);
+        this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, 0, 0);
         //this._world.setGravity(5);
         var world = this._world;
         this._canvasMouse = new MouseTracker(this._canvas);
@@ -117,7 +117,7 @@ var Game = /** @class */ (function () {
         var world = this._world;
         var viewport = world.viewport;
         var center = world.center;
-        viewport.applyTransform(ctx);
+        viewport.applyTransform();
         this._backgroundOffset += this._backgroundDelta;
         if (this._backgroundOffset < 0.6) {
             this._backgroundOffset = 0.6;
@@ -132,14 +132,14 @@ var Game = /** @class */ (function () {
         this._backgroundGradient.addColorStop(0, this._backColorStart);
         this._backgroundGradient.addColorStop(this._backgroundOffset, this._backColorEnd);
         //this.backgroundGradient.addColorStop(1, this.paintedBackStart);
-        viewport.restoreTransform(ctx);
+        viewport.restoreTransform();
     };
     Game.prototype.paintBackground = function () {
         var ctx = this._ctx;
         var world = this._world;
         var viewport = world.viewport;
         var center = world.center;
-        viewport.applyTransform(ctx);
+        viewport.applyTransform();
         ctx.fillStyle = this._backgroundGradient;
         var bounds = viewport;
         ctx.beginPath();
@@ -151,7 +151,7 @@ var Game = /** @class */ (function () {
         ctx.strokeStyle = "black";
         ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
         ctx.closePath();
-        viewport.restoreTransform(ctx);
+        viewport.restoreTransform();
     };
     Game.prototype.updateFan = function (fan, settings) {
         var world = this._world;

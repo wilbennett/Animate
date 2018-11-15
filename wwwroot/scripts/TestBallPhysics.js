@@ -16,11 +16,11 @@ var TestBallPhysics = /** @class */ (function () {
         var box = new TestBox(10, 10, 40, 200, 10);
         var radius = 10;
         var ballColor = "blue";
-        this._worldZeroGU = new World2D(WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
+        this._worldZeroGU = new World2D(this._ctx, WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
         this._worldZeroGU.setGravity(0);
         var ball = this.createBall(this._worldZeroGU.center.x, radius, ballColor, this._worldZeroGU);
         box.moveDown();
-        this._worldZeroGD = new World2D(WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
+        this._worldZeroGD = new World2D(this._ctx, WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
         this._worldZeroGD.setGravity(0);
         ball = this.createBall(this._worldZeroGD.center.x, radius, ballColor, this._worldZeroGD);
         box.moveUpRight();
