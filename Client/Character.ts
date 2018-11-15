@@ -73,8 +73,8 @@
             this._velocity = newVelocity;
     }
 
-    adjustPosition(velocity: Vector2D) {
-        this._position = this._position.add(Physics.toPixels(velocity));
+    adjustPosition(velocity: Vector2D, pixelsPerMeter: number) {
+        this._position = this._position.add(Physics.toPixels(velocity, pixelsPerMeter));
     }
 
     adjustRotateAcceleration() {
@@ -94,7 +94,7 @@
         this.adjustRotateAcceleration();
         this.adjustRotateVelocity();
 
-        this.adjustPosition(this._velocity.mult(timeDelta));
+        this.adjustPosition(this._velocity.mult(timeDelta), world.pixelsPerMeter);
         this._rotateRadians = MathEx.constrainRadians(this._rotateRadians + this._rotateVelocity * timeDelta);
 
         this._lastUpdateFrame = frame;

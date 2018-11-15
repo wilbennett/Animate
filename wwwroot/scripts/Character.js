@@ -102,8 +102,8 @@ var Character = /** @class */ (function (_super) {
         if (this.maxSpeed < 0 || newVelocity.mag < this.maxSpeed)
             this._velocity = newVelocity;
     };
-    Character.prototype.adjustPosition = function (velocity) {
-        this._position = this._position.add(Physics.toPixels(velocity));
+    Character.prototype.adjustPosition = function (velocity, pixelsPerMeter) {
+        this._position = this._position.add(Physics.toPixels(velocity, pixelsPerMeter));
     };
     Character.prototype.adjustRotateAcceleration = function () {
         this._rotateAcceleration = Physics.calcRotationAcceleration(this._appliedRotateForce, this._mass);
@@ -118,7 +118,7 @@ var Character = /** @class */ (function (_super) {
         this.adjustVelocity();
         this.adjustRotateAcceleration();
         this.adjustRotateVelocity();
-        this.adjustPosition(this._velocity.mult(timeDelta));
+        this.adjustPosition(this._velocity.mult(timeDelta), world.pixelsPerMeter);
         this._rotateRadians = MathEx.constrainRadians(this._rotateRadians + this._rotateVelocity * timeDelta);
         this._lastUpdateFrame = frame;
     };
