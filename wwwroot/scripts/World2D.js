@@ -187,9 +187,10 @@ var World2D = /** @class */ (function (_super) {
         }, this);
         this._characters.forEach(function (character) { return character.update(frame, now, timeDelta, _this); }, this);
     };
-    World2D.prototype.render = function (ctx, frame) {
+    World2D.prototype.render = function (frame) {
+        var _this = this;
         this.applyTransform();
-        this._characters.forEach(function (character) { return character.draw(ctx, frame); });
+        this._characters.forEach(function (character) { return character.draw(_this.viewport, frame); });
         this.restoreTransform();
     };
     return World2D;

@@ -67,7 +67,7 @@
 
         world.viewport.draw(ctx, 2, "white");
         world.update(0, now, 1);
-        world.render(ctx, 0);
+        world.render(0);
     }
 
     private gameLoop = (now: DOMHighResTimeStamp) => {

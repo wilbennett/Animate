@@ -203,10 +203,10 @@
         this._characters.forEach(character => character.update(frame, now, timeDelta, this), this);
     }
 
-    render(ctx: CanvasRenderingContext2D, frame: number) {
+    render(frame: number) {
         this.applyTransform();
 
-        this._characters.forEach(character => character.draw(ctx, frame));
+        this._characters.forEach(character => character.draw(this.viewport, frame));
 
         this.restoreTransform();
     }

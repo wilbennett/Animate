@@ -188,7 +188,7 @@ var Game = /** @class */ (function () {
         this.paintRadarAngle();
         var world = this._world;
         var viewport = world.viewport;
-        this._world.render(this._ctx, frame);
+        this._world.render(frame);
         if (this._balls.length === 0)
             return;
         //let ball = this.balls[0];

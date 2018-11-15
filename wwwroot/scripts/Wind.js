@@ -60,7 +60,8 @@ var Wind = /** @class */ (function (_super) {
         //super.update(frame, timestamp, delta, world);
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     };
-    Wind.prototype.draw = function (ctx, frame) {
+    Wind.prototype.draw = function (viewport, frame) {
+        var ctx = viewport.ctx;
         var origAlpha = ctx.globalAlpha;
         ctx.beginPath();
         ctx.ellipse(this.position.x, this.position.y, 10, 10, 0, 0, MathEx.TWO_PI);

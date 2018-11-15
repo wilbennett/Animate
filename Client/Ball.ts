@@ -50,9 +50,10 @@
     private priorVelocity: Vector2D = Vector2D.emptyVector;
 
     //*
-    draw(ctx: CanvasRenderingContext2D, frame: number) {
-        super.draw(ctx, frame);
+    draw(viewport: Viewport2D, frame: number) {
+        super.draw(viewport, frame);
 
+        const ctx = viewport.ctx;
         let ballStrokeColor = "#bbbbbb";
         let ballStrokeWidth = 1;
 

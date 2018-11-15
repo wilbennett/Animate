@@ -24,7 +24,9 @@
     update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {
     }
 
-    draw(ctx: CanvasRenderingContext2D, frame: number) {
+    draw(viewport: Viewport2D, frame: number) {
+        const ctx = viewport.ctx;
+
         let origAlpha = ctx.globalAlpha;
         ctx.globalAlpha = 0.5;
         ctx.beginPath();

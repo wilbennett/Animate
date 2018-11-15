@@ -122,7 +122,7 @@ var Character = /** @class */ (function (_super) {
         this._rotateRadians = MathEx.constrainRadians(this._rotateRadians + this._rotateVelocity * timeDelta);
         this._lastUpdateFrame = frame;
     };
-    Character.prototype.draw = function (ctx, frame) {
+    Character.prototype.draw = function (viewport, frame) {
     };
     return Character;
 }(Force));

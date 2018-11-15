@@ -55,8 +55,9 @@ var Ball = /** @class */ (function (_super) {
         this.checkBoundary(world.gravity);
     };
     //*
-    Ball.prototype.draw = function (ctx, frame) {
-        _super.prototype.draw.call(this, ctx, frame);
+    Ball.prototype.draw = function (viewport, frame) {
+        _super.prototype.draw.call(this, viewport, frame);
+        var ctx = viewport.ctx;
         var ballStrokeColor = "#bbbbbb";
         var ballStrokeWidth = 1;
         /*

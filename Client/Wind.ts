@@ -50,7 +50,8 @@
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     }
 
-    draw(ctx: CanvasRenderingContext2D, frame: number) {
+    draw(viewport: Viewport2D, frame: number) {
+        const ctx = viewport.ctx;
         let origAlpha = ctx.globalAlpha;
 
         ctx.beginPath();

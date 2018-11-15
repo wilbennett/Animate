@@ -51,7 +51,7 @@ var TestBallPhysics = /** @class */ (function () {
         var ctx = this._ctx;
         world.viewport.draw(ctx, 2, "white");
         world.update(0, now, 1);
-        world.render(ctx, 0);
+        world.render(0);
     };
     return TestBallPhysics;
 }());

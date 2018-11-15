@@ -36,8 +36,10 @@
         this._armPos = null;
     }
 
-    draw(ctx: CanvasRenderingContext2D, frame: number) {
-        super.draw(ctx, frame);
+    draw(viewport: Viewport2D, frame: number) {
+        super.draw(viewport, frame);
+
+        const ctx = viewport.ctx;
 
         ctx.strokeStyle = this._color;
 

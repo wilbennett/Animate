@@ -100,6 +100,6 @@
         this._lastUpdateFrame = frame;
     }
 
-    draw(ctx: CanvasRenderingContext2D, frame: number) {
+    draw(viewport: Viewport2D, frame: number) {
     }
 }

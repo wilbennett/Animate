@@ -60,8 +60,9 @@ var Radar = /** @class */ (function (_super) {
         this._armManager = this._armManager.withRadians(this._rotateRadians);
         this._armPos = null;
     };
-    Radar.prototype.draw = function (ctx, frame) {
-        _super.prototype.draw.call(this, ctx, frame);
+    Radar.prototype.draw = function (viewport, frame) {
+        _super.prototype.draw.call(this, viewport, frame);
+        var ctx = viewport.ctx;
         ctx.strokeStyle = this._color;
         ctx.beginPath();
         ctx.arc(this._position.x, this._position.y, this._radius, 0, MathEx.TWO_PI);

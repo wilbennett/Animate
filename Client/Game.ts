@@ -255,7 +255,7 @@
         const world = this._world;
         const viewport = world.viewport;
 
-        this._world.render(this._ctx, frame);
+        this._world.render(frame);
 
         if (this._balls.length === 0) return;
 

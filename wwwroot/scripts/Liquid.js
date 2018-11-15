@@ -37,7 +37,8 @@ var Liquid = /** @class */ (function (_super) {
     };
     Liquid.prototype.update = function (frame, now, timeDelta, world) {
     };
-    Liquid.prototype.draw = function (ctx, frame) {
+    Liquid.prototype.draw = function (viewport, frame) {
+        var ctx = viewport.ctx;
         var origAlpha = ctx.globalAlpha;
         ctx.globalAlpha = 0.5;
         ctx.beginPath();
