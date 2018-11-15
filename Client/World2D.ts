@@ -3,6 +3,7 @@
     protected readonly _viewportHeight: number;
     protected readonly _screenWidth: number;
     protected readonly _screenHeight: number;
+    private _pixelsPerMeter: number = Physics.pixelsPerMeter;
     private _containerBounds: ContainerBounds;
     private _gravity: Gravity;
     private _viewport: Viewport2D;
@@ -42,6 +43,9 @@
     get gravity() { return this._gravity; }
     get viewport() { return this._viewport; }
     get characters() { return this._characters; }
+
+    get pixelsPerMeter() { return this._pixelsPerMeter; }
+    set pixelsPerMeter(value: number) { this._pixelsPerMeter = value; }
 
     get containerBounds() {
         if (!this._containerBounds) {

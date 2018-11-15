@@ -18,6 +18,7 @@ var World2D = /** @class */ (function (_super) {
         var _this = _super.call(this, orientation, x, y, width, height) || this;
         _this._screenX = _screenX;
         _this._screenY = _screenY;
+        _this._pixelsPerMeter = Physics.pixelsPerMeter;
         _this._forces = [];
         _this._characters = [];
         _this.applyTransform = function (ctx) { this.viewport.applyTransform(ctx); };
@@ -123,6 +124,12 @@ var World2D = /** @class */ (function (_super) {
     });
     Object.defineProperty(World2D.prototype, "characters", {
         get: function () { return this._characters; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(World2D.prototype, "pixelsPerMeter", {
+        get: function () { return this._pixelsPerMeter; },
+        set: function (value) { this._pixelsPerMeter = value; },
         enumerable: true,
         configurable: true
     });
