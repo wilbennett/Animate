@@ -199,7 +199,7 @@
         } else {
             let delta = this._settings.App.interpolate ? this._timeStepDelta / this._timeStep : 1;
             startTime = performance.now();
-            this._game.update(this._frame, timestamp, delta);
+            this._game.update(this._frame, timestamp / 1000, delta);
             updateTime = performance.now() - startTime;
             this._timeStepDelta = 0;
         }

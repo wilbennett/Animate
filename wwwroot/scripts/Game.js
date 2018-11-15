@@ -174,13 +174,13 @@ var Game = /** @class */ (function () {
         ctx.fillText(this._radar.degrees.toFixed(0).toString(), radarPos.x, radarPos.y);
         ctx.restore();
     };
-    Game.prototype.update = function (frame, timestamp, delta) {
+    Game.prototype.update = function (frame, now, timeDelta) {
         this.updateViewport();
         this.createBackgroundGradient();
         this._liquid.position = new Vector2D(this._radar.armPos.x - this._liquid.bounds.width / 2, this._radar.armPos.y - this._liquid.bounds.height / 2);
         if (this._balls.length === 0)
             this.createRandomBalls();
-        this._world.update(frame, timestamp, delta);
+        this._world.update(frame, now, timeDelta);
         this.processBallsToRemove();
     };
     Game.prototype.render = function (frame) {

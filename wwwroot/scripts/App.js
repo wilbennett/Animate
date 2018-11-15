@@ -72,7 +72,7 @@ var App = /** @class */ (function () {
             else {
                 var delta = _this._settings.App.interpolate ? _this._timeStepDelta / _this._timeStep : 1;
                 startTime = performance.now();
-                _this._game.update(_this._frame, timestamp, delta);
+                _this._game.update(_this._frame, timestamp / 1000, delta);
                 updateTime = performance.now() - startTime;
                 _this._timeStepDelta = 0;
             }

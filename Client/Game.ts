@@ -233,7 +233,7 @@
         ctx.restore();
     }
 
-    public update(frame: number, timestamp: DOMHighResTimeStamp, delta: number): void {
+    public update(frame: number, now: DOMHighResTimeStamp, timeDelta: number): void {
         this.updateViewport();
         this.createBackgroundGradient();
 
@@ -244,7 +244,7 @@
         if (this._balls.length === 0)
             this.createRandomBalls();
 
-        this._world.update(frame, timestamp, delta);
+        this._world.update(frame, now, timeDelta);
         this.processBallsToRemove();
     }
 
