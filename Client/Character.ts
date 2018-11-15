@@ -56,36 +56,36 @@
         this._rotateAcceleration = 0;
     }
 
-    preUpdate(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
-        this.resetParams();
-    }
-
-    adjustAcceleration() {
+    protected adjustAcceleration() {
         //console.log("**** " + this.getName(this) + " calc acceleration with force: "
         //    + this._appliedForce.x.toFixed(2) + ", " + this._appliedForce.y.toFixed(2));
         this._acceleration = Physics.calcAcceleration(this._appliedForce, this.mass);
     }
 
-    adjustVelocity() {
+    protected adjustVelocity() {
         let newVelocity = Physics.calcVelocity(this.velocity, this.acceleration);
 
         if (this.maxSpeed < 0 || newVelocity.mag < this.maxSpeed)
             this._velocity = newVelocity;
     }
 
-    adjustPosition(velocity: Vector2D, pixelsPerMeter: number) {
+    protected adjustPosition(velocity: Vector2D, pixelsPerMeter: number) {
         this._position = this._position.add(Physics.toPixels(velocity, pixelsPerMeter));
     }
 
-    adjustRotateAcceleration() {
+    protected adjustRotateAcceleration() {
         this._rotateAcceleration = Physics.calcRotationAcceleration(this._appliedRotateForce, this._mass);
     }
 
-    adjustRotateVelocity() {
+    protected adjustRotateVelocity() {
         let newVelocity = Physics.calcRotationVelocity(this.rotateVelocity, this.rotateAcceleration);
 
         if (Math.abs(newVelocity) < this.maxRotateVelocity)
             this._rotateVelocity = newVelocity;
+    }
+
+    preUpdate(frame: number, timestamp: DOMHighResTimeStamp, delta: number) {
+        this.resetParams();
     }
 
     update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {

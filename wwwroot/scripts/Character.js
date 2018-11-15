@@ -89,9 +89,6 @@ var Character = /** @class */ (function (_super) {
         this._appliedRotateForce = 0;
         this._rotateAcceleration = 0;
     };
-    Character.prototype.preUpdate = function (frame, timestamp, delta) {
-        this.resetParams();
-    };
     Character.prototype.adjustAcceleration = function () {
         //console.log("**** " + this.getName(this) + " calc acceleration with force: "
         //    + this._appliedForce.x.toFixed(2) + ", " + this._appliedForce.y.toFixed(2));
@@ -112,6 +109,9 @@ var Character = /** @class */ (function (_super) {
         var newVelocity = Physics.calcRotationVelocity(this.rotateVelocity, this.rotateAcceleration);
         if (Math.abs(newVelocity) < this.maxRotateVelocity)
             this._rotateVelocity = newVelocity;
+    };
+    Character.prototype.preUpdate = function (frame, timestamp, delta) {
+        this.resetParams();
     };
     Character.prototype.update = function (frame, now, timeDelta, world) {
         this.adjustAcceleration();

@@ -19,7 +19,7 @@
     get color() { return this._color; }
 
     
-    adjustRotateAcceleration() {
+    protected adjustRotateAcceleration() {
         this.applyRotateForce(this.acceleration.x / 5);
 
         super.adjustRotateAcceleration();
