@@ -77,7 +77,6 @@
 
     private drawBallForce(viewport: Viewport2D, ball: Ball) {
         let ctx = viewport.ctx;
-        //viewport.applyTransform();
 
         let position = viewport.toScreen(ball.position);
         ball.calculateForce();
@@ -88,8 +87,6 @@
         ctx.textAlign = "center";
         ctx.fillText(ball.force.toString(), position.x, position.y);
         //ctx.fillText(ball.momentum.toString(), position.x, position.y - 20);
-
-        //viewport.restoreTransform();
     }
 
     private testBall(world: World2D, now: number) {

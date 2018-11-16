@@ -60,7 +60,6 @@ var TestBallPhysics = /** @class */ (function () {
     };
     TestBallPhysics.prototype.drawBallForce = function (viewport, ball) {
         var ctx = viewport.ctx;
-        //viewport.applyTransform();
         var position = viewport.toScreen(ball.position);
         ball.calculateForce();
         ctx.beginPath();
@@ -70,7 +69,6 @@ var TestBallPhysics = /** @class */ (function () {
         ctx.textAlign = "center";
         ctx.fillText(ball.force.toString(), position.x, position.y);
         //ctx.fillText(ball.momentum.toString(), position.x, position.y - 20);
-        //viewport.restoreTransform();
     };
     TestBallPhysics.prototype.testBall = function (world, now) {
         var _this = this;

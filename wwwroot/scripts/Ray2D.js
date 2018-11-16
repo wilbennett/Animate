@@ -33,7 +33,7 @@ var Ray2D = /** @class */ (function () {
     });
     Ray2D.prototype.getPointAt = function (length) {
         //console.log(`Origin (${this.origin.x}, ${this.origin.y}) - Direction (${this.direction.x}, ${this.direction.y})`);
-        var result = Vector2D.mult(length, this.direction);
+        var result = this.direction.mult(length);
         return result.add(this.origin);
     };
     Ray2D.prototype.radiansBetween = function (target) { return this.direction.radiansBetween(target.direction); };

@@ -16,7 +16,7 @@
 
     getPointAt(length: number): Vector2D {
         //console.log(`Origin (${this.origin.x}, ${this.origin.y}) - Direction (${this.direction.x}, ${this.direction.y})`);
-        let result = Vector2D.mult(length, this.direction);
+        let result = this.direction.mult(length);
         return result.add(this.origin);
     }
 

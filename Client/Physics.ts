@@ -44,7 +44,7 @@ class Physics {
     }
 
     static calcVelocity(currentVelocity: Vector2D, acceleration: Vector2D) {
-        return Vector2D.add(currentVelocity, acceleration);
+        return currentVelocity.add(acceleration);
     }
 
     static calcRotationAcceleration(force: number, mass: number) {
@@ -60,8 +60,7 @@ class Physics {
     }
 
     static calcFriction(coeffecient: number, normal: number, velocity: Vector2D) {
-        let c = coeffecient;
-        let magnitude = c * normal;
+        let magnitude = coeffecient * normal;
 
         let friction = velocity.mult(-1); // Friction applies in the opposite direction of motion.
         friction = friction.normalize();
@@ -70,10 +69,9 @@ class Physics {
     }
 
     static calcDrag(coeffecient: number, velocity: Vector2D) {
-        let c = coeffecient;
-        let magnitude = c * velocity.magSquared;
+        let magnitude = coeffecient * velocity.magSquared;
 
-        let drag = Vector2D.mult(velocity, -1); // Drag applies in the opposite direction of motion.
+        let drag = velocity.mult(-1); // Drag applies in the opposite direction of motion.
         drag = drag.normalize();
         drag = drag.mult(magnitude);
 

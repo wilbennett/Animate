@@ -132,7 +132,7 @@ var Vector2D = /** @class */ (function (_super) {
     Vector2D.prototype.reflectViaNormal = function (normal) {
         // -(2 * (v . normal) * normal - v)
         var dot2 = 2 * this.dot(normal);
-        var dot2TimesNormal = Vector2D.mult(dot2, normal);
+        var dot2TimesNormal = normal.mult(dot2);
         return dot2TimesNormal.subtract(this).mult(-1);
         // v - 2 * (v . normal) * normal
         //return this.subtract(dot2TimesNormal);
@@ -147,36 +147,6 @@ var Vector2D = /** @class */ (function (_super) {
     Vector2D.prototype.withY = function (y) { return new Vector2D(this.x, y); };
     Vector2D.fromRadians = function (angle) { return new Vector2D(Math.cos(angle), Math.sin(angle)); };
     Vector2D.fromDegrees = function (angle) { return this.fromRadians(MathEx.toRadians(angle)); };
-    Vector2D.add = function (v1, v2) { return v1.add(v2); };
-    Vector2D.subtract = function (v1, v2) { return v1.subtract(v2); };
-    Vector2D.normalize = function (v) { return v.normalize(); };
-    Vector2D.dot = function (v1, v2) { return v1.dot(v2); };
-    Vector2D.mult = function (scale, v) {
-        var vec;
-        var scalar;
-        if (v instanceof Vector2D) {
-            vec = v;
-            scalar = scale;
-        }
-        else {
-            vec = scale;
-            scalar = v;
-        }
-        return vec.mult(scalar);
-    };
-    Vector2D.div = function (scale, v) {
-        var vec;
-        var scalar;
-        if (v instanceof Vector2D) {
-            vec = v;
-            scalar = scale;
-        }
-        else {
-            vec = scale;
-            scalar = v;
-        }
-        return vec.div(scalar);
-    };
     return Vector2D;
 }(Point2D));
 //# sourceMappingURL=Vector2D.js.map

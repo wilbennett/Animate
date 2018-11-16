@@ -121,7 +121,7 @@
     reflectViaNormal(normal: Vector2D): Vector2D {
         // -(2 * (v . normal) * normal - v)
         let dot2 = 2 * this.dot(normal);
-        let dot2TimesNormal = Vector2D.mult(dot2, normal);
+        let dot2TimesNormal = normal.mult(dot2);
         return dot2TimesNormal.subtract(this).mult(-1);
 
         // v - 2 * (v . normal) * normal
@@ -141,43 +141,4 @@
 
     static fromRadians(angle: number) { return new Vector2D(Math.cos(angle), Math.sin(angle)); }
     static fromDegrees(angle: number) { return this.fromRadians(MathEx.toRadians(angle)); }
-
-    static add(v1: Vector2D, v2: Vector2D): Vector2D { return v1.add(v2); }
-    static subtract(v1: Vector2D, v2: Vector2D): Vector2D { return v1.subtract(v2); }
-    static normalize(v: Vector2D): Vector2D { return v.normalize(); }
-    static dot(v1: Vector2D, v2: Vector2D): number { return v1.dot(v2); }
-
-    static mult(v: Vector2D, scale: number): Vector2D;
-    static mult(scale: number, v: Vector2D): Vector2D;
-    static mult(scale: any, v: any): Vector2D {
-        let vec: Vector2D;
-        let scalar: number;
-
-        if (v instanceof Vector2D) {
-            vec = v;
-            scalar = scale;
-        } else {
-            vec = scale;
-            scalar = <number>v;
-        }
-
-        return vec.mult(scalar);
-    }
-
-    static div(v: Vector2D, scale: number): Vector2D;
-    static div(scale: number, v: Vector2D): Vector2D;
-    static div(scale: any, v: any): Vector2D {
-        let vec: Vector2D;
-        let scalar: number;
-
-        if (v instanceof Vector2D) {
-            vec = v;
-            scalar = scale;
-        } else {
-            vec = scale;
-            scalar = <number>v;
-        }
-
-        return vec.div(scalar);
-    }
 }

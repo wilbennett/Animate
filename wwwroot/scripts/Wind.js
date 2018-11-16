@@ -46,14 +46,14 @@ var Wind = /** @class */ (function (_super) {
         configurable: true
     });
     Wind.prototype.polarUpdated = function () {
-        this._velocity = Vector2D.normalize(this._polar.vector);
+        this._velocity = this._polar.vector.normalize();
     };
     Wind.prototype.calculateForce = function () { };
     Wind.prototype.calculateForceForCharacter = function (character) {
-        var pos = Vector2D.subtract(character.position, this.position);
+        var pos = character.position.subtract(this.position);
         if (pos.mag > this._polar.radius)
             return Vector2D.emptyVector;
-        var force = Vector2D.mult(this._velocity, pos.magSquared * 0.01);
+        var force = this._velocity.mult(pos.magSquared * 0.01);
         return force.div(character.velocity.mag);
     };
     Wind.prototype.update = function (frame, now, timeDelta, world) {
@@ -68,7 +68,7 @@ var Wind = /** @class */ (function (_super) {
         ctx.fillStyle = "purple";
         ctx.fill();
         ctx.closePath();
-        var v = Vector2D.mult(this._velocity, this._polar.radius * 0.5);
+        var v = this._velocity.mult(this._polar.radius * 0.5);
         v = v.add(this._position);
         ctx.beginPath();
         ctx.strokeStyle = "purple";
