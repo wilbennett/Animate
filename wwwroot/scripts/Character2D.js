@@ -17,8 +17,9 @@ var Character2D = /** @class */ (function (_super) {
     function Character2D(position, _velocity, mass) {
         var _this = _super.call(this, position, mass) || this;
         _this._velocity = _velocity;
-        _this._frictionCoeffecient = 0.01;
-        _this._restitutionCoeffecient = 0.5;
+        _this._frictionCoefficient = 0.01;
+        _this._dragCoefficient = 0.01;
+        _this._restitutionCoefficient = 0.5;
         _this._lastUpdateFrame = -1;
         _this._maxSpeed = -1;
         _this._rotateRadians = 0;
@@ -57,15 +58,21 @@ var Character2D = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Character2D.prototype, "frictionCoeffecient", {
-        get: function () { return this._frictionCoeffecient; },
-        set: function (value) { this._frictionCoeffecient = value; },
+    Object.defineProperty(Character2D.prototype, "frictionCoefficient", {
+        get: function () { return this._frictionCoefficient; },
+        set: function (value) { this._frictionCoefficient = value; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Character2D.prototype, "dragCoefficient", {
+        get: function () { return this._dragCoefficient; },
+        set: function (value) { this._dragCoefficient = value; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Character2D.prototype, "restitutionCoeffecient", {
-        get: function () { return this._restitutionCoeffecient; },
-        set: function (value) { this._restitutionCoeffecient = MathEx.clamp(value, 0, 1); },
+        get: function () { return this._restitutionCoefficient; },
+        set: function (value) { this._restitutionCoefficient = MathEx.clamp(value, 0, 1); },
         enumerable: true,
         configurable: true
     });

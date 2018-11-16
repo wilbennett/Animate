@@ -8,6 +8,9 @@
     private _worldGravityU: World2D;
     private _worldGravityD: World2D;
 
+    private _worldLiquidU: World2D;
+    private _worldLiquidD: World2D;
+
     constructor(private readonly _canvas: HTMLCanvasElement, private _settings: Dynamic) {
         this._ctx = <CanvasRenderingContext2D>this._canvas.getContext("2d");
 
@@ -37,6 +40,26 @@
         this._worldGravityD = new World2D(this._ctx, WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
         world = this._worldGravityD;
         ball = this.createBall(world, world.center.x, radius, ballColor);
+
+        box.moveUpRight();
+        this._worldLiquidU = new World2D(this._ctx, WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
+        world = this._worldLiquidU;
+        ball = this.createBall(world, world.center.x, radius, ballColor);
+        this.createBall(world, world.x + 5, 10, ballColor, false);
+        let drag = 0.4;
+        let liquidHeight = world.height / 3;
+        let liquid = new Liquid(new Vector2D(world.x, world.offsetBelow(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
+        world.addForce(liquid);
+        world.addCharacter(liquid);
+
+        box.moveDown();
+        this._worldLiquidD = new World2D(this._ctx, WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
+        world = this._worldLiquidD;
+        ball = this.createBall(world, world.center.x, radius, ballColor);
+        this.createBall(world, world.x + 5, 10, ballColor, false);
+        liquid = new Liquid(new Vector2D(world.x, world.offsetAbove(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
+        world.addForce(liquid);
+        world.addCharacter(liquid);
     }
 
     setup() {
@@ -55,7 +78,7 @@
         cancelAnimationFrame(this._rafHandle);
     }
 
-    private createBall(world: World2D, x: number, radius: number, color: string, restitution?: number) {
+    private createBall(world: World2D, x: number, radius: number, color: string, autoSize: boolean = true, restitution?: number) {
         let mass = radius * 5;
 
         let ball = new Ball(
@@ -67,7 +90,7 @@
             world.containerBounds,
             ball => {
                 world.removeCharacter(ball);
-                this.createBall(world, x, radius < 30 ? radius + 5 : 10, color, restitution);
+                this.createBall(world, x, autoSize && radius < 30 ? radius + 5 : 10, color, autoSize, restitution);
             },
             restitution);
 
@@ -86,7 +109,7 @@
         ctx.font = "12px Arial";
         ctx.textAlign = "center";
         ctx.fillText(ball.force.toString(), position.x, position.y);
-        //ctx.fillText(ball.momentum.toString(), position.x, position.y - 20);
+        //ctx.fillText(ball.velocity.toString(), position.x, position.y - 20);
     }
 
     private testBall(world: World2D, now: number) {
@@ -111,6 +134,9 @@
 
         this.testBall(this._worldGravityU, now);
         this.testBall(this._worldGravityD, now);
+
+        this.testBall(this._worldLiquidU, now);
+        this.testBall(this._worldLiquidD, now);
 
         this._rafHandle = requestAnimationFrame(this.gameLoop);
     }

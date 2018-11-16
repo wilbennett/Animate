@@ -14,13 +14,19 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Liquid = /** @class */ (function (_super) {
     __extends(Liquid, _super);
-    function Liquid(position, _frictionCoeffecient, _width, _height) {
+    function Liquid(position, _density, dragCoefficient, _width, _height) {
         var _this = _super.call(this, position, Vector2D.emptyVector, 0) || this;
-        _this._frictionCoeffecient = _frictionCoeffecient;
+        _this._density = _density;
         _this._width = _width;
         _this._height = _height;
+        _this.dragCoefficient = dragCoefficient;
         return _this;
     }
+    Object.defineProperty(Liquid.prototype, "density", {
+        get: function () { return this._density; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Liquid.prototype, "bounds", {
         get: function () {
             return new Bounds(this._position.x, this._position.y, this._width, this._height);
@@ -32,8 +38,7 @@ var Liquid = /** @class */ (function (_super) {
     Liquid.prototype.calculateForceForCharacter = function (character) {
         if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y))
             return Vector2D.emptyVector;
-        var c = this._frictionCoeffecient + character.frictionCoeffecient;
-        return Physics.calcDrag(c, character.velocity);
+        return Physics.calcDrag(this.density, 1, this.dragCoefficient, character.velocity);
     };
     Liquid.prototype.update = function (frame, now, timeDelta, world) {
     };

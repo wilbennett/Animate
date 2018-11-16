@@ -100,7 +100,7 @@
 
         this._output = <HTMLOutputElement>document.getElementById("output");
         this._friction = new Friction();
-        this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 0.05, world.width / 8, 90);
+        this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 0.05, world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
 
         world.addForce(this._liquid);
@@ -174,7 +174,7 @@
                 container,
                 this.addBallToRemove);
 
-            ball.frictionCoeffecient = this._settings.Balls.frictionCoeffecient * (ball.radius * ball.radius / 2);
+            ball.frictionCoefficient = this._settings.Balls.frictionCoefficient * (ball.radius * ball.radius / 2);
             this._balls[i] = ball;
             this._world.addCharacter(ball);
         }

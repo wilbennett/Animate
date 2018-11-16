@@ -1,6 +1,5 @@
 class Physics {
     static readonly gravityEarth = 9.8;
-    //static readonly pixelsPerMeter = 0.1;
     static readonly pixelsPerMeter = 0.07;
 
     static metersToPixels(meters: number, pixelsPerMeter: number = this.pixelsPerMeter) {
@@ -24,34 +23,42 @@ class Physics {
     }
 
     static calcGravityForce(mass: number, gravityStrength: Vector2D) {
+        // Fg = mg
         return gravityStrength.mult(mass);
     }
 
     static calcFrictionForce(coeffecient: number, normalForce: Vector2D) {
+        // f = cn
         return normalForce.mult(coeffecient);
     }
 
     static calcNetForce(mass: number, acceleration: Vector2D) {
+        // f = ma
         return acceleration.mult(mass);
     }
 
     static calcMomentum(mass: number, velocity: Vector2D) {
+        // m = mv
         return velocity.mult(mass);
     }
 
     static calcAcceleration(netForce: Vector2D, mass: number) {
+        // a = f / m
         return netForce.div(mass);
     }
 
     static calcVelocity(currentVelocity: Vector2D, acceleration: Vector2D) {
+        // v = v + a
         return currentVelocity.add(acceleration);
     }
 
     static calcRotationAcceleration(force: number, mass: number) {
+        // a = f / m
         return force / mass;
     }
 
     static calcRotationVelocity(currentVelocity: number, acceleration: number) {
+        // v = v + a;
         return currentVelocity + acceleration;
     }
 
@@ -67,24 +74,30 @@ class Physics {
         return friction;
     }
 
-    static calcDrag(coeffecient: number, velocity: Vector2D) {
-        let magnitude = coeffecient * velocity.magSquared;
+    static calcDrag(density: number, area: number, coeffecient: number, velocity: Vector2D) {
+        // F = 1/2 * p * ||v|| * ||v|| * A * Cd * -vNormal
+        let halfDensity = density * 0.5;
+        let densityMagSquared = halfDensity * velocity.magSquared;
+        let densityMagArea = densityMagSquared * area;
+        let magnitude = densityMagArea * coeffecient;
 
-        let drag = velocity.mult(-1); // Drag applies in the opposite direction of motion.
-        drag = drag.normalizeMult(magnitude);
+        let drag = velocity.normalizeMult(-magnitude); // Drag applies in the opposite direction of motion.
 
         return drag;
     }
 
     static calcAverageAcceleration(initialVelocity: Vector2D, finalVelocity: Vector2D, time: number) {
+        // AvgA = (fv - iv) / t
         return finalVelocity.subtract(initialVelocity).div(time);
     }
 
     static calcAverageSpeed(distance: number, time: number) {
+        // AvgS = d / t
         return distance / time;
     }
 
     static calcAverageVelocity(initialPosition: Vector2D, finalPosition: Vector2D, time: number) {
+        // AvgV = (fp - ip) / t
         return finalPosition.subtract(initialPosition).div(time);
     }
 }

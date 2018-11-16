@@ -12,6 +12,8 @@ var TestBallPhysics = /** @class */ (function () {
             _this.testBall(_this._worldZeroGD, now);
             _this.testBall(_this._worldGravityU, now);
             _this.testBall(_this._worldGravityD, now);
+            _this.testBall(_this._worldLiquidU, now);
+            _this.testBall(_this._worldLiquidD, now);
             _this._rafHandle = requestAnimationFrame(_this.gameLoop);
         };
         this._ctx = this._canvas.getContext("2d");
@@ -36,6 +38,24 @@ var TestBallPhysics = /** @class */ (function () {
         this._worldGravityD = new World2D(this._ctx, WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
         world = this._worldGravityD;
         ball = this.createBall(world, world.center.x, radius, ballColor);
+        box.moveUpRight();
+        this._worldLiquidU = new World2D(this._ctx, WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
+        world = this._worldLiquidU;
+        ball = this.createBall(world, world.center.x, radius, ballColor);
+        this.createBall(world, world.x + 5, 10, ballColor, false);
+        var drag = 0.4;
+        var liquidHeight = world.height / 3;
+        var liquid = new Liquid(new Vector2D(world.x, world.offsetBelow(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
+        world.addForce(liquid);
+        world.addCharacter(liquid);
+        box.moveDown();
+        this._worldLiquidD = new World2D(this._ctx, WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
+        world = this._worldLiquidD;
+        ball = this.createBall(world, world.center.x, radius, ballColor);
+        this.createBall(world, world.x + 5, 10, ballColor, false);
+        liquid = new Liquid(new Vector2D(world.x, world.offsetAbove(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
+        world.addForce(liquid);
+        world.addCharacter(liquid);
     }
     TestBallPhysics.prototype.setup = function () {
         this._rafHandle = requestAnimationFrame(this.gameLoop);
@@ -48,12 +68,13 @@ var TestBallPhysics = /** @class */ (function () {
     TestBallPhysics.prototype.cancelFrame = function () {
         cancelAnimationFrame(this._rafHandle);
     };
-    TestBallPhysics.prototype.createBall = function (world, x, radius, color, restitution) {
+    TestBallPhysics.prototype.createBall = function (world, x, radius, color, autoSize, restitution) {
         var _this = this;
+        if (autoSize === void 0) { autoSize = true; }
         var mass = radius * 5;
         var ball = new Ball(radius, color, new Vector2D(x, world.topOffsetBelow(radius)), new Vector2D(0, 0), mass, world.containerBounds, function (ball) {
             world.removeCharacter(ball);
-            _this.createBall(world, x, radius < 30 ? radius + 5 : 10, color, restitution);
+            _this.createBall(world, x, autoSize && radius < 30 ? radius + 5 : 10, color, autoSize, restitution);
         }, restitution);
         world.addCharacter(ball);
         return ball;
@@ -68,7 +89,7 @@ var TestBallPhysics = /** @class */ (function () {
         ctx.font = "12px Arial";
         ctx.textAlign = "center";
         ctx.fillText(ball.force.toString(), position.x, position.y);
-        //ctx.fillText(ball.momentum.toString(), position.x, position.y - 20);
+        //ctx.fillText(ball.velocity.toString(), position.x, position.y - 20);
     };
     TestBallPhysics.prototype.testBall = function (world, now) {
         var _this = this;

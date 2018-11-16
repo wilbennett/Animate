@@ -1,6 +1,7 @@
 ﻿class Character2D extends Force {
-    protected _frictionCoeffecient: number = 0.01;
-    private _restitutionCoeffecient: number = 0.5;
+    private _frictionCoefficient: number = 0.01;
+    private _dragCoefficient: number = 0.01;
+    private _restitutionCoefficient: number = 0.5;
     protected _lastUpdateFrame: number = -1;
     protected _maxSpeed: number = -1;
     protected _rotateRadians: number = 0;
@@ -30,11 +31,14 @@
 
     get rotateAcceleration() { return this._rotateAcceleration; }
 
-    get frictionCoeffecient() { return this._frictionCoeffecient; }
-    set frictionCoeffecient(value) { this._frictionCoeffecient = value; }
+    get frictionCoefficient() { return this._frictionCoefficient; }
+    set frictionCoefficient(value) { this._frictionCoefficient = value; }
 
-    get restitutionCoeffecient() { return this._restitutionCoeffecient; }
-    set restitutionCoeffecient(value) { this._restitutionCoeffecient = MathEx.clamp(value, 0, 1); }
+    get dragCoefficient() { return this._dragCoefficient; }
+    set dragCoefficient(value) { this._dragCoefficient = value; }
+
+    get restitutionCoeffecient() { return this._restitutionCoefficient; }
+    set restitutionCoeffecient(value) { this._restitutionCoefficient = MathEx.clamp(value, 0, 1); }
 
     get momentum() { return Physics.calcMomentum(this.mass, this.velocity); }
 

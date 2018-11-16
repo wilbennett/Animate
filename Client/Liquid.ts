@@ -1,11 +1,16 @@
 ﻿class Liquid extends Character2D {
     constructor(
         position: Vector2D,
-        protected readonly _frictionCoeffecient: number,
+        private readonly _density: number,
+        dragCoefficient: number,
         private readonly _width: number,
         private readonly _height: number) {
         super(position, Vector2D.emptyVector, 0);
+
+        this.dragCoefficient = dragCoefficient;
     }
+
+    get density() { return this._density; }
 
     get bounds() {
         return new Bounds(this._position.x, this._position.y, this._width, this._height);
@@ -17,8 +22,7 @@
         if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y))
             return Vector2D.emptyVector;
 
-        let c = this._frictionCoeffecient + character.frictionCoeffecient;
-        return Physics.calcDrag(c, character.velocity);
+        return Physics.calcDrag(this.density, 1, this.dragCoefficient, character.velocity);
     }
 
     update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {
