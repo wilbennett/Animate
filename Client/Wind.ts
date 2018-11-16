@@ -1,4 +1,4 @@
-﻿class Wind extends Character {
+﻿class Wind extends Character2D {
     private _polar: Polar2D;
     private _radiusPct: number = 0.10;
 
@@ -35,7 +35,7 @@
 
     calculateForce() { }
 
-    calculateForceForCharacter(character: Character): Vector2D {
+    calculateForceForCharacter(character: Character2D): Vector2D {
         let pos = Vector2D.subtract(character.position, this.position);
 
         if (pos.mag > this._polar.radius) return Vector2D.emptyVector;

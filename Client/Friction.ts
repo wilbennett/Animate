@@ -5,7 +5,7 @@
 
     calculateForce() { }
 
-    calculateForceForCharacter(character: Character): Vector2D {
+    calculateForceForCharacter(character: Character2D): Vector2D {
         let normal = 1; // TODO: Calculate the proper normal;
         return Physics.calcFriction(character.frictionCoeffecient, normal, character.velocity);
     }

@@ -1,4 +1,4 @@
-﻿class Ball extends Character {
+﻿class Ball extends Character2D {
     private _opacity = 1;
     private _allowBounce: boolean = true;
 

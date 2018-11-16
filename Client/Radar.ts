@@ -1,4 +1,4 @@
-﻿class Radar extends Character {
+﻿class Radar extends Character2D {
     private _armManager: Polar2D;
     private _armPos: Vector2D | null = null;
 

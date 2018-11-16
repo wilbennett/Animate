@@ -1,4 +1,4 @@
-﻿class Character extends Force {
+﻿class Character2D extends Force {
     protected _frictionCoeffecient: number = 0.01;
     protected _lastUpdateFrame: number = -1;
     protected _maxSpeed: number = -1;

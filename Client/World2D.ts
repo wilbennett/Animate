@@ -8,7 +8,7 @@
     private _gravity: Gravity;
     private _viewports: Viewport2D[] = [];
     private _forces: Force[] = [];
-    private _characters: Character[] = [];
+    private _characters: Character2D[] = [];
     private _beforeRenderViewport: (viewport: Viewport2D) => void = World2D.defaultBeforeRenderViewport;
 
     constructor(
@@ -231,8 +231,8 @@
     addForce(force: Force) { this._forces.push(force); }
     removeForce(force: Force) { this._forces.remove(force); }
 
-    addCharacter(character: Character) { this._characters.push(character); }
-    removeCharacter(character: Character) { this._characters.remove(character); }
+    addCharacter(character: Character2D) { this._characters.push(character); }
+    removeCharacter(character: Character2D) { this._characters.remove(character); }
 
     update(frame: number, now: DOMHighResTimeStamp, timeDelta: number) {
         this._characters.forEach(character => character.preUpdate(frame, now, timeDelta), this);

@@ -182,5 +182,5 @@ var Ball = /** @class */ (function (_super) {
         }
     };
     return Ball;
-}(Character));
+}(Character2D));
 //# sourceMappingURL=Ball.js.map

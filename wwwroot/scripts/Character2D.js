@@ -12,9 +12,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var Character = /** @class */ (function (_super) {
-    __extends(Character, _super);
-    function Character(position, _velocity, mass) {
+var Character2D = /** @class */ (function (_super) {
+    __extends(Character2D, _super);
+    function Character2D(position, _velocity, mass) {
         var _this = _super.call(this, position, mass) || this;
         _this._velocity = _velocity;
         _this._frictionCoeffecient = 0.01;
@@ -29,91 +29,91 @@ var Character = /** @class */ (function (_super) {
         _this.resetParams();
         return _this;
     }
-    Object.defineProperty(Character.prototype, "velocity", {
+    Object.defineProperty(Character2D.prototype, "velocity", {
         get: function () { return this._velocity; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Character.prototype, "maxSpeed", {
+    Object.defineProperty(Character2D.prototype, "maxSpeed", {
         get: function () { return this._maxSpeed; },
         set: function (value) { this._maxSpeed = value; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Character.prototype, "rotateVelocity", {
+    Object.defineProperty(Character2D.prototype, "rotateVelocity", {
         get: function () { return this._rotateVelocity; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Character.prototype, "maxRotateVelocity", {
+    Object.defineProperty(Character2D.prototype, "maxRotateVelocity", {
         get: function () { return this._maxRotateVelocity; },
         set: function (value) { this._maxRotateVelocity = value; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Character.prototype, "rotateAcceleration", {
+    Object.defineProperty(Character2D.prototype, "rotateAcceleration", {
         get: function () { return this._rotateAcceleration; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Character.prototype, "frictionCoeffecient", {
+    Object.defineProperty(Character2D.prototype, "frictionCoeffecient", {
         get: function () { return this._frictionCoeffecient; },
         set: function (value) { this._frictionCoeffecient = value; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Character.prototype, "squashX", {
+    Object.defineProperty(Character2D.prototype, "squashX", {
         get: function () { return this._squashX; },
         set: function (value) { this._squashX = value; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Character.prototype, "squashY", {
+    Object.defineProperty(Character2D.prototype, "squashY", {
         get: function () { return this._squashY; },
         set: function (value) { this._squashY = value; },
         enumerable: true,
         configurable: true
     });
-    Character.prototype.applyForce = function (force) {
+    Character2D.prototype.applyForce = function (force) {
         //console.log(this.getName(this) + " applying force from " + this.getName(force) + ": "
         //    + this._appliedForce.x.toFixed(2) + ", " + this._appliedForce.y.toFixed(2) + "  :  "
         //    + force.force.x.toFixed(2) + ", " + force.force.y.toFixed(2));
         this._appliedForce = this._appliedForce.add(force.force);
     };
-    Character.prototype.applyRotateForce = function (force) {
+    Character2D.prototype.applyRotateForce = function (force) {
         this._appliedRotateForce = this._appliedRotateForce + force;
     };
-    Character.prototype.resetParams = function () {
+    Character2D.prototype.resetParams = function () {
         this._appliedForce = Vector2D.emptyVector;
         this._acceleration = Vector2D.emptyVector;
         this._appliedRotateForce = 0;
         this._rotateAcceleration = 0;
     };
-    Character.prototype.adjustAcceleration = function () {
+    Character2D.prototype.adjustAcceleration = function () {
         //console.log("**** " + this.getName(this) + " calc acceleration with force: "
         //    + this._appliedForce.x.toFixed(2) + ", " + this._appliedForce.y.toFixed(2));
         this._acceleration = Physics.calcAcceleration(this._appliedForce, this.mass);
     };
-    Character.prototype.adjustVelocity = function () {
+    Character2D.prototype.adjustVelocity = function () {
         var newVelocity = Physics.calcVelocity(this.velocity, this.acceleration);
         if (this.maxSpeed < 0 || newVelocity.mag < this.maxSpeed)
             this._velocity = newVelocity;
     };
-    Character.prototype.adjustPosition = function (velocity, pixelsPerMeter) {
+    Character2D.prototype.adjustPosition = function (velocity, pixelsPerMeter) {
         this._position = this._position.add(Physics.toPixels(velocity, pixelsPerMeter));
     };
-    Character.prototype.adjustRotateAcceleration = function () {
+    Character2D.prototype.adjustRotateAcceleration = function () {
         this._rotateAcceleration = Physics.calcRotationAcceleration(this._appliedRotateForce, this._mass);
     };
-    Character.prototype.adjustRotateVelocity = function () {
+    Character2D.prototype.adjustRotateVelocity = function () {
         var newVelocity = Physics.calcRotationVelocity(this.rotateVelocity, this.rotateAcceleration);
         if (Math.abs(newVelocity) < this.maxRotateVelocity)
             this._rotateVelocity = newVelocity;
     };
-    Character.prototype.preUpdate = function (frame, timestamp, delta) {
+    Character2D.prototype.preUpdate = function (frame, timestamp, delta) {
         this.resetParams();
     };
-    Character.prototype.update = function (frame, now, timeDelta, world) {
+    Character2D.prototype.update = function (frame, now, timeDelta, world) {
         this.adjustAcceleration();
         this.adjustVelocity();
         this.adjustRotateAcceleration();
@@ -122,8 +122,8 @@ var Character = /** @class */ (function (_super) {
         this._rotateRadians = MathEx.constrainRadians(this._rotateRadians + this._rotateVelocity * timeDelta);
         this._lastUpdateFrame = frame;
     };
-    Character.prototype.draw = function (viewport, frame) {
+    Character2D.prototype.draw = function (viewport, frame) {
     };
-    return Character;
+    return Character2D;
 }(Force));
-//# sourceMappingURL=Character.js.map
+//# sourceMappingURL=Character2D.js.map

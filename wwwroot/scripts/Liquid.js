@@ -51,5 +51,5 @@ var Liquid = /** @class */ (function (_super) {
         ctx.globalAlpha = origAlpha;
     };
     return Liquid;
-}(Character));
+}(Character2D));
 //# sourceMappingURL=Liquid.js.map

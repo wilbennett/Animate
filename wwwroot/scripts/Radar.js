@@ -75,5 +75,5 @@ var Radar = /** @class */ (function (_super) {
         ctx.closePath();
     };
     return Radar;
-}(Character));
+}(Character2D));
 //# sourceMappingURL=Radar.js.map

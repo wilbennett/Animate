@@ -1,4 +1,4 @@
-﻿class Liquid extends Character {
+﻿class Liquid extends Character2D {
     constructor(
         position: Vector2D,
         protected readonly _frictionCoeffecient: number,
@@ -13,7 +13,7 @@
 
     calculateForce() { }
 
-    calculateForceForCharacter(character: Character): Vector2D {
+    calculateForceForCharacter(character: Character2D): Vector2D {
         if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y))
             return Vector2D.emptyVector;
 

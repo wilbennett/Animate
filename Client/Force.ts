@@ -18,9 +18,9 @@
         this._force = Physics.calcNetForce(this._mass, this._acceleration);
     }
 
-    calculateForceForCharacter(character: Character): Vector2D { return this._force; }
+    calculateForceForCharacter(character: Character2D): Vector2D { return this._force; }
 
-    applyForceTo(character: Character) {
+    applyForceTo(character: Character2D) {
         if (<Force>character === this) return;
 
         this._force = this.calculateForceForCharacter(character);

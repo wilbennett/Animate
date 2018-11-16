@@ -86,5 +86,5 @@ var Wind = /** @class */ (function (_super) {
         ctx.globalAlpha = origAlpha;
     };
     return Wind;
-}(Character));
+}(Character2D));
 //# sourceMappingURL=Wind.js.map
