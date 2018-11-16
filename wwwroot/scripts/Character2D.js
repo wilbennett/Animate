@@ -18,6 +18,7 @@ var Character2D = /** @class */ (function (_super) {
         var _this = _super.call(this, position, mass) || this;
         _this._velocity = _velocity;
         _this._frictionCoeffecient = 0.01;
+        _this._restitutionCoeffecient = 0.5;
         _this._lastUpdateFrame = -1;
         _this._maxSpeed = -1;
         _this._rotateRadians = 0;
@@ -59,6 +60,17 @@ var Character2D = /** @class */ (function (_super) {
     Object.defineProperty(Character2D.prototype, "frictionCoeffecient", {
         get: function () { return this._frictionCoeffecient; },
         set: function (value) { this._frictionCoeffecient = value; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Character2D.prototype, "restitutionCoeffecient", {
+        get: function () { return this._restitutionCoeffecient; },
+        set: function (value) { this._restitutionCoeffecient = MathEx.clamp(value, 0, 1); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Character2D.prototype, "momentum", {
+        get: function () { return Physics.calcMomentum(this.mass, this.velocity); },
         enumerable: true,
         configurable: true
     });

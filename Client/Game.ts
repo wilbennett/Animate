@@ -29,11 +29,11 @@
         const width = this._width;
         const height = this._height;
 
-        const orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
-        const worldWidth = _settings.World.wide ? width * 1.5 : width;
-        const worldHeight = _settings.World.tall ? height * 1.5 : height;
         const screenLeft = 200;
         const screenTop = 0;
+        const orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
+        const worldWidth = _settings.World.wide ? width * 1.5 : width - screenLeft;
+        const worldHeight = _settings.World.tall ? height * 1.5 : height - screenTop;
         const screenWidth = this._width - screenLeft;
         const screenHeight = this._height - screenTop;
         //this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, screenLeft, screenTop);

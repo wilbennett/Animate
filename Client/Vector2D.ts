@@ -54,7 +54,7 @@
         return this._normal;
     }
 
-    toString() { "(" + this.x.toFixed(3) + ", " + this.y.toFixed(3) + ")"; }
+    toString() { return "(" + this.x.toFixed(3) + ", " + this.y.toFixed(3) + ")"; }
 
     static get emptyVector() {
         if (!this._emptyVector)

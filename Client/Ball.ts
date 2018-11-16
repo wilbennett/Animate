@@ -9,8 +9,13 @@
         velocity: Vector2D,
         mass: number,
         private _boundary: ContainerBounds,
-        private readonly completeCallback: (ball: Ball) => void) {
+        private readonly completeCallback: (ball: Ball) => void,
+        restitution?: number) {
         super(position, velocity, mass);
+
+        if (!restitution) restitution = 0.98;
+
+        this.restitutionCoeffecient = restitution;
 
         this._maxRotateVelocity = 0.1;
     }
@@ -177,21 +182,25 @@
         if (leftPenetration > 0) {
             this._position = this._position.withX(boundary.leftOffset(this._radius));
             this._velocity = boundary.reflectLeft(this._velocity);
+            this._velocity = this._velocity.withX(this._velocity.x * this.restitutionCoeffecient);
         }
 
         if (rightPenetration > 0) {
             this._position = this._position.withX(boundary.rightOffset(this._radius));
             this._velocity = boundary.reflectRight(this._velocity);
+            this._velocity = this._velocity.withX(this._velocity.x * this.restitutionCoeffecient);
         }
 
         if (topPenetration > 0) {
             this._position = this._position.withY(boundary.topOffsetBelow(this._radius));
             this._velocity = boundary.reflectTop(this._velocity);
+            this._velocity = this._velocity.withY(this._velocity.y * this.restitutionCoeffecient);
         }
 
         if (bottomPenetration > 0) {
             this._position = this._position.withY(boundary.bottomOffsetAbove(this._radius));
             this._velocity = boundary.reflectBottom(this._velocity);
+            this._velocity = this._velocity.withY(this._velocity.y * this.restitutionCoeffecient);
             const force = Math.abs(this._velocity.y); // TODO: Calculate proper force.
 
             if (force <= Math.abs(gravity.gravityConst)) {

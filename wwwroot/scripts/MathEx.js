@@ -9,6 +9,13 @@ var MathEx = /** @class */ (function () {
             radians %= this.TWO_PI;
         return radians;
     };
+    MathEx.clamp = function (value, min, max) {
+        if (value < min)
+            return min;
+        if (value > max)
+            return max;
+        return value;
+    };
     MathEx.random = function (min, max, array) {
         if (typeof min === "object") {
             array = min;

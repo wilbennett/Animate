@@ -27,6 +27,9 @@ var Physics = /** @class */ (function () {
     Physics.calcNetForce = function (mass, acceleration) {
         return acceleration.mult(mass);
     };
+    Physics.calcMomentum = function (mass, velocity) {
+        return velocity.mult(mass);
+    };
     Physics.calcAcceleration = function (netForce, mass) {
         return netForce.div(mass);
     };

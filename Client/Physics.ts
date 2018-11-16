@@ -35,6 +35,10 @@ class Physics {
         return acceleration.mult(mass);
     }
 
+    static calcMomentum(mass: number, velocity: Vector2D) {
+        return velocity.mult(mass);
+    }
+
     static calcAcceleration(netForce: Vector2D, mass: number) {
         return netForce.div(mass);
     }

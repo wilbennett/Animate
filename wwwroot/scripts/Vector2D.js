@@ -79,7 +79,7 @@ var Vector2D = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Vector2D.prototype.toString = function () { "(" + this.x.toFixed(3) + ", " + this.y.toFixed(3) + ")"; };
+    Vector2D.prototype.toString = function () { return "(" + this.x.toFixed(3) + ", " + this.y.toFixed(3) + ")"; };
     Object.defineProperty(Vector2D, "emptyVector", {
         get: function () {
             if (!this._emptyVector)
