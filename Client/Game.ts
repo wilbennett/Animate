@@ -161,7 +161,6 @@
 
         for (var i = 0; i < ballCount; i++) {
             let radius = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
-            radius = radius * 5;
             let mass = radius * 2;
             let color = MathEx.random(colors);
             //color = "blue";

@@ -110,7 +110,6 @@ var Game = /** @class */ (function () {
         //ballCount = 1;
         for (var i = 0; i < ballCount; i++) {
             var radius = MathEx.random(this._settings.Balls.minSize, this._settings.Balls.maxSize);
-            radius = radius * 5;
             var mass = radius * 2;
             var color = MathEx.random(colors);
             //color = "blue";
