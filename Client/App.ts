@@ -32,6 +32,7 @@
     private _maxTimeStepDelta = 0;
     private _frame = 0;
     private _updateTime = 0;
+    private _renderTime = 0;
     private _elapsedTime = 0;
     private _statY = 20;
 
@@ -115,7 +116,7 @@
 
         ctx.save();
         ctx.strokeStyle = "red";
-        ctx.lineWidth = 20;
+        ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.strokeRect(0, 0, this._canvas.width, this._canvas.height);
         ctx.closePath();
@@ -141,6 +142,8 @@
         this.showStat(this._settings.App.showConsUpdates, this._maxDeltaUpdate + " cons. updates");
         this.showStat(this._settings.App.showFrameCount, this._frame + " frames " + (this._frame / this._deltaUpdate * 100).toFixed(2) + " %");
         this.showStat(this._settings.App.showUpdateTime, this._updateTime.toFixed(2) + " update time");
+        this.showStat(this._settings.App.showUpdateTime, this._renderTime.toFixed(2) + " render time (" + (this._updateTime + this._renderTime).toFixed(2) + ")");
+        if (this._elapsedTime > this._timeStep) this._ctx.strokeStyle = "red";
         this.showStat(this._settings.App.showElapsedTime, this._elapsedTime.toFixed(2) + " elapsed time");
         this._ctx.restore();
     }
@@ -207,18 +210,21 @@
         if (deltaUpdates > this._maxDeltaUpdate)
             this._maxDeltaUpdate = deltaUpdates;
 
-        if (deltaUpdatesRaw > 2 && (deltaUpdatesRaw > this._maxDeltaUpdateShown || this._deltaUpdateCounter <= 0)) {
+        if (deltaUpdatesRaw > 2 && (deltaUpdatesRaw > this._maxDeltaUpdateShown)) {// || this._deltaUpdateCounter <= 0)) {
             this._maxDeltaUpdateShown = deltaUpdatesRaw;
             this._deltaUpdateCounter = this._targetFPS * 5;
         }
 
+        startTime = performance.now();
         this._game.render(this._frame);
+        let renderTime = performance.now() - startTime;
 
         if (timestamp >= this._nextFPSUpdate) {
             this._framesPerSecond = this.ema(this._framesLastSecond, this._framesPerSecond);
             this._nextFPSUpdate = timestamp + this.ONE_SECOND;
             this._framesLastSecond = 0;
             this._updateTime = this.ema(updateTime, this._updateTime);
+            this._renderTime = this.ema(renderTime, this._renderTime);
             this._elapsedTime = this.ema(elapsedTime, this._elapsedTime);
         }
 

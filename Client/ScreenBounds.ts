@@ -39,8 +39,8 @@
                 0,
                 0,
                 -this._boundsToScreenScaleY,
-                this.screenLeft + this.x,
-                this.screenTop + this.y + this.screenHeight - 1);
+                this.screenLeft - this.x * this._boundsToScreenScaleX,
+                this.screenTop + (this.y * this._boundsToScreenScaleY + this.screenHeight - 1));
         }
         else {
             ctx.transform(
@@ -48,8 +48,8 @@
                 0,
                 0,
                 this._boundsToScreenScaleY,
-                this.screenLeft + this.x,
-                this.screenTop + this.y);
+                this.screenLeft - this.x * this._boundsToScreenScaleX,
+                this.screenTop - this.y * this._boundsToScreenScaleY);
         }
 
         this.applyClipRegionToContext(ctx);

@@ -93,7 +93,7 @@ var Vector2D = /** @class */ (function (_super) {
     Vector2D.prototype.subtract = function (other) { return new Vector2D(this.x - other.x, this.y - other.y); };
     Vector2D.prototype.mult = function (scale) { return new Vector2D(this.x * scale, this.y * scale); };
     Vector2D.prototype.div = function (scale) {
-        return scale != 0 ? new Vector2D(this.x / scale, this.y / scale) : Vector2D.emptyVector;
+        return scale !== 0 ? new Vector2D(this.x / scale, this.y / scale) : Vector2D.emptyVector;
     };
     Vector2D.prototype.dot = function (other) { return Math2D.dot(this.x, this.y, other.x, other.y); };
     Vector2D.prototype.normalize = function () {

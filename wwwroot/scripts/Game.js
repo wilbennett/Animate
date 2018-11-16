@@ -14,6 +14,20 @@ var Game = /** @class */ (function () {
         this._backgroundDelta = 0.002;
         this._boundHandleSettingsChanged = this.handleSettingsChanged.bind(this);
         this.addBallToRemove = function (ball) { return _this._ballsToRemove.push(ball); };
+        this.paintViewportBackground = function (view) {
+            var ctx = view.ctx;
+            ctx.fillStyle = _this._backgroundGradient;
+            var bounds = _this._world;
+            ctx.beginPath();
+            ctx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+            ctx.closePath();
+            ctx.beginPath();
+            bounds = bounds.inflate(-15, -15);
+            ctx.fillStyle = "black";
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
+            ctx.closePath();
+        };
         this._ctx = this._canvas.getContext("2d");
         this._height = this._canvas.height;
         this._width = this._canvas.width;
@@ -23,9 +37,31 @@ var Game = /** @class */ (function () {
         var orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
         var worldWidth = _settings.World.wide ? width * 1.5 : width;
         var worldHeight = _settings.World.tall ? height * 1.5 : height;
-        this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, 0, 0);
-        //this._world.setGravity(5);
+        var screenLeft = 200;
+        var screenTop = 0;
+        var screenWidth = this._width - screenLeft;
+        var screenHeight = this._height - screenTop;
+        //this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, screenLeft, screenTop);
+        this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, screenLeft, screenTop, screenWidth, screenHeight);
         var world = this._world;
+        //world.setGravity(5);
+        world.beforeRenderViewport = this.paintViewportBackground;
+        var aspectRatio = world.height / world.width;
+        var screenWidth2 = this._width - screenWidth - 2;
+        var screenHeight2 = screenWidth2 * aspectRatio;
+        var screenLeft2 = 0;
+        var screenTop2 = this._height - screenHeight2 + 1;
+        world.addViewport(world.x, world.y, world.width, world.height, screenLeft2, screenTop2, world.ctx, screenWidth2, screenHeight2);
+        var screenLeft3 = 0;
+        var screenTop3 = screenTop2 - screenHeight2 + 1 - 5;
+        var viewWidth3 = world.width * 0.4;
+        var viewHeight3 = viewWidth3 * aspectRatio;
+        world.addViewport(world.centerX - Math.round(viewWidth3 / 2), world.centerY - Math.round(viewHeight3 / 2), viewWidth3, viewHeight3, screenLeft3, screenTop3, world.ctx, screenWidth2, screenHeight2);
+        var screenWidth4 = screenWidth2;
+        var screenHeight4 = screenHeight2;
+        var screenLeft4 = screenLeft;
+        var screenTop4 = screenTop2;
+        world.addViewport(world.x, world.y, world.width, world.height, screenLeft4, screenTop4, world.ctx, screenWidth4, screenHeight4);
         this._canvasMouse = new MouseTracker(this._canvas);
         this._output = document.getElementById("output");
         this._friction = new Friction();
@@ -136,22 +172,10 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.paintBackground = function () {
         var ctx = this._ctx;
-        var world = this._world;
-        var viewport = world.viewport;
-        var center = world.center;
-        viewport.applyTransform();
-        ctx.fillStyle = this._backgroundGradient;
-        var bounds = viewport;
+        ctx.fillStyle = "white";
         ctx.beginPath();
-        ctx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+        ctx.fillRect(0, 0, this._width, this._height);
         ctx.closePath();
-        ctx.beginPath();
-        bounds = world.inflate(-15, -15);
-        ctx.fillStyle = "black";
-        ctx.strokeStyle = "black";
-        ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
-        ctx.closePath();
-        viewport.restoreTransform();
     };
     Game.prototype.updateFan = function (fan, settings) {
         var world = this._world;
@@ -163,18 +187,26 @@ var Game = /** @class */ (function () {
         fan.strength = fanRadius;
     };
     Game.prototype.paintRadarAngle = function () {
-        var ctx = this._ctx;
-        var viewport = this._world.viewport;
-        ctx.save();
-        ctx.font = "20px Arial";
-        ctx.fillStyle = "black";
-        ctx.strokeStyle = "black";
-        ctx.textAlign = "center";
-        var radarPos = viewport.toScreen(this._radar.position);
-        ctx.fillText(this._radar.degrees.toFixed(0).toString(), radarPos.x, radarPos.y);
-        ctx.restore();
+        var _this = this;
+        var world = this._world;
+        var fontSize = 20;
+        world.viewports
+            //.slice(0, 2)
+            .forEach(function (view) {
+            var ctx = view.ctx;
+            fontSize = fontSize * Math.min(view.boundsToScreenScaleX, view.boundsToScreenScaleY);
+            ctx.save();
+            ctx.font = fontSize + "px Arial";
+            ctx.fillStyle = "black";
+            ctx.strokeStyle = "black";
+            ctx.textAlign = "center";
+            var radarPos = view.toScreen(_this._radar.position);
+            ctx.fillText(_this._radar.degrees.toFixed(0).toString(), radarPos.x, radarPos.y);
+            ctx.restore();
+        }, this);
     };
     Game.prototype.update = function (frame, now, timeDelta) {
+        //return;
         this.updateViewport();
         this.createBackgroundGradient();
         if (this._balls.length === 0)
@@ -185,19 +217,27 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.render = function (frame) {
         this.paintBackground();
-        this.paintRadarAngle();
+        //return;
         var world = this._world;
         var viewport = world.viewport;
+        viewport = world.viewports[2];
         this._world.render(frame);
+        this.paintRadarAngle();
+        //return;
         if (this._balls.length === 0)
             return;
         //let ball = this.balls[0];
-        this._output.innerHTML = "(" + this._canvasMouse.x + ", " + this._canvasMouse.y + ") <br/>" +
+        this._output.innerHTML = "" +
+            //"(" + this._canvasMouse.x + ", " + this._canvasMouse.y + ") <br/>" +
             "world: " + world + "<br/>" +
             "viewport: " + viewport + "<br/>" +
+            "viewport left: " + viewport.left.toFixed(0) + "<br/>" +
             "viewport top: " + viewport.top.toFixed(0) + "<br/>" +
+            "viewport right: " + viewport.right.toFixed(0) + "<br/>" +
             "viewport bottom: " + viewport.bottom.toFixed(0) + "<br/>" +
+            "viewport width: " + viewport.width.toFixed(0) + "<br/>" +
             "viewport height: " + viewport.height.toFixed(0) + "<br/>" +
+            "viewport Screen: (" + viewport.screenLeft.toFixed(0) + ", " + viewport.screenTop.toFixed(0) + ")  (" + viewport.screenWidth.toFixed(0) + ", " + viewport.screenHeight.toFixed(0) + ")" + "<br/>" +
             //"position: " + ball.position.toString() + "<br/>" +
             //"acceleration: " + ball.acceleration.toString() + "<br/>" +
             //"velocity: " + ball.velocity.toString() + "<br/>" +
@@ -205,7 +245,7 @@ var Game = /** @class */ (function () {
             //"velocity radians: " + ball.velocity.radians.toFixed(3) + "<br/>" +
             //"velocity angle: " + ball.velocity.degrees.toFixed(1) + "<br/>" +
             //"rotate velocity: " + ball.rotateVelocity.toFixed(2) + "<br/>" +
-            "gravity: " + this._world.gravity.gravityConst.toFixed(3) + "<br/>" +
+            //"gravity: " + this._world.gravity.gravityConst.toFixed(3) + "<br/>" +
             "";
     };
     Game.prototype.stop = function () {

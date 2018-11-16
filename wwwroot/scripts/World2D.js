@@ -23,6 +23,7 @@ var World2D = /** @class */ (function (_super) {
         _this._viewports = [];
         _this._forces = [];
         _this._characters = [];
+        _this._beforeRenderViewport = World2D.defaultBeforeRenderViewport;
         _this.setViewportTopLeft = _this._isOrientedUp
             ?
                 function (x, y) {
@@ -75,11 +76,11 @@ var World2D = /** @class */ (function (_super) {
         _this.moveViewportVertical = _this._isOrientedUp
             ?
                 function (dy) {
-                    return this.setViewportTopLeft(this._viewport.left, this.viewport.top + dy);
+                    return this.setViewportTopLeft(this.viewport.left, this.viewport.top + dy);
                 }
             :
                 function (dy) {
-                    return this.setViewportTopLeft(this._viewport.left, this.viewport.top + -dy);
+                    return this.setViewportTopLeft(this.viewport.left, this.viewport.top + -dy);
                 };
         _this.centerViewportAt = _this._isOrientedUp
             ?
@@ -128,8 +129,19 @@ var World2D = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(World2D.prototype, "viewports", {
+        get: function () { return this._viewports; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(World2D.prototype, "characters", {
         get: function () { return this._characters; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(World2D.prototype, "beforeRenderViewport", {
+        get: function () { return this._beforeRenderViewport; },
+        set: function (value) { this._beforeRenderViewport = value; },
         enumerable: true,
         configurable: true
     });
@@ -166,7 +178,25 @@ var World2D = /** @class */ (function (_super) {
         var viewport = new Viewport2D(this._ctx, this._orientation, x, y, this._viewportWidth, this._viewportHeight, this._screenX, this._screenY, this._screenWidth, this._screenHeight);
         this.setViewport(viewport);
     };
-    World2D.prototype.addViewport = function () {
+    World2D.prototype.addExistingViewport = function (viewport) {
+        this._viewports.push(viewport);
+        return viewport;
+    };
+    World2D.prototype.addViewport = function (x, y, width, height, screenX, screenY, ctx, screenWidth, screenHeight) {
+        if (x > this.maxX)
+            x = this.maxX - width;
+        if (y > this.maxY)
+            y = this.maxY - height;
+        if (x < this.x)
+            x = this.x;
+        if (y < this.y)
+            y = this.y;
+        width = Math.min(width, this.maxX - x);
+        height = Math.min(height, this.maxY - y);
+        if (!ctx)
+            ctx = this.ctx;
+        var viewport = new Viewport2D(ctx, this._orientation, x, y, width, height, screenX, screenY, screenWidth, screenHeight);
+        return this.addExistingViewport(viewport);
     };
     World2D.prototype.removeViewport = function (viewport) { this._viewports.remove(viewport); };
     World2D.prototype.moveViewportHorizontal = function (dx) {
@@ -187,10 +217,14 @@ var World2D = /** @class */ (function (_super) {
     };
     World2D.prototype.render = function (frame) {
         var _this = this;
-        this.applyTransform();
-        this._characters.forEach(function (character) { return character.draw(_this.viewport, frame); });
-        this.restoreTransform();
+        this._viewports.forEach(function (viewport) {
+            viewport.applyTransform();
+            _this._beforeRenderViewport(viewport);
+            _this._characters.forEach(function (character) { return character.draw(viewport, frame); });
+            viewport.restoreTransform();
+        }, this);
     };
+    World2D.defaultBeforeRenderViewport = function (viewport) { };
     return World2D;
 }(OrientedBounds));
 //# sourceMappingURL=World2D.js.map

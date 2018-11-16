@@ -32,10 +32,70 @@
         const orientation = _settings.World.up ? WorldOrientation.Up : WorldOrientation.Down;
         const worldWidth = _settings.World.wide ? width * 1.5 : width;
         const worldHeight = _settings.World.tall ? height * 1.5 : height;
-        this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, 0, 0);
-        //this._world.setGravity(5);
-
+        const screenLeft = 200;
+        const screenTop = 0;
+        const screenWidth = this._width - screenLeft;
+        const screenHeight = this._height - screenTop;
+        //this._world = new World2D(ctx, orientation, 0, 0, worldWidth, worldHeight, screenLeft, screenTop);
+        this._world = new World2D(
+            ctx,
+            orientation,
+            0,
+            0,
+            worldWidth,
+            worldHeight,
+            screenLeft,
+            screenTop,
+            screenWidth,
+            screenHeight);
         const world = this._world;
+        //world.setGravity(5);
+        world.beforeRenderViewport = this.paintViewportBackground;
+
+        let aspectRatio = world.height / world.width;
+        const screenWidth2 = this._width - screenWidth - 2;
+        const screenHeight2 = screenWidth2 * aspectRatio;
+        const screenLeft2 = 0;
+        const screenTop2 = this._height - screenHeight2 + 1;
+        world.addViewport(
+            world.x,
+            world.y,
+            world.width,
+            world.height,
+            screenLeft2,
+            screenTop2,
+            world.ctx,
+            screenWidth2,
+            screenHeight2);
+        const screenLeft3 = 0;
+        const screenTop3 = screenTop2 - screenHeight2 + 1 - 5;
+        let viewWidth3 = world.width * 0.4;
+        let viewHeight3 = viewWidth3 * aspectRatio;
+        world.addViewport(
+            world.centerX - Math.round(viewWidth3 / 2),
+            world.centerY - Math.round(viewHeight3 / 2),
+            viewWidth3,
+            viewHeight3,
+            screenLeft3,
+            screenTop3,
+            world.ctx,
+            screenWidth2,
+            screenHeight2);
+        const screenWidth4 = screenWidth2;
+        const screenHeight4 = screenHeight2;
+        const screenLeft4 = screenLeft;
+        const screenTop4 = screenTop2;
+        world.addViewport(
+            world.x,
+            world.y,
+            world.width,
+            world.height,
+            screenLeft4,
+            screenTop4,
+            world.ctx,
+            screenWidth4,
+            screenHeight4);
+
         this._canvasMouse = new MouseTracker(this._canvas);
 
         this._output = <HTMLOutputElement>document.getElementById("output");
@@ -183,28 +243,30 @@
         viewport.restoreTransform();
     }
 
-    private paintBackground() {
-        const ctx = this._ctx;
-        const world = this._world;
-        const viewport = world.viewport;
-        const center = world.center;
-
-        viewport.applyTransform();
+    paintViewportBackground = (view: Viewport2D) => {
+        const ctx = view.ctx;
 
         ctx.fillStyle = this._backgroundGradient;
-        let bounds: Bounds = viewport;
+        let bounds: Bounds = this._world;
         ctx.beginPath();
         ctx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
         ctx.closePath();
 
         ctx.beginPath();
-        bounds = world.inflate(-15, -15);
+        bounds = bounds.inflate(-15, -15);
         ctx.fillStyle = "black";
         ctx.strokeStyle = "black";
         ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
         ctx.closePath();
+    }
 
-        viewport.restoreTransform();
+    private paintBackground() {
+        const ctx = this._ctx;
+
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.fillRect(0, 0, this._width, this._height);
+        ctx.closePath();
     }
 
     private updateFan(fan: Wind, settings: Dynamic) {
@@ -220,20 +282,28 @@
     }
 
     private paintRadarAngle() {
-        const ctx = this._ctx;
-        const viewport = this._world.viewport;
+        const world = this._world;
+        let fontSize = 20;
 
-        ctx.save();
-        ctx.font = "20px Arial";
-        ctx.fillStyle = "black";
-        ctx.strokeStyle = "black";
-        ctx.textAlign = "center";
-        let radarPos = viewport.toScreen(this._radar.position);
-        ctx.fillText(this._radar.degrees.toFixed(0).toString(), radarPos.x, radarPos.y);
-        ctx.restore();
+        world.viewports
+            //.slice(0, 2)
+            .forEach(view => {
+                const ctx = view.ctx;
+                fontSize = fontSize * Math.min(view.boundsToScreenScaleX, view.boundsToScreenScaleY);
+
+                ctx.save();
+                ctx.font = fontSize + "px Arial";
+                ctx.fillStyle = "black";
+                ctx.strokeStyle = "black";
+                ctx.textAlign = "center";
+                let radarPos = view.toScreen(this._radar.position);
+                ctx.fillText(this._radar.degrees.toFixed(0).toString(), radarPos.x, radarPos.y);
+                ctx.restore();
+            }, this);
     }
 
     public update(frame: number, now: DOMHighResTimeStamp, timeDelta: number): void {
+        //return;
         this.updateViewport();
         this.createBackgroundGradient();
 
@@ -250,23 +320,31 @@
 
     public render(frame: number): void {
         this.paintBackground();
-        this.paintRadarAngle();
+        //return;
 
         const world = this._world;
-        const viewport = world.viewport;
+        let viewport = world.viewport;
+        viewport = world.viewports[2];
 
         this._world.render(frame);
+        this.paintRadarAngle();
+        //return;
 
         if (this._balls.length === 0) return;
 
         //let ball = this.balls[0];
 
-        this._output.innerHTML = "(" + this._canvasMouse.x + ", " + this._canvasMouse.y + ") <br/>" +
+        this._output.innerHTML = "" +
+            //"(" + this._canvasMouse.x + ", " + this._canvasMouse.y + ") <br/>" +
             "world: " + world + "<br/>" +
             "viewport: " + viewport + "<br/>" +
+            "viewport left: " + viewport.left.toFixed(0) + "<br/>" +
             "viewport top: " + viewport.top.toFixed(0) + "<br/>" +
+            "viewport right: " + viewport.right.toFixed(0) + "<br/>" +
             "viewport bottom: " + viewport.bottom.toFixed(0) + "<br/>" +
+            "viewport width: " + viewport.width.toFixed(0) + "<br/>" +
             "viewport height: " + viewport.height.toFixed(0) + "<br/>" +
+            "viewport Screen: (" + viewport.screenLeft.toFixed(0) + ", " + viewport.screenTop.toFixed(0) + ")  (" + viewport.screenWidth.toFixed(0) + ", " + viewport.screenHeight.toFixed(0) + ")" + "<br/>" +
             //"position: " + ball.position.toString() + "<br/>" +
             //"acceleration: " + ball.acceleration.toString() + "<br/>" +
             //"velocity: " + ball.velocity.toString() + "<br/>" +
@@ -274,7 +352,7 @@
             //"velocity radians: " + ball.velocity.radians.toFixed(3) + "<br/>" +
             //"velocity angle: " + ball.velocity.degrees.toFixed(1) + "<br/>" +
             //"rotate velocity: " + ball.rotateVelocity.toFixed(2) + "<br/>" +
-            "gravity: " + this._world.gravity.gravityConst.toFixed(3) + "<br/>" +
+            //"gravity: " + this._world.gravity.gravityConst.toFixed(3) + "<br/>" +
             "";
     }
 

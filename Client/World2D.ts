@@ -9,6 +9,7 @@
     private _viewports: Viewport2D[] = [];
     private _forces: Force[] = [];
     private _characters: Character[] = [];
+    private _beforeRenderViewport: (viewport: Viewport2D) => void = World2D.defaultBeforeRenderViewport;
 
     constructor(
         private _ctx: CanvasRenderingContext2D,
@@ -44,7 +45,11 @@
     get ctx() { return this._ctx; }
     get gravity() { return this._gravity; }
     get viewport() { return this._viewports[0]; }
+    get viewports() { return this._viewports; }
     get characters() { return this._characters; }
+
+    get beforeRenderViewport() { return this._beforeRenderViewport; }
+    set beforeRenderViewport(value: (viewport: Viewport2D) => void) { this._beforeRenderViewport = value; }
 
     get pixelsPerMeter() { return this._pixelsPerMeter; }
     set pixelsPerMeter(value: number) { this._pixelsPerMeter = value; }
@@ -95,7 +100,46 @@
         this.setViewport(viewport);
     }
 
-    addViewport() {
+    addExistingViewport(viewport: Viewport2D) {
+        this._viewports.push(viewport);
+        return viewport;
+    }
+
+    addViewport(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        screenX: number,
+        screenY: number,
+        ctx?: CanvasRenderingContext2D,
+        screenWidth?: number,
+        screenHeight?: number): Viewport2D {
+
+        if (x > this.maxX) x = this.maxX - width;
+        if (y > this.maxY) y = this.maxY - height;
+
+        if (x < this.x) x = this.x;
+        if (y < this.y) y = this.y;
+
+        width = Math.min(width, this.maxX - x);
+        height = Math.min(height, this.maxY - y);
+
+        if (!ctx) ctx = this.ctx;
+
+        let viewport = new Viewport2D(
+            ctx,
+            this._orientation,
+            x,
+            y,
+            width,
+            height,
+            screenX,
+            screenY,
+            screenWidth,
+            screenHeight);
+
+        return this.addExistingViewport(viewport);
     }
 
     removeViewport(viewport: Viewport2D) { this._viewports.remove(viewport); }
@@ -167,11 +211,11 @@
     moveViewportVertical = this._isOrientedUp
         ?
         function (dy: number) {
-            return this.setViewportTopLeft(this._viewport.left, this.viewport.top + dy);
+            return this.setViewportTopLeft(this.viewport.left, this.viewport.top + dy);
         }
         :
         function (dy: number) {
-            return this.setViewportTopLeft(this._viewport.left, this.viewport.top + -dy);
+            return this.setViewportTopLeft(this.viewport.left, this.viewport.top + -dy);
         };
 
     centerViewportAt = this._isOrientedUp
@@ -202,11 +246,12 @@
     }
 
     render(frame: number) {
-        this.applyTransform();
-
-        this._characters.forEach(character => character.draw(this.viewport, frame));
-
-        this.restoreTransform();
+        this._viewports.forEach(viewport => {
+            viewport.applyTransform();
+            this._beforeRenderViewport(viewport);
+            this._characters.forEach(character => character.draw(viewport, frame));
+            viewport.restoreTransform();
+        }, this);
     }
 
     localizeDegrees = this._isOrientedUp
@@ -217,4 +262,6 @@
 
             return 360 - degrees;
         };
+
+    private static defaultBeforeRenderViewport(viewport: Viewport2D) { }
 }

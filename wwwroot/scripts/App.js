@@ -23,6 +23,7 @@ var App = /** @class */ (function () {
         this._maxTimeStepDelta = 0;
         this._frame = 0;
         this._updateTime = 0;
+        this._renderTime = 0;
         this._elapsedTime = 0;
         this._statY = 20;
         this.gameLoop = function (timestamp) {
@@ -78,16 +79,19 @@ var App = /** @class */ (function () {
             }
             if (deltaUpdates > _this._maxDeltaUpdate)
                 _this._maxDeltaUpdate = deltaUpdates;
-            if (deltaUpdatesRaw > 2 && (deltaUpdatesRaw > _this._maxDeltaUpdateShown || _this._deltaUpdateCounter <= 0)) {
+            if (deltaUpdatesRaw > 2 && (deltaUpdatesRaw > _this._maxDeltaUpdateShown)) { // || this._deltaUpdateCounter <= 0)) {
                 _this._maxDeltaUpdateShown = deltaUpdatesRaw;
                 _this._deltaUpdateCounter = _this._targetFPS * 5;
             }
+            startTime = performance.now();
             _this._game.render(_this._frame);
+            var renderTime = performance.now() - startTime;
             if (timestamp >= _this._nextFPSUpdate) {
                 _this._framesPerSecond = _this.ema(_this._framesLastSecond, _this._framesPerSecond);
                 _this._nextFPSUpdate = timestamp + _this.ONE_SECOND;
                 _this._framesLastSecond = 0;
                 _this._updateTime = _this.ema(updateTime, _this._updateTime);
+                _this._renderTime = _this.ema(renderTime, _this._renderTime);
                 _this._elapsedTime = _this.ema(elapsedTime, _this._elapsedTime);
             }
             _this._framesLastSecond++;
@@ -163,7 +167,7 @@ var App = /** @class */ (function () {
         var ctx = this._ctx;
         ctx.save();
         ctx.strokeStyle = "red";
-        ctx.lineWidth = 20;
+        ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.strokeRect(0, 0, this._canvas.width, this._canvas.height);
         ctx.closePath();
@@ -187,6 +191,9 @@ var App = /** @class */ (function () {
         this.showStat(this._settings.App.showConsUpdates, this._maxDeltaUpdate + " cons. updates");
         this.showStat(this._settings.App.showFrameCount, this._frame + " frames " + (this._frame / this._deltaUpdate * 100).toFixed(2) + " %");
         this.showStat(this._settings.App.showUpdateTime, this._updateTime.toFixed(2) + " update time");
+        this.showStat(this._settings.App.showUpdateTime, this._renderTime.toFixed(2) + " render time (" + (this._updateTime + this._renderTime).toFixed(2) + ")");
+        if (this._elapsedTime > this._timeStep)
+            this._ctx.strokeStyle = "red";
         this.showStat(this._settings.App.showElapsedTime, this._elapsedTime.toFixed(2) + " elapsed time");
         this._ctx.restore();
     };

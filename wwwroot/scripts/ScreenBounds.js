@@ -37,10 +37,10 @@ var ScreenBounds = /** @class */ (function (_super) {
             return;
         ctx.save();
         if (this._isOrientedUp) {
-            ctx.transform(this._boundsToScreenScaleX, 0, 0, -this._boundsToScreenScaleY, this.screenLeft + this.x, this.screenTop + this.y + this.screenHeight - 1);
+            ctx.transform(this._boundsToScreenScaleX, 0, 0, -this._boundsToScreenScaleY, this.screenLeft - this.x * this._boundsToScreenScaleX, this.screenTop + (this.y * this._boundsToScreenScaleY + this.screenHeight - 1));
         }
         else {
-            ctx.transform(this._boundsToScreenScaleX, 0, 0, this._boundsToScreenScaleY, this.screenLeft + this.x, this.screenTop + this.y);
+            ctx.transform(this._boundsToScreenScaleX, 0, 0, this._boundsToScreenScaleY, this.screenLeft - this.x * this._boundsToScreenScaleX, this.screenTop - this.y * this._boundsToScreenScaleY);
         }
         this.applyClipRegionToContext(ctx);
         this._isTransformed = true;

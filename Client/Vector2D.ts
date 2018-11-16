@@ -68,7 +68,7 @@
     mult(scale: number): Vector2D { return new Vector2D(this.x * scale, this.y * scale); }
 
     div(scale: number): Vector2D {
-        return scale != 0 ? new Vector2D(this.x / scale, this.y / scale) : Vector2D.emptyVector;
+        return scale !== 0 ? new Vector2D(this.x / scale, this.y / scale) : Vector2D.emptyVector;
     }
 
     dot(other: Vector2D): number { return Math2D.dot(this.x, this.y, other.x, other.y); }
