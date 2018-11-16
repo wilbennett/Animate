@@ -63,8 +63,7 @@ class Physics {
         let magnitude = coeffecient * normal;
 
         let friction = velocity.mult(-1); // Friction applies in the opposite direction of motion.
-        friction = friction.normalize();
-        friction = friction.mult(magnitude);
+        friction = friction.normalizeMult(magnitude);
         return friction;
     }
 
@@ -72,8 +71,7 @@ class Physics {
         let magnitude = coeffecient * velocity.magSquared;
 
         let drag = velocity.mult(-1); // Drag applies in the opposite direction of motion.
-        drag = drag.normalize();
-        drag = drag.mult(magnitude);
+        drag = drag.normalizeMult(magnitude);
 
         return drag;
     }

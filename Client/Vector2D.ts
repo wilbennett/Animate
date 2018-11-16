@@ -66,6 +66,7 @@
     add(other: Vector2D): Vector2D { return new Vector2D(this.x + other.x, this.y + other.y); }
     subtract(other: Vector2D): Vector2D { return new Vector2D(this.x - other.x, this.y - other.y); }
     mult(scale: number): Vector2D { return new Vector2D(this.x * scale, this.y * scale); }
+    normalizeMult(scale: number): Vector2D { return this.normalize().mult(scale); }
 
     div(scale: number): Vector2D {
         return scale !== 0 ? new Vector2D(this.x / scale, this.y / scale) : Vector2D.emptyVector;

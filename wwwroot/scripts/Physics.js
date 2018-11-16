@@ -48,15 +48,13 @@ var Physics = /** @class */ (function () {
     Physics.calcFriction = function (coeffecient, normal, velocity) {
         var magnitude = coeffecient * normal;
         var friction = velocity.mult(-1); // Friction applies in the opposite direction of motion.
-        friction = friction.normalize();
-        friction = friction.mult(magnitude);
+        friction = friction.normalizeMult(magnitude);
         return friction;
     };
     Physics.calcDrag = function (coeffecient, velocity) {
         var magnitude = coeffecient * velocity.magSquared;
         var drag = velocity.mult(-1); // Drag applies in the opposite direction of motion.
-        drag = drag.normalize();
-        drag = drag.mult(magnitude);
+        drag = drag.normalizeMult(magnitude);
         return drag;
     };
     Physics.calcAverageAcceleration = function (initialVelocity, finalVelocity, time) {
