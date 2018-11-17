@@ -3,11 +3,13 @@
         position: Vector2D,
         private readonly _density: number,
         dragCoefficient: number,
-        private readonly _width: number,
-        private readonly _height: number) {
+        width: number,
+        height: number) {
         super(position, Vector2D.emptyVector, 0);
 
         this.dragCoefficient = dragCoefficient;
+        this._width = width;
+        this._height = height;
     }
 
     get density() { return this._density; }

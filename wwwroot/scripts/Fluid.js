@@ -14,12 +14,12 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Fluid = /** @class */ (function (_super) {
     __extends(Fluid, _super);
-    function Fluid(position, _density, dragCoefficient, _width, _height) {
+    function Fluid(position, _density, dragCoefficient, width, height) {
         var _this = _super.call(this, position, Vector2D.emptyVector, 0) || this;
         _this._density = _density;
-        _this._width = _width;
-        _this._height = _height;
         _this.dragCoefficient = dragCoefficient;
+        _this._width = width;
+        _this._height = height;
         return _this;
     }
     Object.defineProperty(Fluid.prototype, "density", {
