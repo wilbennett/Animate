@@ -58,7 +58,7 @@ class TestBallPhysics {
         this.createBall(world, world.x + 5, 10, ballColor, false);
         let drag = 500.4;
         let liquidHeight = world.height / 3;
-        let liquid = new Liquid(new Vector2D(world.x, world.offsetBelow(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
+        let liquid = new Fluid(new Vector2D(world.x, world.offsetBelow(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
         world.addForce(liquid);
         world.addCharacter(liquid);
 
@@ -68,7 +68,7 @@ class TestBallPhysics {
         world.tag = new WorldInfo();
         ball = this.createBall(world, world.center.x, radius, ballColor);
         this.createBall(world, world.x + 5, 10, ballColor, false);
-        liquid = new Liquid(new Vector2D(world.x, world.offsetAbove(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
+        liquid = new Fluid(new Vector2D(world.x, world.offsetAbove(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
         world.addForce(liquid);
         world.addCharacter(liquid);
     }

@@ -65,7 +65,7 @@ var Game = /** @class */ (function () {
         this._canvasMouse = new MouseTracker(this._canvas);
         this._output = document.getElementById("output");
         this._friction = new Friction();
-        this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 100, world.width / 8, 90);
+        this._liquid = new Fluid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 100, world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", MathEx.TWO_PI / 60 * 3);
         world.addForce(this._liquid);
         world.addCharacter(this._liquid);

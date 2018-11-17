@@ -12,9 +12,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var Liquid = /** @class */ (function (_super) {
-    __extends(Liquid, _super);
-    function Liquid(position, _density, dragCoefficient, _width, _height) {
+var Fluid = /** @class */ (function (_super) {
+    __extends(Fluid, _super);
+    function Fluid(position, _density, dragCoefficient, _width, _height) {
         var _this = _super.call(this, position, Vector2D.emptyVector, 0) || this;
         _this._density = _density;
         _this._width = _width;
@@ -22,27 +22,27 @@ var Liquid = /** @class */ (function (_super) {
         _this.dragCoefficient = dragCoefficient;
         return _this;
     }
-    Object.defineProperty(Liquid.prototype, "density", {
+    Object.defineProperty(Fluid.prototype, "density", {
         get: function () { return this._density; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Liquid.prototype, "bounds", {
+    Object.defineProperty(Fluid.prototype, "bounds", {
         get: function () {
             return new Bounds(this._position.x, this._position.y, this._width, this._height);
         },
         enumerable: true,
         configurable: true
     });
-    Liquid.prototype.calculateForce = function () { };
-    Liquid.prototype.calculateForceForCharacter = function (character) {
+    Fluid.prototype.calculateForce = function () { };
+    Fluid.prototype.calculateForceForCharacter = function (character) {
         if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y))
             return Vector2D.emptyVector;
         return Physics.calcDrag(this.density, 1, this.dragCoefficient, character.velocity);
     };
-    Liquid.prototype.update = function (frame, now, elapsedTime, timeScale, world) {
+    Fluid.prototype.update = function (frame, now, elapsedTime, timeScale, world) {
     };
-    Liquid.prototype.draw = function (viewport, frame) {
+    Fluid.prototype.draw = function (viewport, frame) {
         var ctx = viewport.ctx;
         var origAlpha = ctx.globalAlpha;
         ctx.globalAlpha = 0.5;
@@ -55,6 +55,6 @@ var Liquid = /** @class */ (function (_super) {
         ctx.closePath();
         ctx.globalAlpha = origAlpha;
     };
-    return Liquid;
+    return Fluid;
 }(Character2D));
-//# sourceMappingURL=Liquid.js.map
+//# sourceMappingURL=Fluid.js.map

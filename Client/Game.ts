@@ -5,7 +5,7 @@
     private _canvasMouse: MouseTracker;
     private _output: HTMLOutputElement;
     private _friction: Force;
-    private _liquid: Liquid;
+    private _liquid: Fluid;
     private _radar: Radar;
     private _leftFan: Wind;
     private _rightFan: Wind;
@@ -100,7 +100,7 @@
 
         this._output = <HTMLOutputElement>document.getElementById("output");
         this._friction = new Friction();
-        this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 100, world.width / 8, 90);
+        this._liquid = new Fluid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 100, world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", MathEx.TWO_PI / 60 * 3);
 
         world.addForce(this._liquid);

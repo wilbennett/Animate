@@ -1,4 +1,4 @@
-﻿class Liquid extends Character2D {
+﻿class Fluid extends Character2D {
     constructor(
         position: Vector2D,
         private readonly _density: number,
