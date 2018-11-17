@@ -40,7 +40,7 @@ var Liquid = /** @class */ (function (_super) {
             return Vector2D.emptyVector;
         return Physics.calcDrag(this.density, 1, this.dragCoefficient, character.velocity);
     };
-    Liquid.prototype.update = function (frame, now, timeDelta, world) {
+    Liquid.prototype.update = function (frame, now, elapsedTime, timeScale, world) {
     };
     Liquid.prototype.draw = function (viewport, frame) {
         var ctx = viewport.ctx;

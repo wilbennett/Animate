@@ -56,8 +56,8 @@ var Wind = /** @class */ (function (_super) {
         var force = this._velocity.mult(pos.magSquared * 0.01);
         return force.div(character.velocity.mag);
     };
-    Wind.prototype.update = function (frame, now, timeDelta, world) {
-        //super.update(frame, timestamp, delta, world);
+    Wind.prototype.update = function (frame, now, elapsedTime, timeScale, world) {
+        //super.update(frame, now, elapsedTime, timeScale, world);
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     };
     Wind.prototype.draw = function (viewport, frame) {

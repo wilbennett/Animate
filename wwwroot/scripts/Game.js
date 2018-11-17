@@ -65,8 +65,8 @@ var Game = /** @class */ (function () {
         this._canvasMouse = new MouseTracker(this._canvas);
         this._output = document.getElementById("output");
         this._friction = new Friction();
-        this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 0.05, world.width / 8, 90);
-        this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
+        this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 100, world.width / 8, 90);
+        this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", MathEx.TWO_PI / 60 * 3);
         world.addForce(this._liquid);
         world.addCharacter(this._liquid);
         world.addCharacter(this._radar);
@@ -114,7 +114,7 @@ var Game = /** @class */ (function () {
             var color = MathEx.random(colors);
             //color = "blue";
             var startY = this._world.viewport.topOffsetBelow(radius);
-            var ball = new Ball(radius, color, new Vector2D(MathEx.random(radius, this._width - radius * 2), startY), new Vector2D(MathEx.random(0, 150), 0), mass, container, this.addBallToRemove);
+            var ball = new Ball(radius, color, new Vector2D(MathEx.random(radius, this._width - radius * 2), startY), new Vector2D(MathEx.random(0, 5), 0), mass, container, this.addBallToRemove);
             ball.frictionCoefficient = this._settings.Balls.frictionCoefficient * (ball.radius * ball.radius / 2);
             this._balls[i] = ball;
             this._world.addCharacter(ball);

@@ -1,4 +1,10 @@
 "use strict";
+var BallInfo = /** @class */ (function () {
+    function BallInfo() {
+        this.maxVelocity = Vector2D.emptyVector;
+    }
+    return BallInfo;
+}());
 var TestBallPhysics = /** @class */ (function () {
     function TestBallPhysics(_canvas, _settings) {
         var _this = this;
@@ -8,6 +14,7 @@ var TestBallPhysics = /** @class */ (function () {
         this.gameLoop = function (now) {
             var ctx = _this._ctx;
             ctx.clearRect(0, 0, _this._canvas.width, _this._canvas.height);
+            now = now / 1000;
             _this.testBall(_this._worldZeroGU, now);
             _this.testBall(_this._worldZeroGD, now);
             _this.testBall(_this._worldGravityU, now);
@@ -43,7 +50,7 @@ var TestBallPhysics = /** @class */ (function () {
         world = this._worldLiquidU;
         ball = this.createBall(world, world.center.x, radius, ballColor);
         this.createBall(world, world.x + 5, 10, ballColor, false);
-        var drag = 0.4;
+        var drag = 500.4;
         var liquidHeight = world.height / 3;
         var liquid = new Liquid(new Vector2D(world.x, world.offsetBelow(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
         world.addForce(liquid);
@@ -76,6 +83,7 @@ var TestBallPhysics = /** @class */ (function () {
             world.removeCharacter(ball);
             _this.createBall(world, x, autoSize && radius < 30 ? radius + 5 : 10, color, autoSize, restitution);
         }, restitution);
+        ball.tag = new BallInfo();
         world.addCharacter(ball);
         return ball;
     };
@@ -88,8 +96,8 @@ var TestBallPhysics = /** @class */ (function () {
         ctx.strokeStyle = "white";
         ctx.font = "12px Arial";
         ctx.textAlign = "center";
-        ctx.fillText(ball.force.toString(), position.x, position.y);
-        //ctx.fillText(ball.velocity.toString(), position.x, position.y - 20);
+        //ctx.fillText(ball.force.toString(), position.x, position.y);
+        ctx.fillText(ball.velocity.toString(), position.x, position.y - 20);
     };
     TestBallPhysics.prototype.testBall = function (world, now) {
         var _this = this;
@@ -98,8 +106,18 @@ var TestBallPhysics = /** @class */ (function () {
         world.update(0, now, 1);
         world.render(0);
         world.characters.forEach(function (character) {
-            if (character instanceof Ball)
+            if (character instanceof Ball) {
+                var tag = character.tag;
+                //if (character.velocity.y > 0)
+                {
+                    if (character.velocity.mag > tag.maxVelocity.mag) {
+                        //console.log("Ball max velocity: " + character.velocity.toString() +
+                        //    " diff: " + character.velocity.subtract(tag.maxVelocity).toString());
+                        tag.maxVelocity = character.velocity;
+                    }
+                }
                 _this.drawBallForce(world.viewport, character);
+            }
         });
     };
     return TestBallPhysics;

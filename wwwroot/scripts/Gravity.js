@@ -18,6 +18,7 @@ var Gravity = /** @class */ (function (_super) {
         var _this = _super.call(this, Vector2D.emptyVector, 0) || this;
         _this._orientation = _orientation;
         _this._gravityConst = _gravityConst;
+        _this._gravityConst = _this._gravityConst * Physics.gravityScale;
         if (_this._orientation === WorldOrientation.Up)
             _this._gravityConst = -_this._gravityConst;
         return _this;

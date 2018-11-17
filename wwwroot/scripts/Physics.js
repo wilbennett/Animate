@@ -42,13 +42,33 @@ var Physics = /** @class */ (function () {
         // v = v + a
         return currentVelocity.add(acceleration);
     };
+    Physics.calcFinalVelocity = function (time, initialVelocity, acceleration) {
+        // Vf = Vi + a * t
+        return initialVelocity.add(acceleration.mult(time));
+    };
+    Physics.calcDisplacement = function (time, initialVelocity, acceleration) {
+        // d = Vi * t + (a * t * t) / 2
+        var velocityTime = initialVelocity.mult(time);
+        var halfAccelerationTime = acceleration.mult(time * time).div(2);
+        return velocityTime.add(halfAccelerationTime);
+    };
     Physics.calcRotationAcceleration = function (force, mass) {
         // a = f / m
-        return force / mass;
+        return mass === 0 ? 0 : force / mass;
     };
     Physics.calcRotationVelocity = function (currentVelocity, acceleration) {
         // v = v + a;
         return currentVelocity + acceleration;
+    };
+    Physics.calcFinalRotationVelocity = function (time, initialVelocity, acceleration) {
+        // Vf = Vi + a * t
+        return initialVelocity + acceleration * time;
+    };
+    Physics.calcRotationDisplacement = function (time, initialVelocity, acceleration) {
+        // d = Vi * t + (a * t * t) / 2
+        var velocityTime = initialVelocity * time;
+        var halfAccelerationTime = acceleration * time * time / 2;
+        return velocityTime + halfAccelerationTime;
     };
     Physics.calcReflection = function (v, normal) {
         return v.reflectViaNormal(normal);
@@ -80,8 +100,24 @@ var Physics = /** @class */ (function () {
         // AvgV = (fp - ip) / t
         return finalPosition.subtract(initialPosition).div(time);
     };
-    Physics.gravityEarth = 9.8;
-    Physics.pixelsPerMeter = 0.07;
+    /* // Use with standard velocity formula.
+    static readonly pixelsPerMeter = 2;//0.1;
+    static readonly gravityScale = 1;//0.01;
+    /*/
+    Physics.pixelsPerMeter = 70;
+    Physics.gravityScale = 1;
+    //*/
+    Physics.gravitySun = 274;
+    Physics.gravityJupiter = 24.92;
+    Physics.gravityNeptune = 11.15;
+    Physics.gravitySaturn = 10.44;
+    Physics.gravityEarth = 9.798;
+    Physics.gravityUranus = 8.87;
+    Physics.gravityVenus = 8.87;
+    Physics.gravityMars = 3.71;
+    Physics.gravityMercury = 3.7;
+    Physics.gravityMoon = 1.62;
+    Physics.gravityPluto = 0.58;
     return Physics;
 }());
 //# sourceMappingURL=Physics.js.map

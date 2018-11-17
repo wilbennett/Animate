@@ -26,6 +26,7 @@ var App = /** @class */ (function () {
         this._renderTime = 0;
         this._elapsedTime = 0;
         this._statY = 20;
+        // TODO: Need to fix a "tick" that happens approx once per second.
         this.gameLoop = function (timestamp) {
             if (_this._stopped) {
                 return;
@@ -40,6 +41,7 @@ var App = /** @class */ (function () {
             _this._timeStepDelta += timestamp - _this._lastFrameTimeAdjusted;
             var elapsedTime = timestamp - _this._lastFrameTime;
             var elapsedTimeAdjusted = timestamp - _this._lastFrameTimeAdjusted;
+            var priorNow = _this._lastFrameTime / 1000;
             _this._lastFrameTime = timestamp;
             _this._lastFrameTimeAdjusted = _this._lastFrameTime - (elapsedTimeAdjusted % _this._timeStep);
             var updateTime = 0;
@@ -54,9 +56,11 @@ var App = /** @class */ (function () {
             }
             var startTime;
             if (_this._settings.App.fixedTimeStep) {
+                var now = priorNow;
                 while (_this._timeStepDelta >= _this._timeStep) {
+                    now += _this._nowStep;
                     startTime = performance.now();
-                    _this._game.update(_this._frame, timestamp, 1);
+                    _this._game.update(_this._frame, now, 1);
                     updateTime = performance.now() - startTime;
                     _this._timeStepDelta -= _this._timeStep;
                     deltaUpdates++;
@@ -64,16 +68,18 @@ var App = /** @class */ (function () {
                 _this._deltaUpdate += deltaUpdates;
                 deltaUpdatesRaw += deltaUpdates;
                 if (_this._settings.App.interpolate) {
+                    now += (_this._timeStepDelta / _this._timeStep) / 1000;
                     startTime = performance.now();
-                    _this._game.update(_this._frame, timestamp, _this._timeStepDelta / _this._timeStep);
+                    _this._game.update(_this._frame, now, _this._timeStepDelta / _this._timeStep);
                     updateTime = performance.now() - startTime;
                     _this._timeStepDelta = 0;
                 }
             }
             else {
+                var now = timestamp / 1000;
                 var delta = _this._settings.App.interpolate ? _this._timeStepDelta / _this._timeStep : 1;
                 startTime = performance.now();
-                _this._game.update(_this._frame, timestamp / 1000, delta);
+                _this._game.update(_this._frame, now, delta);
                 updateTime = performance.now() - startTime;
                 _this._timeStepDelta = 0;
             }
@@ -130,6 +136,7 @@ var App = /** @class */ (function () {
         this._slowTimeout = settings.App.slowTimeout;
         this._inactiveCutoff = settings.App.inactiveCutoff;
         this._timeStep = this.ONE_SECOND / this._targetFPS;
+        this._nowStep = this._timeStep / 1000;
         this._timeoutPeriod = this._slowTimeout ? this._timeStep * 2 : this._timeStep;
         this._maxTimeStepDelta = this._timeStep * this._inactiveCutoff;
         this._emaWeight = 2 / (this._statAvgPeriod + 1);

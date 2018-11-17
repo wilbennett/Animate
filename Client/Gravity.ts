@@ -2,6 +2,8 @@
     constructor(private readonly _orientation: WorldOrientation, private readonly _gravityConst: number) {
         super(Vector2D.emptyVector, 0);
 
+        this._gravityConst = this._gravityConst * Physics.gravityScale;
+
         if (this._orientation === WorldOrientation.Up)
             this._gravityConst = -this._gravityConst;
     }

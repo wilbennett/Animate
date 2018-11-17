@@ -1,6 +1,7 @@
 ﻿class Radar extends Character2D {
     private _armManager: Polar2D;
     private _armPos: Vector2D | null = null;
+    private _rotateVelocityRequested: number;
 
     constructor(
         position: Vector2D,
@@ -10,6 +11,7 @@
         super(position, Vector2D.emptyVector, 0);
 
         this._maxRotateVelocity = MathEx.TWO_PI;
+        this._rotateVelocityRequested = rotateVelocity;
         this._rotateVelocity = rotateVelocity;
         this._armManager = new Polar2D(this._radius * 0.95, 0);
     }
@@ -21,18 +23,23 @@
 
     get armPos() {
         if (this._armPos === null)
-            this._armPos = this._armManager.vector.add(this._position);
+            this._armPos = this._armManager.vector.add(this.position);
 
         return this._armPos;
     }
 
     applyForce(force: Force) { }
-    applyRotateForce(force: number) { }
 
-    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {
-        super.update(frame, now, timeDelta, world);
+    protected adjustRotateAcceleration() {
+        this._rotateAcceleration = this._rotateVelocityRequested;
+        this._rotateVelocity = 0;
+    }
 
-        this._armManager = this._armManager.withRadians(this._rotateRadians);
+
+    update(frame: number, now: number, elapsedTime: number, timeScale: number, world: World2D) {
+        super.update(frame, now, elapsedTime, timeScale, world);
+
+        this._armManager = this._armManager.withRadians(this.rotateRadians);
         this._armPos = null;
     }
 
@@ -41,15 +48,15 @@
 
         const ctx = viewport.ctx;
 
-        ctx.strokeStyle = this._color;
+        ctx.strokeStyle = this.color;
 
         ctx.beginPath();
-        ctx.arc(this._position.x, this._position.y, this._radius, 0, MathEx.TWO_PI);
+        ctx.arc(this.position.x, this.position.y, this.radius, 0, MathEx.TWO_PI);
         ctx.stroke();
         ctx.closePath();
 
         ctx.beginPath();
-        ctx.moveTo(this._position.x, this._position.y);
+        ctx.moveTo(this.position.x, this.position.y);
         ctx.lineTo(this.armPos.x, this.armPos.y);
         ctx.stroke();
         ctx.closePath();

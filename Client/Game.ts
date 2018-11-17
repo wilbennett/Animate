@@ -100,8 +100,8 @@
 
         this._output = <HTMLOutputElement>document.getElementById("output");
         this._friction = new Friction();
-        this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 0.05, world.width / 8, 90);
-        this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", 0.01);
+        this._liquid = new Liquid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 100, world.width / 8, 90);
+        this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", MathEx.TWO_PI / 60 * 3);
 
         world.addForce(this._liquid);
         world.addCharacter(this._liquid);
@@ -169,7 +169,7 @@
                 radius,
                 color,
                 new Vector2D(MathEx.random(radius, this._width - radius * 2), startY),
-                new Vector2D(MathEx.random(0, 150), 0),
+                new Vector2D(MathEx.random(0, 5), 0),
                 mass,
                 container,
                 this.addBallToRemove);

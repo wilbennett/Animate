@@ -1,6 +1,22 @@
 class Physics {
-    static readonly gravityEarth = 9.8;
-    static readonly pixelsPerMeter = 0.07;
+    /* // Use with standard velocity formula.
+    static readonly pixelsPerMeter = 2;//0.1; 
+    static readonly gravityScale = 1;//0.01;
+    /*/
+    static readonly pixelsPerMeter = 70;
+    static readonly gravityScale = 1;
+    //*/
+    static readonly gravitySun = 274;
+    static readonly gravityJupiter = 24.92;
+    static readonly gravityNeptune = 11.15;
+    static readonly gravitySaturn = 10.44;
+    static readonly gravityEarth = 9.798;
+    static readonly gravityUranus = 8.87;
+    static readonly gravityVenus = 8.87;
+    static readonly gravityMars = 3.71;
+    static readonly gravityMercury = 3.7;
+    static readonly gravityMoon = 1.62;
+    static readonly gravityPluto = 0.58;
 
     static metersToPixels(meters: number, pixelsPerMeter: number = this.pixelsPerMeter) {
         return meters * pixelsPerMeter;
@@ -52,14 +68,38 @@ class Physics {
         return currentVelocity.add(acceleration);
     }
 
+    static calcFinalVelocity(time: number, initialVelocity: Vector2D, acceleration: Vector2D) {
+        // Vf = Vi + a * t
+        return initialVelocity.add(acceleration.mult(time));
+    }
+
+    static calcDisplacement(time: number, initialVelocity: Vector2D, acceleration: Vector2D) {
+    	// d = Vi * t + (a * t * t) / 2
+        let velocityTime = initialVelocity.mult(time);
+        let halfAccelerationTime = acceleration.mult(time * time).div(2);
+        return velocityTime.add(halfAccelerationTime);
+    }
+
     static calcRotationAcceleration(force: number, mass: number) {
         // a = f / m
-        return force / mass;
+        return mass === 0 ? 0 : force / mass;
     }
 
     static calcRotationVelocity(currentVelocity: number, acceleration: number) {
         // v = v + a;
         return currentVelocity + acceleration;
+    }
+
+    static calcFinalRotationVelocity(time: number, initialVelocity: number, acceleration: number) {
+        // Vf = Vi + a * t
+        return initialVelocity + acceleration * time;
+    }
+
+    static calcRotationDisplacement(time: number, initialVelocity: number, acceleration: number) {
+        // d = Vi * t + (a * t * t) / 2
+        let velocityTime = initialVelocity * time;
+        let halfAccelerationTime = acceleration * time * time / 2;
+        return velocityTime + halfAccelerationTime;
     }
 
     static calcReflection(v: Vector2D, normal: Vector2D): Vector2D {

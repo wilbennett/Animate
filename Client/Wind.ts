@@ -44,8 +44,8 @@
         return force.div(character.velocity.mag);
     }
 
-    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {
-        //super.update(frame, timestamp, delta, world);
+    update(frame: number, now: number, elapsedTime: number, timeScale: number, world: World2D) {
+        //super.update(frame, now, elapsedTime, timeScale, world);
 
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     }

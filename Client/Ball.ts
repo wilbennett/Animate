@@ -15,7 +15,7 @@
 
         if (!restitution) restitution = 0.98;
 
-        this.restitutionCoeffecient = restitution;
+        this.restitutionCoefficient = restitution;
 
         this._maxRotateVelocity = 0.1;
     }
@@ -30,10 +30,10 @@
         super.adjustRotateAcceleration();
     }
 
-    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {
+    update(frame: number, now: number, elapsedTime: number, timeScale: number, world: World2D) {
         let origY = this._position.y;
 
-        super.update(frame, now, timeDelta, world);
+        super.update(frame, now, elapsedTime, timeScale, world);
 
         if (!this._allowBounce) {
             this.position = this.position.withY(origY);
@@ -52,7 +52,6 @@
     private priorUp = false;
     private priorY: number;
     private highY: number;
-    private priorVelocity: Vector2D = Vector2D.emptyVector;
 
     //*
     draw(viewport: Viewport2D, frame: number) {
@@ -84,25 +83,24 @@
 
         this.priorY = this.position.y;
         this.priorUp = isUp;
-        this.priorVelocity = this.velocity;
         //*/
 
-        let radiusX = this._radius;
-        let radiusY = this._radius;
+        let radiusX = this.radius;
+        let radiusY = this.radius;
 
         ctx.save();
 
-        let polar = new Polar2D(this._radius, this._rotateRadians);
+        let polar = new Polar2D(this.radius, this.rotateRadians);
         let highlightPos = polar.vector;
         highlightPos = highlightPos.add(this.position);
 
         let gradient = ctx.createRadialGradient(
             highlightPos.x,
             highlightPos.y,
-            this._radius * 0.01,
+            this.radius * 0.01,
             highlightPos.x,
             highlightPos.y,
-            this._radius);
+            this.radius);
 
         gradient.addColorStop(0, "#bbbbbb");
         gradient.addColorStop(0.7, this._color);
@@ -171,42 +169,56 @@
     }
     //*/
 
+    private priorPreV: number = 0;
+
     private checkBoundary(gravity: Gravity) {
         const boundary = this._boundary;
+        let reflectVelocity: Vector2D | null = null;
+        let priorVelocity = this.priorVelocity;
 
-        let leftPenetration = boundary.leftPenetration(this._position.x - this._radius);
-        let topPenetration = boundary.topPenetration(boundary.offsetAbove(this._position.y, this._radius));
-        let rightPenetration = boundary.rightPenetration(this._position.x + this._radius);
-        let bottomPenetration = boundary.bottomPenetration(boundary.offsetBelow(this._position.y, this._radius));
+        let leftPenetration = boundary.leftPenetration(this.position.x - this.radius);
+        let topPenetration = boundary.topPenetration(boundary.offsetAbove(this.position.y, this.radius));
+        let rightPenetration = boundary.rightPenetration(this.position.x + this.radius);
+        let bottomPenetration = boundary.bottomPenetration(boundary.offsetBelow(this.position.y, this.radius));
+
+        // TODO: Reflecting with prior velocity.  Need to get the velocity at time of impact.
 
         if (leftPenetration > 0) {
-            this._position = this._position.withX(boundary.leftOffset(this._radius));
-            this._velocity = boundary.reflectLeft(this._velocity);
-            this._velocity = this._velocity.withX(this._velocity.x * this.restitutionCoeffecient);
+            this._position = this.position.withX(boundary.leftOffset(this.radius));
+            reflectVelocity = boundary.reflectLeft(priorVelocity);
+            reflectVelocity = reflectVelocity.withX(reflectVelocity.x * this.restitutionCoefficient);
+        }
+        else if (rightPenetration > 0) {
+            this._position = this.position.withX(boundary.rightOffset(this.radius));
+            reflectVelocity = boundary.reflectRight(priorVelocity);
+            reflectVelocity = reflectVelocity.withX(reflectVelocity.x * this.restitutionCoefficient);
         }
 
-        if (rightPenetration > 0) {
-            this._position = this._position.withX(boundary.rightOffset(this._radius));
-            this._velocity = boundary.reflectRight(this._velocity);
-            this._velocity = this._velocity.withX(this._velocity.x * this.restitutionCoeffecient);
-        }
+        if (reflectVelocity)
+            priorVelocity = reflectVelocity;
 
         if (topPenetration > 0) {
-            this._position = this._position.withY(boundary.topOffsetBelow(this._radius));
-            this._velocity = boundary.reflectTop(this._velocity);
-            this._velocity = this._velocity.withY(this._velocity.y * this.restitutionCoeffecient);
+            this._position = this.position.withY(boundary.topOffsetBelow(this.radius));
+            reflectVelocity = boundary.reflectTop(priorVelocity);
+            reflectVelocity = reflectVelocity.withY(reflectVelocity.y * this.restitutionCoefficient);
         }
+        else if (bottomPenetration > 0) {
+            let preV = this.velocity.mag;
+            //if (preV > this.priorPreV) console.log("####################################################");
+            this.priorPreV = preV;
+            this._position = this.position.withY(boundary.bottomOffsetAbove(this.radius));
+            reflectVelocity = boundary.reflectBottom(priorVelocity);
+            reflectVelocity = reflectVelocity.withY(reflectVelocity.y * this.restitutionCoefficient);
+            let postV = reflectVelocity.mag;
+            //console.log("Pre bounce: " + preV.toFixed(2) + ", post bounce: " + postV.toFixed(2) + " " + reflectVelocity + ", " + (preV - postV).toFixed(2));
 
-        if (bottomPenetration > 0) {
-            this._position = this._position.withY(boundary.bottomOffsetAbove(this._radius));
-            this._velocity = boundary.reflectBottom(this._velocity);
-            this._velocity = this._velocity.withY(this._velocity.y * this.restitutionCoeffecient);
-            const force = Math.abs(this._velocity.y); // TODO: Calculate proper force.
-
-            if (force <= Math.abs(gravity.gravityConst)) {
-                this._velocity = this._velocity.withY(0);
+            if (Math.abs(reflectVelocity.y) < 0.1) {
+                reflectVelocity = reflectVelocity.withY(0);
                 this._allowBounce = false;
             }
         }
+
+        if (reflectVelocity)
+            this._velocity = reflectVelocity;
     }
 }

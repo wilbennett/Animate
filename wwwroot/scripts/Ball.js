@@ -23,10 +23,45 @@ var Ball = /** @class */ (function (_super) {
         _this._opacity = 1;
         _this._allowBounce = true;
         _this.priorUp = false;
-        _this.priorVelocity = Vector2D.emptyVector;
+        /*/
+        draw(ctx: CanvasRenderingContext2D, frame: number) {
+            super.draw(ctx, frame);
+    
+            let radiusX = this._radius;
+            let radiusY = this._radius;
+    
+            ctx.save();
+    
+            ctx.translate(this._position.x, this._position.y);
+            ctx.rotate(this._rotateRadians);
+            ctx.translate(-this._position.x, -this._position.y);
+    
+            let gradient = ctx.createRadialGradient(this.position.x + radiusX, this.position.y, radiusX * 0.01, this.position.x + radiusX, this.position.y, radiusX);
+            gradient.addColorStop(0, "#bbbbbb");
+            gradient.addColorStop(0.7, this._color);
+    
+            ctx.globalAlpha = this._opacity;
+            ctx.beginPath();
+            ctx.ellipse(this.position.x, this.position.y, radiusX, radiusY, 0, 0, MathEx.TWO_PI);
+            ctx.fillStyle = this._color;
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            ctx.closePath();
+    
+            ctx.beginPath();
+            ctx.globalAlpha = ctx.globalAlpha * 0.7;
+            ctx.strokeStyle = "#bbbbbb";
+            ctx.ellipse(this.position.x, this.position.y, radiusX * 0.95, radiusY * 0.95, 0, 1 + 0, MathEx.TWO_PI - 0.5);
+            ctx.stroke();
+            ctx.closePath();
+    
+            ctx.restore();
+        }
+        //*/
+        _this.priorPreV = 0;
         if (!restitution)
             restitution = 0.98;
-        _this.restitutionCoeffecient = restitution;
+        _this.restitutionCoefficient = restitution;
         _this._maxRotateVelocity = 0.1;
         return _this;
     }
@@ -44,9 +79,9 @@ var Ball = /** @class */ (function (_super) {
         this.applyRotateForce(this.acceleration.x / 5);
         _super.prototype.adjustRotateAcceleration.call(this);
     };
-    Ball.prototype.update = function (frame, now, timeDelta, world) {
+    Ball.prototype.update = function (frame, now, elapsedTime, timeScale, world) {
         var origY = this._position.y;
-        _super.prototype.update.call(this, frame, now, timeDelta, world);
+        _super.prototype.update.call(this, frame, now, elapsedTime, timeScale, world);
         if (!this._allowBounce) {
             this.position = this.position.withY(origY);
             this._velocity = this.velocity.withY(0);
@@ -85,15 +120,14 @@ var Ball = /** @class */ (function (_super) {
 
         this.priorY = this.position.y;
         this.priorUp = isUp;
-        this.priorVelocity = this.velocity;
         //*/
-        var radiusX = this._radius;
-        var radiusY = this._radius;
+        var radiusX = this.radius;
+        var radiusY = this.radius;
         ctx.save();
-        var polar = new Polar2D(this._radius, this._rotateRadians);
+        var polar = new Polar2D(this.radius, this.rotateRadians);
         var highlightPos = polar.vector;
         highlightPos = highlightPos.add(this.position);
-        var gradient = ctx.createRadialGradient(highlightPos.x, highlightPos.y, this._radius * 0.01, highlightPos.x, highlightPos.y, this._radius);
+        var gradient = ctx.createRadialGradient(highlightPos.x, highlightPos.y, this.radius * 0.01, highlightPos.x, highlightPos.y, this.radius);
         gradient.addColorStop(0, "#bbbbbb");
         gradient.addColorStop(0.7, this._color);
         ctx.globalAlpha = this._opacity;
@@ -121,72 +155,48 @@ var Ball = /** @class */ (function (_super) {
         //*/
         ctx.restore();
     };
-    /*/
-    draw(ctx: CanvasRenderingContext2D, frame: number) {
-        super.draw(ctx, frame);
-
-        let radiusX = this._radius;
-        let radiusY = this._radius;
-
-        ctx.save();
-
-        ctx.translate(this._position.x, this._position.y);
-        ctx.rotate(this._rotateRadians);
-        ctx.translate(-this._position.x, -this._position.y);
-
-        let gradient = ctx.createRadialGradient(this.position.x + radiusX, this.position.y, radiusX * 0.01, this.position.x + radiusX, this.position.y, radiusX);
-        gradient.addColorStop(0, "#bbbbbb");
-        gradient.addColorStop(0.7, this._color);
-
-        ctx.globalAlpha = this._opacity;
-        ctx.beginPath();
-        ctx.ellipse(this.position.x, this.position.y, radiusX, radiusY, 0, 0, MathEx.TWO_PI);
-        ctx.fillStyle = this._color;
-        ctx.fillStyle = gradient;
-        ctx.fill();
-        ctx.closePath();
-
-        ctx.beginPath();
-        ctx.globalAlpha = ctx.globalAlpha * 0.7;
-        ctx.strokeStyle = "#bbbbbb";
-        ctx.ellipse(this.position.x, this.position.y, radiusX * 0.95, radiusY * 0.95, 0, 1 + 0, MathEx.TWO_PI - 0.5);
-        ctx.stroke();
-        ctx.closePath();
-
-        ctx.restore();
-    }
-    //*/
     Ball.prototype.checkBoundary = function (gravity) {
         var boundary = this._boundary;
-        var leftPenetration = boundary.leftPenetration(this._position.x - this._radius);
-        var topPenetration = boundary.topPenetration(boundary.offsetAbove(this._position.y, this._radius));
-        var rightPenetration = boundary.rightPenetration(this._position.x + this._radius);
-        var bottomPenetration = boundary.bottomPenetration(boundary.offsetBelow(this._position.y, this._radius));
+        var reflectVelocity = null;
+        var priorVelocity = this.priorVelocity;
+        var leftPenetration = boundary.leftPenetration(this.position.x - this.radius);
+        var topPenetration = boundary.topPenetration(boundary.offsetAbove(this.position.y, this.radius));
+        var rightPenetration = boundary.rightPenetration(this.position.x + this.radius);
+        var bottomPenetration = boundary.bottomPenetration(boundary.offsetBelow(this.position.y, this.radius));
+        // TODO: Reflecting with prior velocity.  Need to get the velocity at time of impact.
         if (leftPenetration > 0) {
-            this._position = this._position.withX(boundary.leftOffset(this._radius));
-            this._velocity = boundary.reflectLeft(this._velocity);
-            this._velocity = this._velocity.withX(this._velocity.x * this.restitutionCoeffecient);
+            this._position = this.position.withX(boundary.leftOffset(this.radius));
+            reflectVelocity = boundary.reflectLeft(priorVelocity);
+            reflectVelocity = reflectVelocity.withX(reflectVelocity.x * this.restitutionCoefficient);
         }
-        if (rightPenetration > 0) {
-            this._position = this._position.withX(boundary.rightOffset(this._radius));
-            this._velocity = boundary.reflectRight(this._velocity);
-            this._velocity = this._velocity.withX(this._velocity.x * this.restitutionCoeffecient);
+        else if (rightPenetration > 0) {
+            this._position = this.position.withX(boundary.rightOffset(this.radius));
+            reflectVelocity = boundary.reflectRight(priorVelocity);
+            reflectVelocity = reflectVelocity.withX(reflectVelocity.x * this.restitutionCoefficient);
         }
+        if (reflectVelocity)
+            priorVelocity = reflectVelocity;
         if (topPenetration > 0) {
-            this._position = this._position.withY(boundary.topOffsetBelow(this._radius));
-            this._velocity = boundary.reflectTop(this._velocity);
-            this._velocity = this._velocity.withY(this._velocity.y * this.restitutionCoeffecient);
+            this._position = this.position.withY(boundary.topOffsetBelow(this.radius));
+            reflectVelocity = boundary.reflectTop(priorVelocity);
+            reflectVelocity = reflectVelocity.withY(reflectVelocity.y * this.restitutionCoefficient);
         }
-        if (bottomPenetration > 0) {
-            this._position = this._position.withY(boundary.bottomOffsetAbove(this._radius));
-            this._velocity = boundary.reflectBottom(this._velocity);
-            this._velocity = this._velocity.withY(this._velocity.y * this.restitutionCoeffecient);
-            var force = Math.abs(this._velocity.y); // TODO: Calculate proper force.
-            if (force <= Math.abs(gravity.gravityConst)) {
-                this._velocity = this._velocity.withY(0);
+        else if (bottomPenetration > 0) {
+            var preV = this.velocity.mag;
+            //if (preV > this.priorPreV) console.log("####################################################");
+            this.priorPreV = preV;
+            this._position = this.position.withY(boundary.bottomOffsetAbove(this.radius));
+            reflectVelocity = boundary.reflectBottom(priorVelocity);
+            reflectVelocity = reflectVelocity.withY(reflectVelocity.y * this.restitutionCoefficient);
+            var postV = reflectVelocity.mag;
+            //console.log("Pre bounce: " + preV.toFixed(2) + ", post bounce: " + postV.toFixed(2) + " " + reflectVelocity + ", " + (preV - postV).toFixed(2));
+            if (Math.abs(reflectVelocity.y) < 0.1) {
+                reflectVelocity = reflectVelocity.withY(0);
                 this._allowBounce = false;
             }
         }
+        if (reflectVelocity)
+            this._velocity = reflectVelocity;
     };
     return Ball;
 }(Character2D));

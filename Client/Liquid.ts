@@ -25,7 +25,7 @@
         return Physics.calcDrag(this.density, 1, this.dragCoefficient, character.velocity);
     }
 
-    update(frame: number, now: DOMHighResTimeStamp, timeDelta: number, world: World2D) {
+    update(frame: number, now: number, elapsedTime: number, timeScale: number, world: World2D) {
     }
 
     draw(viewport: Viewport2D, frame: number) {

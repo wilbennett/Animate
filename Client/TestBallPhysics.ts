@@ -1,4 +1,8 @@
-﻿class TestBallPhysics {
+﻿class BallInfo {
+    maxVelocity: Vector2D = Vector2D.emptyVector;
+}
+
+class TestBallPhysics {
     private _ctx: CanvasRenderingContext2D;
     private _rafHandle = -1;
 
@@ -46,7 +50,7 @@
         world = this._worldLiquidU;
         ball = this.createBall(world, world.center.x, radius, ballColor);
         this.createBall(world, world.x + 5, 10, ballColor, false);
-        let drag = 0.4;
+        let drag = 500.4;
         let liquidHeight = world.height / 3;
         let liquid = new Liquid(new Vector2D(world.x, world.offsetBelow(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
         world.addForce(liquid);
@@ -94,6 +98,7 @@
             },
             restitution);
 
+        ball.tag = new BallInfo();
         world.addCharacter(ball);
         return ball;
     }
@@ -108,8 +113,8 @@
         ctx.strokeStyle = "white";
         ctx.font = "12px Arial";
         ctx.textAlign = "center";
-        ctx.fillText(ball.force.toString(), position.x, position.y);
-        //ctx.fillText(ball.velocity.toString(), position.x, position.y - 20);
+        //ctx.fillText(ball.force.toString(), position.x, position.y);
+        ctx.fillText(ball.velocity.toString(), position.x, position.y - 20);
     }
 
     private testBall(world: World2D, now: number) {
@@ -120,14 +125,27 @@
         world.render(0);
 
         world.characters.forEach(character => {
-            if (character instanceof Ball)
+            if (character instanceof Ball) {
+                let tag = <BallInfo>character.tag;
+
+                //if (character.velocity.y > 0)
+                {
+                    if (character.velocity.mag > tag.maxVelocity.mag) {
+                        //console.log("Ball max velocity: " + character.velocity.toString() +
+                        //    " diff: " + character.velocity.subtract(tag.maxVelocity).toString());
+                        tag.maxVelocity = character.velocity;
+                    }
+                }
+
                 this.drawBallForce(world.viewport, character);
+            }
         });
     }
 
     private gameLoop = (now: DOMHighResTimeStamp) => {
         const ctx = this._ctx;
         ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        now = now / 1000;
 
         this.testBall(this._worldZeroGU, now);
         this.testBall(this._worldZeroGD, now);

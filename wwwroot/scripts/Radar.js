@@ -20,6 +20,7 @@ var Radar = /** @class */ (function (_super) {
         _this._color = _color;
         _this._armPos = null;
         _this._maxRotateVelocity = MathEx.TWO_PI;
+        _this._rotateVelocityRequested = rotateVelocity;
         _this._rotateVelocity = rotateVelocity;
         _this._armManager = new Polar2D(_this._radius * 0.95, 0);
         return _this;
@@ -47,29 +48,32 @@ var Radar = /** @class */ (function (_super) {
     Object.defineProperty(Radar.prototype, "armPos", {
         get: function () {
             if (this._armPos === null)
-                this._armPos = this._armManager.vector.add(this._position);
+                this._armPos = this._armManager.vector.add(this.position);
             return this._armPos;
         },
         enumerable: true,
         configurable: true
     });
     Radar.prototype.applyForce = function (force) { };
-    Radar.prototype.applyRotateForce = function (force) { };
-    Radar.prototype.update = function (frame, now, timeDelta, world) {
-        _super.prototype.update.call(this, frame, now, timeDelta, world);
-        this._armManager = this._armManager.withRadians(this._rotateRadians);
+    Radar.prototype.adjustRotateAcceleration = function () {
+        this._rotateAcceleration = this._rotateVelocityRequested;
+        this._rotateVelocity = 0;
+    };
+    Radar.prototype.update = function (frame, now, elapsedTime, timeScale, world) {
+        _super.prototype.update.call(this, frame, now, elapsedTime, timeScale, world);
+        this._armManager = this._armManager.withRadians(this.rotateRadians);
         this._armPos = null;
     };
     Radar.prototype.draw = function (viewport, frame) {
         _super.prototype.draw.call(this, viewport, frame);
         var ctx = viewport.ctx;
-        ctx.strokeStyle = this._color;
+        ctx.strokeStyle = this.color;
         ctx.beginPath();
-        ctx.arc(this._position.x, this._position.y, this._radius, 0, MathEx.TWO_PI);
+        ctx.arc(this.position.x, this.position.y, this.radius, 0, MathEx.TWO_PI);
         ctx.stroke();
         ctx.closePath();
         ctx.beginPath();
-        ctx.moveTo(this._position.x, this._position.y);
+        ctx.moveTo(this.position.x, this.position.y);
         ctx.lineTo(this.armPos.x, this.armPos.y);
         ctx.stroke();
         ctx.closePath();

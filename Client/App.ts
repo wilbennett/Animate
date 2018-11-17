@@ -23,6 +23,7 @@
     private _inactiveCutoff: number;
 
     private _timeStep: number;
+    private _nowStep: number;
     private _timeoutPeriod: number;
     private _emaWeight: number;
     private _emaWeight2: number;
@@ -73,6 +74,7 @@
         this._inactiveCutoff = settings.App.inactiveCutoff;
 
         this._timeStep = this.ONE_SECOND / this._targetFPS;
+        this._nowStep = this._timeStep / 1000;
         this._timeoutPeriod = this._slowTimeout ? this._timeStep * 2 : this._timeStep;
         this._maxTimeStepDelta = this._timeStep * this._inactiveCutoff;
         this._emaWeight = 2 / (this._statAvgPeriod + 1);
@@ -148,6 +150,7 @@
         this._ctx.restore();
     }
 
+    // TODO: Need to fix a "tick" that happens approx once per second.
     private gameLoop = (timestamp: DOMHighResTimeStamp) => {
         if (this._stopped) {
             return;
@@ -165,6 +168,7 @@
         this._timeStepDelta += timestamp - this._lastFrameTimeAdjusted;
         let elapsedTime = timestamp - this._lastFrameTime;
         let elapsedTimeAdjusted = timestamp - this._lastFrameTimeAdjusted;
+        let priorNow = this._lastFrameTime / 1000;
         this._lastFrameTime = timestamp;
         this._lastFrameTimeAdjusted = this._lastFrameTime - (elapsedTimeAdjusted % this._timeStep);
         let updateTime = 0;
@@ -182,9 +186,12 @@
         let startTime: number;
 
         if (this._settings.App.fixedTimeStep) {
+            let now = priorNow;
+
             while (this._timeStepDelta >= this._timeStep) {
+                now += this._nowStep;
                 startTime = performance.now();
-                this._game.update(this._frame, timestamp, 1);
+                this._game.update(this._frame, now, 1);
                 updateTime = performance.now() - startTime;
                 this._timeStepDelta -= this._timeStep;
                 deltaUpdates++;
@@ -194,15 +201,17 @@
             deltaUpdatesRaw += deltaUpdates;
 
             if (this._settings.App.interpolate) {
+                now += (this._timeStepDelta / this._timeStep) / 1000;
                 startTime = performance.now();
-                this._game.update(this._frame, timestamp, this._timeStepDelta / this._timeStep);
+                this._game.update(this._frame, now, this._timeStepDelta / this._timeStep);
                 updateTime = performance.now() - startTime;
                 this._timeStepDelta = 0;
             }
         } else {
+            let now = timestamp / 1000;
             let delta = this._settings.App.interpolate ? this._timeStepDelta / this._timeStep : 1;
             startTime = performance.now();
-            this._game.update(this._frame, timestamp / 1000, delta);
+            this._game.update(this._frame, now, delta);
             updateTime = performance.now() - startTime;
             this._timeStepDelta = 0;
         }
