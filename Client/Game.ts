@@ -301,7 +301,7 @@
             }, this);
     }
 
-    public update(frame: number, now: DOMHighResTimeStamp, timeDelta: number): void {
+    public update(frame: number, now: number, elapsedTime: number, timeScale: number): void {
         //return;
         this.updateViewport();
         this.createBackgroundGradient();
@@ -309,7 +309,7 @@
         if (this._balls.length === 0)
             this.createRandomBalls();
 
-        this._world.update(frame, now, timeDelta);
+        this._world.update(frame, now, elapsedTime, timeScale);
         this.processBallsToRemove();
 
         this._liquid.position = new Vector2D(

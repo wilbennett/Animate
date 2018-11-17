@@ -80,7 +80,7 @@
         this._emaWeight = 2 / (this._statAvgPeriod + 1);
         this._emaWeight2 = 1 - this._emaWeight;
 
-        log("FPS = " + this._targetFPS + " ---> time step: " + this._timeStep.toFixed(2));
+        log("FPS = " + this._targetFPS + " ---> time step: " + this._timeStep.toFixed(5));
     }
 
     private requestFrame() {
@@ -191,7 +191,7 @@
             while (this._timeStepDelta >= this._timeStep) {
                 now += this._nowStep;
                 startTime = performance.now();
-                this._game.update(this._frame, now, 1);
+                this._game.update(this._frame, now, this._nowStep, 1);
                 updateTime = performance.now() - startTime;
                 this._timeStepDelta -= this._timeStep;
                 deltaUpdates++;
@@ -201,17 +201,19 @@
             deltaUpdatesRaw += deltaUpdates;
 
             if (this._settings.App.interpolate) {
-                now += (this._timeStepDelta / this._timeStep) / 1000;
+                let nowElapsed = (this._timeStepDelta / this._timeStep) / 1000;
+                now = timestamp / 1000 - nowElapsed;
                 startTime = performance.now();
-                this._game.update(this._frame, now, this._timeStepDelta / this._timeStep);
+                this._game.update(this._frame, now, nowElapsed, this._timeStepDelta / this._timeStep);
                 updateTime = performance.now() - startTime;
                 this._timeStepDelta = 0;
             }
         } else {
             let now = timestamp / 1000;
+            let nowElapsed = (this._timeStepDelta / this._timeStep) / 1000;
             let delta = this._settings.App.interpolate ? this._timeStepDelta / this._timeStep : 1;
             startTime = performance.now();
-            this._game.update(this._frame, now, delta);
+            this._game.update(this._frame, now, nowElapsed, delta);
             updateTime = performance.now() - startTime;
             this._timeStepDelta = 0;
         }

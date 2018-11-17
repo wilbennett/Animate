@@ -6,7 +6,6 @@
     private _pixelsPerMeter: number = Physics.pixelsPerMeter;
     private _containerBounds: ContainerBounds;
     private _gravity: Gravity;
-    private _priorTime: number;
     private _viewports: Viewport2D[] = [];
     private _forces: Force[] = [];
     private _characters: Character2D[] = [];
@@ -235,13 +234,8 @@
     addCharacter(character: Character2D) { this._characters.push(character); }
     removeCharacter(character: Character2D) { this._characters.remove(character); }
 
-    private _maxTimeScale = 0;
-
-    update(frame: number, now: number, timeScale: number) {
-        if (!this._priorTime) this._priorTime = now;
-
-        let elapsedTime = now - this._priorTime;
-        timeScale = elapsedTime !== 0 ? elapsedTime : 0;
+    update(frame: number, now: number, elapsedTime: number, timeScale: number) {
+        timeScale = elapsedTime;
 
         this._characters.forEach(character => character.preUpdate(frame, now, elapsedTime, timeScale, this), this);
 
@@ -254,8 +248,6 @@
             character.update(frame, now, elapsedTime, timeScale, this);
             character.postUpdate(frame, now, elapsedTime, timeScale, this);
         }, this);
-
-        this._priorTime = now;
     }
 
     render(frame: number) {

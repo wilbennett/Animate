@@ -212,7 +212,7 @@
             let postV = reflectVelocity.mag;
             //console.log("Pre bounce: " + preV.toFixed(2) + ", post bounce: " + postV.toFixed(2) + " " + reflectVelocity + ", " + (preV - postV).toFixed(2));
 
-            if (Math.abs(reflectVelocity.y) < 0.1) {
+            if (Math.abs(reflectVelocity.y) < 0.01) {
                 reflectVelocity = reflectVelocity.withY(0);
                 this._allowBounce = false;
             }

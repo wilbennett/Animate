@@ -91,7 +91,6 @@ var World2D = /** @class */ (function (_super) {
                 function (x, y) {
                     return this.setViewportTopLeft(x - this.viewport.width / 2, y - this.viewport.height / 2);
                 };
-        _this._maxTimeScale = 0;
         _this.localizeDegrees = _this._isOrientedUp
             ? function (degrees) { return degrees < 0 || degrees > 360 ? degrees % 360 : degrees; }
             : function (degrees) {
@@ -207,12 +206,9 @@ var World2D = /** @class */ (function (_super) {
     World2D.prototype.removeForce = function (force) { this._forces.remove(force); };
     World2D.prototype.addCharacter = function (character) { this._characters.push(character); };
     World2D.prototype.removeCharacter = function (character) { this._characters.remove(character); };
-    World2D.prototype.update = function (frame, now, timeScale) {
+    World2D.prototype.update = function (frame, now, elapsedTime, timeScale) {
         var _this = this;
-        if (!this._priorTime)
-            this._priorTime = now;
-        var elapsedTime = now - this._priorTime;
-        timeScale = elapsedTime !== 0 ? elapsedTime : 0;
+        timeScale = elapsedTime;
         this._characters.forEach(function (character) { return character.preUpdate(frame, now, elapsedTime, timeScale, _this); }, this);
         this._forces.forEach(function (force) {
             force.calculateForce();
@@ -222,7 +218,6 @@ var World2D = /** @class */ (function (_super) {
             character.update(frame, now, elapsedTime, timeScale, _this);
             character.postUpdate(frame, now, elapsedTime, timeScale, _this);
         }, this);
-        this._priorTime = now;
     };
     World2D.prototype.render = function (frame) {
         var _this = this;

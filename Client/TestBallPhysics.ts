@@ -5,6 +5,7 @@
 class TestBallPhysics {
     private _ctx: CanvasRenderingContext2D;
     private _rafHandle = -1;
+    private _priorNow: number;
 
     private _worldZeroGU: World2D;
     private _worldZeroGD: World2D;
@@ -117,11 +118,11 @@ class TestBallPhysics {
         ctx.fillText(ball.velocity.toString(), position.x, position.y - 20);
     }
 
-    private testBall(world: World2D, now: number) {
+    private testBall(world: World2D, now: number, elapsedTime: number) {
         const ctx = this._ctx;
 
         world.viewport.draw(ctx, 2, "white");
-        world.update(0, now, 1);
+        world.update(0, now, elapsedTime, elapsedTime);
         world.render(0);
 
         world.characters.forEach(character => {
@@ -147,14 +148,20 @@ class TestBallPhysics {
         ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
         now = now / 1000;
 
-        this.testBall(this._worldZeroGU, now);
-        this.testBall(this._worldZeroGD, now);
+        if (!this._priorNow)
+            this._priorNow = now;
 
-        this.testBall(this._worldGravityU, now);
-        this.testBall(this._worldGravityD, now);
+        let elapsedTime = now - this._priorNow;
+        this._priorNow = now;
 
-        this.testBall(this._worldLiquidU, now);
-        this.testBall(this._worldLiquidD, now);
+        this.testBall(this._worldZeroGU, now, elapsedTime);
+        this.testBall(this._worldZeroGD, now, elapsedTime);
+
+        this.testBall(this._worldGravityU, now, elapsedTime);
+        this.testBall(this._worldGravityD, now, elapsedTime);
+
+        this.testBall(this._worldLiquidU, now, elapsedTime);
+        this.testBall(this._worldLiquidD, now, elapsedTime);
 
         this._rafHandle = requestAnimationFrame(this.gameLoop);
     }

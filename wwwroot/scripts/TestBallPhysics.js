@@ -15,12 +15,16 @@ var TestBallPhysics = /** @class */ (function () {
             var ctx = _this._ctx;
             ctx.clearRect(0, 0, _this._canvas.width, _this._canvas.height);
             now = now / 1000;
-            _this.testBall(_this._worldZeroGU, now);
-            _this.testBall(_this._worldZeroGD, now);
-            _this.testBall(_this._worldGravityU, now);
-            _this.testBall(_this._worldGravityD, now);
-            _this.testBall(_this._worldLiquidU, now);
-            _this.testBall(_this._worldLiquidD, now);
+            if (!_this._priorNow)
+                _this._priorNow = now;
+            var elapsedTime = now - _this._priorNow;
+            _this._priorNow = now;
+            _this.testBall(_this._worldZeroGU, now, elapsedTime);
+            _this.testBall(_this._worldZeroGD, now, elapsedTime);
+            _this.testBall(_this._worldGravityU, now, elapsedTime);
+            _this.testBall(_this._worldGravityD, now, elapsedTime);
+            _this.testBall(_this._worldLiquidU, now, elapsedTime);
+            _this.testBall(_this._worldLiquidD, now, elapsedTime);
             _this._rafHandle = requestAnimationFrame(_this.gameLoop);
         };
         this._ctx = this._canvas.getContext("2d");
@@ -99,11 +103,11 @@ var TestBallPhysics = /** @class */ (function () {
         //ctx.fillText(ball.force.toString(), position.x, position.y);
         ctx.fillText(ball.velocity.toString(), position.x, position.y - 20);
     };
-    TestBallPhysics.prototype.testBall = function (world, now) {
+    TestBallPhysics.prototype.testBall = function (world, now, elapsedTime) {
         var _this = this;
         var ctx = this._ctx;
         world.viewport.draw(ctx, 2, "white");
-        world.update(0, now, 1);
+        world.update(0, now, elapsedTime, elapsedTime);
         world.render(0);
         world.characters.forEach(function (character) {
             if (character instanceof Ball) {

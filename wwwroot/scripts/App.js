@@ -60,7 +60,7 @@ var App = /** @class */ (function () {
                 while (_this._timeStepDelta >= _this._timeStep) {
                     now += _this._nowStep;
                     startTime = performance.now();
-                    _this._game.update(_this._frame, now, 1);
+                    _this._game.update(_this._frame, now, _this._nowStep, 1);
                     updateTime = performance.now() - startTime;
                     _this._timeStepDelta -= _this._timeStep;
                     deltaUpdates++;
@@ -68,18 +68,20 @@ var App = /** @class */ (function () {
                 _this._deltaUpdate += deltaUpdates;
                 deltaUpdatesRaw += deltaUpdates;
                 if (_this._settings.App.interpolate) {
-                    now += (_this._timeStepDelta / _this._timeStep) / 1000;
+                    var nowElapsed = (_this._timeStepDelta / _this._timeStep) / 1000;
+                    now = timestamp / 1000 - nowElapsed;
                     startTime = performance.now();
-                    _this._game.update(_this._frame, now, _this._timeStepDelta / _this._timeStep);
+                    _this._game.update(_this._frame, now, nowElapsed, _this._timeStepDelta / _this._timeStep);
                     updateTime = performance.now() - startTime;
                     _this._timeStepDelta = 0;
                 }
             }
             else {
                 var now = timestamp / 1000;
+                var nowElapsed = (_this._timeStepDelta / _this._timeStep) / 1000;
                 var delta = _this._settings.App.interpolate ? _this._timeStepDelta / _this._timeStep : 1;
                 startTime = performance.now();
-                _this._game.update(_this._frame, now, delta);
+                _this._game.update(_this._frame, now, nowElapsed, delta);
                 updateTime = performance.now() - startTime;
                 _this._timeStepDelta = 0;
             }
@@ -141,7 +143,7 @@ var App = /** @class */ (function () {
         this._maxTimeStepDelta = this._timeStep * this._inactiveCutoff;
         this._emaWeight = 2 / (this._statAvgPeriod + 1);
         this._emaWeight2 = 1 - this._emaWeight;
-        log("FPS = " + this._targetFPS + " ---> time step: " + this._timeStep.toFixed(2));
+        log("FPS = " + this._targetFPS + " ---> time step: " + this._timeStep.toFixed(5));
     };
     App.prototype.requestFrame = function () {
         var _this = this;
