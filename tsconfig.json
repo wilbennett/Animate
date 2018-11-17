@@ -9,8 +9,8 @@
     "sourceMap": true,
     "allowJs": true,
     "outDir": "wwwroot/scripts",
-    "target": "es2018",
-    "module": "none"
+    "target": "es2017",
+    "module": "commonjs"
   },
   "include": [
     "Client"

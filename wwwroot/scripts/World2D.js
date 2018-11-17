@@ -151,6 +151,12 @@ var World2D = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(World2D.prototype, "tag", {
+        get: function () { return this._tag; },
+        set: function (value) { this._tag = value; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(World2D.prototype, "containerBounds", {
         get: function () {
             if (!this._containerBounds) {

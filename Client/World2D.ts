@@ -10,6 +10,7 @@
     private _forces: Force[] = [];
     private _characters: Character2D[] = [];
     private _beforeRenderViewport: (viewport: Viewport2D) => void = World2D.defaultBeforeRenderViewport;
+    private _tag: object;
 
     constructor(
         private _ctx: CanvasRenderingContext2D,
@@ -53,6 +54,9 @@
 
     get pixelsPerMeter() { return this._pixelsPerMeter; }
     set pixelsPerMeter(value: number) { this._pixelsPerMeter = value; }
+
+    get tag() { return this._tag; }
+    set tag(value) { this._tag = value; }
 
     get containerBounds() {
         if (!this._containerBounds) {

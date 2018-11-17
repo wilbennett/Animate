@@ -1,4 +1,8 @@
-﻿class BallInfo {
+﻿class WorldInfo {
+    pendingBallsToAdd: Ball[] = [];
+}
+
+class BallInfo {
     maxVelocity: Vector2D = Vector2D.emptyVector;
 }
 
@@ -49,6 +53,7 @@ class TestBallPhysics {
         box.moveUpRight();
         this._worldLiquidU = new World2D(this._ctx, WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
         world = this._worldLiquidU;
+        world.tag = new WorldInfo();
         ball = this.createBall(world, world.center.x, radius, ballColor);
         this.createBall(world, world.x + 5, 10, ballColor, false);
         let drag = 500.4;
@@ -60,6 +65,7 @@ class TestBallPhysics {
         box.moveDown();
         this._worldLiquidD = new World2D(this._ctx, WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
         world = this._worldLiquidD;
+        world.tag = new WorldInfo();
         ball = this.createBall(world, world.center.x, radius, ballColor);
         this.createBall(world, world.x + 5, 10, ballColor, false);
         liquid = new Liquid(new Vector2D(world.x, world.offsetAbove(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
@@ -100,7 +106,21 @@ class TestBallPhysics {
             restitution);
 
         ball.tag = new BallInfo();
-        world.addCharacter(ball);
+
+        if (!world.tag) {
+            world.addCharacter(ball);
+        }
+        else {
+            let tag = <WorldInfo>world.tag;
+            tag.pendingBallsToAdd.push(ball);
+            let haveBall = world.characters.some(character => character instanceof Ball);
+
+            if (!haveBall) {
+                tag.pendingBallsToAdd.forEach(b => world.addCharacter(b));
+                tag.pendingBallsToAdd = [];
+            }
+        }
+
         return ball;
     }
 

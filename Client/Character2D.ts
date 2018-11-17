@@ -14,7 +14,7 @@
     protected _appliedRotateForce: number;
     protected _squashX: number = 1;
     protected _squashY: number = 1;
-    private _tag: object = {};
+    private _tag: object;
 
     constructor(position: Vector2D, protected _velocity: Vector2D, mass: number) {
         super(position, mass);

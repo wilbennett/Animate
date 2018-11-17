@@ -29,7 +29,6 @@ var Character2D = /** @class */ (function (_super) {
         _this._maxRotateVelocity = 2;
         _this._squashX = 1;
         _this._squashY = 1;
-        _this._tag = {};
         _this._priorVelocity = _this._velocity;
         _this.resetParams();
         return _this;

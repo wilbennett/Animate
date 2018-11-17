@@ -1,4 +1,10 @@
 "use strict";
+var WorldInfo = /** @class */ (function () {
+    function WorldInfo() {
+        this.pendingBallsToAdd = [];
+    }
+    return WorldInfo;
+}());
 var BallInfo = /** @class */ (function () {
     function BallInfo() {
         this.maxVelocity = Vector2D.emptyVector;
@@ -52,6 +58,7 @@ var TestBallPhysics = /** @class */ (function () {
         box.moveUpRight();
         this._worldLiquidU = new World2D(this._ctx, WorldOrientation.Up, 0, 0, box.w, box.h, box.x, box.y);
         world = this._worldLiquidU;
+        world.tag = new WorldInfo();
         ball = this.createBall(world, world.center.x, radius, ballColor);
         this.createBall(world, world.x + 5, 10, ballColor, false);
         var drag = 500.4;
@@ -62,6 +69,7 @@ var TestBallPhysics = /** @class */ (function () {
         box.moveDown();
         this._worldLiquidD = new World2D(this._ctx, WorldOrientation.Down, 0, 0, box.w, box.h, box.x, box.y);
         world = this._worldLiquidD;
+        world.tag = new WorldInfo();
         ball = this.createBall(world, world.center.x, radius, ballColor);
         this.createBall(world, world.x + 5, 10, ballColor, false);
         liquid = new Liquid(new Vector2D(world.x, world.offsetAbove(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
@@ -88,7 +96,18 @@ var TestBallPhysics = /** @class */ (function () {
             _this.createBall(world, x, autoSize && radius < 30 ? radius + 5 : 10, color, autoSize, restitution);
         }, restitution);
         ball.tag = new BallInfo();
-        world.addCharacter(ball);
+        if (!world.tag) {
+            world.addCharacter(ball);
+        }
+        else {
+            var tag = world.tag;
+            tag.pendingBallsToAdd.push(ball);
+            var haveBall = world.characters.some(function (character) { return character instanceof Ball; });
+            if (!haveBall) {
+                tag.pendingBallsToAdd.forEach(function (b) { return world.addCharacter(b); });
+                tag.pendingBallsToAdd = [];
+            }
+        }
         return ball;
     };
     TestBallPhysics.prototype.drawBallForce = function (viewport, ball) {
