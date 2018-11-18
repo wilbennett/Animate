@@ -77,7 +77,7 @@
     setGravity(gravityConst: number) {
         if (this._gravity) this.removeForce(this._gravity);
 
-        this._gravity = new Gravity(this.orientation, gravityConst);
+        this._gravity = new Gravity(this.orientation, gravityConst, this.origin, this.width, this.height);
         this.addForce(this._gravity);
     }
 

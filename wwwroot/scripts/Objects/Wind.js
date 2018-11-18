@@ -14,9 +14,12 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Wind = /** @class */ (function (_super) {
     __extends(Wind, _super);
-    function Wind(position, degrees, strength) {
-        var _this = _super.call(this, position, Vector2D.emptyVector, 0) || this;
+    function Wind(degrees, strength, position, _radius) {
+        var _this = _super.call(this, position, Vector2D.fromDegrees(degrees).mult(strength), 0) || this;
+        _this._radius = _radius;
         _this._radiusPct = 0.10;
+        _this._width = _this._radius * 2;
+        _this._height = _this._radius * 2;
         _this._polar = new Polar2D(strength, MathEx.toRadians(degrees));
         _this.polarUpdated();
         return _this;

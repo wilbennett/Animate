@@ -2,11 +2,11 @@
     private _polar: Polar2D;
     private _radiusPct: number = 0.10;
 
-    constructor(
-        position: Vector2D,
-        degrees: number,
-        strength: number) {
-        super(position, Vector2D.emptyVector, 0);
+    constructor(degrees: number, strength: number, position: Vector2D, private readonly _radius: number) {
+        super(position, Vector2D.fromDegrees(degrees).mult(strength), 0);
+
+        this._width = this._radius * 2;
+        this._height = this._radius * 2;
 
         this._polar = new Polar2D(strength, MathEx.toRadians(degrees));
         this.polarUpdated();

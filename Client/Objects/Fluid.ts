@@ -1,8 +1,8 @@
 ﻿class Fluid extends Character2D {
     constructor(
-        position: Vector2D,
         private readonly _density: number,
         dragCoefficient: number,
+        position: Vector2D,
         width: number,
         height: number) {
         super(position, Vector2D.emptyVector, 0);
@@ -13,10 +13,6 @@
     }
 
     get density() { return this._density; }
-
-    get bounds() {
-        return new Bounds(this._position.x, this._position.y, this._width, this._height);
-    }
 
     calculateForce() { }
 

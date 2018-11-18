@@ -17,6 +17,8 @@
 
         this.restitutionCoefficient = restitution;
 
+        this._width = this._radius * 2;
+        this._height = this._width;
         this._maxRotateVelocity = 0.1;
     }
 
@@ -24,6 +26,18 @@
     get color() { return this._color; }
 
     
+    get bounds() {
+        if (!this._bounds) {
+            this._bounds = new Bounds(
+                this.position.x - this.radius,
+                this.position.y + this.radius,
+                this.width,
+                this.height);
+        }
+
+        return this._bounds;
+    }
+
     protected adjustRotateAcceleration() {
         this.applyRotateForce(this.acceleration.x / 5);
 

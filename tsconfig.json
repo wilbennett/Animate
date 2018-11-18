@@ -10,7 +10,6 @@
     "allowJs": true,
     "outDir": "wwwroot/scripts",
     "target": "es2017",
-    "module": "commonjs"
   },
   "include": [
     "Client"

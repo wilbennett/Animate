@@ -1,11 +1,20 @@
 ﻿class Gravity extends Force {
-    constructor(private readonly _orientation: WorldOrientation, private readonly _gravityConst: number) {
+    constructor(
+        orientation: WorldOrientation,
+        private readonly _gravityConst: number,
+        position: Vector2D,
+        width: number,
+        height: number) {
         super(Vector2D.emptyVector, 0);
 
         this._gravityConst = this._gravityConst * Physics.gravityScale;
 
-        if (this._orientation === WorldOrientation.Up)
+        if (orientation === WorldOrientation.Up)
             this._gravityConst = -this._gravityConst;
+
+        this._position = position;
+        this._width = width;
+        this._height = height;
     }
 
     get gravityConst() { return this._gravityConst; }

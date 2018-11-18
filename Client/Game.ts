@@ -99,8 +99,8 @@
         this._canvasMouse = new MouseTracker(this._canvas);
 
         this._output = <HTMLOutputElement>document.getElementById("output");
-        this._friction = new Friction();
-        this._liquid = new Fluid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 100, world.width / 8, 90);
+        this._friction = new Friction(world.origin, world.width, world.height);
+        this._liquid = new Fluid(2, 100, new Vector2D(world.x, world.bottomOffsetAbove(200)), world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", MathEx.TWO_PI / 60 * 3);
 
         world.addForce(this._liquid);
@@ -148,8 +148,9 @@
         let fanRadius = settings.strength;
 
         return new Wind(
-            new Vector2D(x, world.bottomOffsetAbove(world.height * fanPos)),
             world.localizeDegrees(fanAngle),
+            fanRadius,
+            new Vector2D(x, world.bottomOffsetAbove(world.height * fanPos)),
             fanRadius);
     }
 

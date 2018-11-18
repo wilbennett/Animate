@@ -14,8 +14,11 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Friction = /** @class */ (function (_super) {
     __extends(Friction, _super);
-    function Friction() {
-        return _super.call(this, Vector2D.emptyVector, -1) || this;
+    function Friction(position, width, height) {
+        var _this = _super.call(this, position, 0) || this;
+        _this._width = width;
+        _this._height = height;
+        return _this;
     }
     Friction.prototype.calculateForce = function () { };
     Friction.prototype.calculateForceForCharacter = function (character) {

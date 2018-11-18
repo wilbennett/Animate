@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Fluid = /** @class */ (function (_super) {
     __extends(Fluid, _super);
-    function Fluid(position, _density, dragCoefficient, width, height) {
+    function Fluid(_density, dragCoefficient, position, width, height) {
         var _this = _super.call(this, position, Vector2D.emptyVector, 0) || this;
         _this._density = _density;
         _this.dragCoefficient = dragCoefficient;
@@ -24,13 +24,6 @@ var Fluid = /** @class */ (function (_super) {
     }
     Object.defineProperty(Fluid.prototype, "density", {
         get: function () { return this._density; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Fluid.prototype, "bounds", {
-        get: function () {
-            return new Bounds(this._position.x, this._position.y, this._width, this._height);
-        },
         enumerable: true,
         configurable: true
     });

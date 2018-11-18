@@ -64,8 +64,8 @@ var Game = /** @class */ (function () {
         world.addViewport(world.x, world.y, world.width, world.height, screenLeft4, screenTop4, world.ctx, screenWidth4, screenHeight4);
         this._canvasMouse = new MouseTracker(this._canvas);
         this._output = document.getElementById("output");
-        this._friction = new Friction();
-        this._liquid = new Fluid(new Vector2D(world.x, world.bottomOffsetAbove(200)), 2, 100, world.width / 8, 90);
+        this._friction = new Friction(world.origin, world.width, world.height);
+        this._liquid = new Fluid(2, 100, new Vector2D(world.x, world.bottomOffsetAbove(200)), world.width / 8, 90);
         this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", MathEx.TWO_PI / 60 * 3);
         world.addForce(this._liquid);
         world.addCharacter(this._liquid);
@@ -101,7 +101,7 @@ var Game = /** @class */ (function () {
         var fanPos = settings.position;
         var fanAngle = settings.angle;
         var fanRadius = settings.strength;
-        return new Wind(new Vector2D(x, world.bottomOffsetAbove(world.height * fanPos)), world.localizeDegrees(fanAngle), fanRadius);
+        return new Wind(world.localizeDegrees(fanAngle), fanRadius, new Vector2D(x, world.bottomOffsetAbove(world.height * fanPos)), fanRadius);
     };
     Game.prototype.createRandomBalls = function () {
         var colors = this._settings.Balls.colors || ['blue', 'green', 'red', 'black', 'white'];

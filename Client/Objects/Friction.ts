@@ -1,7 +1,10 @@
 ﻿class Friction extends Force {
-    constructor() {
-        super(Vector2D.emptyVector, -1);
-    }
+    constructor(position: Vector2D, width: number, height: number) {
+        super(position, 0);
+
+        this._width = width;
+        this._height = height;
+}
 
     calculateForce() { }
 

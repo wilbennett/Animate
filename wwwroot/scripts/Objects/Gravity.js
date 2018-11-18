@@ -14,13 +14,15 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Gravity = /** @class */ (function (_super) {
     __extends(Gravity, _super);
-    function Gravity(_orientation, _gravityConst) {
+    function Gravity(orientation, _gravityConst, position, width, height) {
         var _this = _super.call(this, Vector2D.emptyVector, 0) || this;
-        _this._orientation = _orientation;
         _this._gravityConst = _gravityConst;
         _this._gravityConst = _this._gravityConst * Physics.gravityScale;
-        if (_this._orientation === WorldOrientation.Up)
+        if (orientation === WorldOrientation.Up)
             _this._gravityConst = -_this._gravityConst;
+        _this._position = position;
+        _this._width = width;
+        _this._height = height;
         return _this;
     }
     Object.defineProperty(Gravity.prototype, "gravityConst", {

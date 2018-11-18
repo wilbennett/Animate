@@ -62,6 +62,8 @@ var Ball = /** @class */ (function (_super) {
         if (!restitution)
             restitution = 0.98;
         _this.restitutionCoefficient = restitution;
+        _this._width = _this._radius * 2;
+        _this._height = _this._width;
         _this._maxRotateVelocity = 0.1;
         return _this;
     }
@@ -72,6 +74,16 @@ var Ball = /** @class */ (function (_super) {
     });
     Object.defineProperty(Ball.prototype, "color", {
         get: function () { return this._color; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Ball.prototype, "bounds", {
+        get: function () {
+            if (!this._bounds) {
+                this._bounds = new Bounds(this.position.x - this.radius, this.position.y + this.radius, this.width, this.height);
+            }
+            return this._bounds;
+        },
         enumerable: true,
         configurable: true
     });

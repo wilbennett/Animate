@@ -63,7 +63,7 @@ var TestBallPhysics = /** @class */ (function () {
         this.createBall(world, world.x + 5, 10, ballColor, false);
         var drag = 500.4;
         var liquidHeight = world.height / 3;
-        var liquid = new Fluid(new Vector2D(world.x, world.offsetBelow(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
+        var liquid = new Fluid(2, drag, new Vector2D(world.x, world.offsetBelow(world.center.y, liquidHeight * 0.5)), world.width, liquidHeight);
         world.addForce(liquid);
         world.addCharacter(liquid);
         box.moveDown();
@@ -72,7 +72,7 @@ var TestBallPhysics = /** @class */ (function () {
         world.tag = new WorldInfo();
         ball = this.createBall(world, world.center.x, radius, ballColor);
         this.createBall(world, world.x + 5, 10, ballColor, false);
-        liquid = new Fluid(new Vector2D(world.x, world.offsetAbove(world.center.y, liquidHeight * 0.5)), 2, drag, world.width, liquidHeight);
+        liquid = new Fluid(2, drag, new Vector2D(world.x, world.offsetAbove(world.center.y, liquidHeight * 0.5)), world.width, liquidHeight);
         world.addForce(liquid);
         world.addCharacter(liquid);
     }
