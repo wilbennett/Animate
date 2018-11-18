@@ -20,7 +20,7 @@ var Gravity = /** @class */ (function (_super) {
         _this._gravityConst = _this._gravityConst * Physics.gravityScale;
         if (orientation === WorldOrientation.Up)
             _this._gravityConst = -_this._gravityConst;
-        _this._position = position;
+        _this.position = position;
         _this._width = width;
         _this._height = height;
         return _this;

@@ -2,6 +2,7 @@
     private _frictionCoefficient: number = 0.01;
     private _dragCoefficient: number = 0.01;
     private _restitutionCoefficient: number = 0.5;
+    private _priorPosition: Vector2D;
     private _priorVelocity: Vector2D;
     protected _lastUpdateFrame: number = -1;
     protected _maxSpeed: number = -1;
@@ -19,10 +20,12 @@
     constructor(position: Vector2D, protected _velocity: Vector2D, mass: number) {
         super(position, mass);
 
+        this._priorPosition = this.position;
         this._priorVelocity = this._velocity;
         this.resetParams();
     }
 
+    get priorPosition() { return this._priorPosition; }
     get velocity() { return this._velocity; }
     get priorVelocity() { return this._priorVelocity; }
 
@@ -59,8 +62,9 @@
     set tag(value) { this._tag = value; }
 
     applyForce(force: Force) {
+        //if (this.getName(force) !== "Gravity")
         //console.log(this.getName(this) + " applying force from " + this.getName(force) + ": "
-        //    + this._appliedForce + "  :  " + force.force + " : CoR " + this.restitutionCoeffecient);
+        //    + this._appliedForce + "  :  " + force.force + " : CoR " + this.restitutionCoefficient);
         this._appliedForce = this._appliedForce.add(force.force);
     }
 
@@ -94,7 +98,7 @@
 
     protected adjustPosition(velocity: Vector2D, pixelsPerMeter: number) {
         velocity = Physics.toPixels(velocity, pixelsPerMeter);
-        this._position = this._position.add(velocity);
+        this.position = this.position.add(velocity);
     }
 
     update(frame: number, now: number, elapsedTime: number, timeScale: number, world: World2D) {
@@ -118,7 +122,7 @@
     protected adjustPosition(elapsedTime: number, pixelsPerMeter: number) {
         let displacement = Physics.calcDisplacement(elapsedTime, this.priorVelocity, this.acceleration);
         displacement = Physics.toPixels(displacement, pixelsPerMeter);
-        this._position = this._position.add(displacement);
+        this.position = this.position.add(displacement);
     }
 
     //protected adjustRotateVelocity(elapsedTime: number) {
@@ -165,11 +169,19 @@
     }
 
     postUpdate(frame: number, now: number, elapsedTime: number, timeScale: number, world: World2D) {
+        this._priorPosition = this.position;
         this._priorVelocity = this.velocity;
         this._priorRotateVelocity = this.rotateVelocity;
         this._lastUpdateFrame = frame;
     }
 
     draw(viewport: Viewport2D, frame: number) {
+        //const ctx = viewport.ctx;
+
+        //ctx.beginPath();
+        //ctx.strokeStyle = "black";
+        //ctx.lineWidth = 2;
+        //ctx.strokeRect(this.bounds.x, this.bounds.y, this.bounds.w, this.bounds.h);
+        //ctx.stroke();
     }
 }

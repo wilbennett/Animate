@@ -232,10 +232,18 @@
             return this.setViewportTopLeft(x - this.viewport.width / 2, y - this.viewport.height / 2);
         };
 
-    addForce(force: Force) { this._forces.push(force); }
+    addForce(force: Force) {
+        this._forces.push(force);
+        force.addedToWorld(this);
+    }
+
     removeForce(force: Force) { this._forces.remove(force); }
 
-    addCharacter(character: Character2D) { this._characters.push(character); }
+    addCharacter(character: Character2D) {
+        this._characters.push(character);
+        character.addedToWorld(this);
+    }
+
     removeCharacter(character: Character2D) { this._characters.remove(character); }
 
     update(frame: number, now: number, elapsedTime: number, timeScale: number) {

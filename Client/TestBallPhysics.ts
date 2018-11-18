@@ -115,7 +115,7 @@ class TestBallPhysics {
             tag.pendingBallsToAdd.push(ball);
             let haveBall = world.characters.some(character => character instanceof Ball);
 
-            if (!haveBall) {
+            if (!haveBall && tag.pendingBallsToAdd.length > 1) {
                 tag.pendingBallsToAdd.forEach(b => world.addCharacter(b));
                 tag.pendingBallsToAdd = [];
             }

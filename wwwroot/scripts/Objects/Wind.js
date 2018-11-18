@@ -19,7 +19,7 @@ var Wind = /** @class */ (function (_super) {
         _this._radius = _radius;
         _this._radiusPct = 0.10;
         _this._width = _this._radius * 2;
-        _this._height = _this._radius * 2;
+        _this._height = _this._width;
         _this._polar = new Polar2D(strength, MathEx.toRadians(degrees));
         _this.polarUpdated();
         return _this;
@@ -51,6 +51,7 @@ var Wind = /** @class */ (function (_super) {
     Wind.prototype.polarUpdated = function () {
         this._velocity = this._polar.vector.normalize();
     };
+    Wind.prototype.createBounds = function () { return this.createBoundsFromRadius(this._radius); };
     Wind.prototype.calculateForce = function () { };
     Wind.prototype.calculateForceForCharacter = function (character) {
         var pos = character.position.subtract(this.position);
@@ -64,6 +65,7 @@ var Wind = /** @class */ (function (_super) {
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     };
     Wind.prototype.draw = function (viewport, frame) {
+        _super.prototype.draw.call(this, viewport, frame);
         var ctx = viewport.ctx;
         var origAlpha = ctx.globalAlpha;
         ctx.beginPath();
@@ -72,10 +74,10 @@ var Wind = /** @class */ (function (_super) {
         ctx.fill();
         ctx.closePath();
         var v = this._velocity.mult(this._polar.radius * 0.5);
-        v = v.add(this._position);
+        v = v.add(this.position);
         ctx.beginPath();
         ctx.strokeStyle = "purple";
-        ctx.moveTo(this._position.x, this._position.y);
+        ctx.moveTo(this.position.x, this.position.y);
         ctx.lineTo(v.x, v.y);
         ctx.stroke();
         ctx.closePath();

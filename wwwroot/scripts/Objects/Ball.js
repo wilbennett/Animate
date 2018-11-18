@@ -77,22 +77,13 @@ var Ball = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Ball.prototype, "bounds", {
-        get: function () {
-            if (!this._bounds) {
-                this._bounds = new Bounds(this.position.x - this.radius, this.position.y + this.radius, this.width, this.height);
-            }
-            return this._bounds;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    Ball.prototype.createBounds = function () { return this.createBoundsFromRadius(this.radius); };
     Ball.prototype.adjustRotateAcceleration = function () {
         this.applyRotateForce(this.acceleration.x / 5);
         _super.prototype.adjustRotateAcceleration.call(this);
     };
     Ball.prototype.update = function (frame, now, elapsedTime, timeScale, world) {
-        var origY = this._position.y;
+        var origY = this.position.y;
         _super.prototype.update.call(this, frame, now, elapsedTime, timeScale, world);
         if (!this._allowBounce) {
             this.position = this.position.withY(origY);
@@ -177,19 +168,19 @@ var Ball = /** @class */ (function (_super) {
         var bottomPenetration = boundary.bottomPenetration(boundary.offsetBelow(this.position.y, this.radius));
         // TODO: Reflecting with prior velocity.  Need to get the velocity at time of impact.
         if (leftPenetration > 0) {
-            this._position = this.position.withX(boundary.leftOffset(this.radius));
+            this.position = this.position.withX(boundary.leftOffset(this.radius));
             reflectVelocity = boundary.reflectLeft(priorVelocity);
             reflectVelocity = reflectVelocity.withX(reflectVelocity.x * this.restitutionCoefficient);
         }
         else if (rightPenetration > 0) {
-            this._position = this.position.withX(boundary.rightOffset(this.radius));
+            this.position = this.position.withX(boundary.rightOffset(this.radius));
             reflectVelocity = boundary.reflectRight(priorVelocity);
             reflectVelocity = reflectVelocity.withX(reflectVelocity.x * this.restitutionCoefficient);
         }
         if (reflectVelocity)
             priorVelocity = reflectVelocity;
         if (topPenetration > 0) {
-            this._position = this.position.withY(boundary.topOffsetBelow(this.radius));
+            this.position = this.position.withY(boundary.topOffsetBelow(this.radius));
             reflectVelocity = boundary.reflectTop(priorVelocity);
             reflectVelocity = reflectVelocity.withY(reflectVelocity.y * this.restitutionCoefficient);
         }
@@ -197,7 +188,7 @@ var Ball = /** @class */ (function (_super) {
             var preV = this.velocity.mag;
             //if (preV > this.priorPreV) console.log("####################################################");
             this.priorPreV = preV;
-            this._position = this.position.withY(boundary.bottomOffsetAbove(this.radius));
+            this.position = this.position.withY(boundary.bottomOffsetAbove(this.radius));
             reflectVelocity = boundary.reflectBottom(priorVelocity);
             reflectVelocity = reflectVelocity.withY(reflectVelocity.y * this.restitutionCoefficient);
             var postV = reflectVelocity.mag;

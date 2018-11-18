@@ -25,6 +25,8 @@
     get y() { return this.origin.y; }
     get width() { return this._width; }
     get height() { return this._height; }
+    get w() { return this._width; }
+    get h() { return this._height; }
     get left() { return this.x; }
     get right() { return this.maxX; }
 
@@ -135,5 +137,10 @@
 
     contains(point: Point2D) {
         return point.x >= this.x && point.x <= this.maxX && point.y >= this.y && point.y <= this.maxY;
+    }
+
+    intersectsWith(other: Bounds) {
+        return this.x <= other.maxX && this.maxX >= other.x
+            && this.y <= other.maxY && this.maxY >= other.y;
     }
 }

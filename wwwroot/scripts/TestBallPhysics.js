@@ -103,7 +103,7 @@ var TestBallPhysics = /** @class */ (function () {
             var tag = world.tag;
             tag.pendingBallsToAdd.push(ball);
             var haveBall = world.characters.some(function (character) { return character instanceof Ball; });
-            if (!haveBall) {
+            if (!haveBall && tag.pendingBallsToAdd.length > 1) {
                 tag.pendingBallsToAdd.forEach(function (b) { return world.addCharacter(b); });
                 tag.pendingBallsToAdd = [];
             }

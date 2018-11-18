@@ -12,7 +12,7 @@
         if (orientation === WorldOrientation.Up)
             this._gravityConst = -this._gravityConst;
 
-        this._position = position;
+        this.position = position;
         this._width = width;
         this._height = height;
     }

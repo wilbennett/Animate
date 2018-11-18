@@ -29,10 +29,16 @@ var Character2D = /** @class */ (function (_super) {
         _this._maxRotateVelocity = 2;
         _this._squashX = 1;
         _this._squashY = 1;
+        _this._priorPosition = _this.position;
         _this._priorVelocity = _this._velocity;
         _this.resetParams();
         return _this;
     }
+    Object.defineProperty(Character2D.prototype, "priorPosition", {
+        get: function () { return this._priorPosition; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Character2D.prototype, "velocity", {
         get: function () { return this._velocity; },
         enumerable: true,
@@ -117,8 +123,9 @@ var Character2D = /** @class */ (function (_super) {
         configurable: true
     });
     Character2D.prototype.applyForce = function (force) {
+        //if (this.getName(force) !== "Gravity")
         //console.log(this.getName(this) + " applying force from " + this.getName(force) + ": "
-        //    + this._appliedForce + "  :  " + force.force + " : CoR " + this.restitutionCoeffecient);
+        //    + this._appliedForce + "  :  " + force.force + " : CoR " + this.restitutionCoefficient);
         this._appliedForce = this._appliedForce.add(force.force);
     };
     Character2D.prototype.applyRotateForce = function (force) {
@@ -148,7 +155,7 @@ var Character2D = /** @class */ (function (_super) {
 
     protected adjustPosition(velocity: Vector2D, pixelsPerMeter: number) {
         velocity = Physics.toPixels(velocity, pixelsPerMeter);
-        this._position = this._position.add(velocity);
+        this.position = this.position.add(velocity);
     }
 
     update(frame: number, now: number, elapsedTime: number, timeScale: number, world: World2D) {
@@ -170,7 +177,7 @@ var Character2D = /** @class */ (function (_super) {
     Character2D.prototype.adjustPosition = function (elapsedTime, pixelsPerMeter) {
         var displacement = Physics.calcDisplacement(elapsedTime, this.priorVelocity, this.acceleration);
         displacement = Physics.toPixels(displacement, pixelsPerMeter);
-        this._position = this._position.add(displacement);
+        this.position = this.position.add(displacement);
     };
     //protected adjustRotateVelocity(elapsedTime: number) {
     //    let newVelocity = Physics.calcFinalRotationVelocity(elapsedTime, this.priorRotateVelocity, this.rotateAcceleration);
@@ -206,11 +213,18 @@ var Character2D = /** @class */ (function (_super) {
         this.resetParams();
     };
     Character2D.prototype.postUpdate = function (frame, now, elapsedTime, timeScale, world) {
+        this._priorPosition = this.position;
         this._priorVelocity = this.velocity;
         this._priorRotateVelocity = this.rotateVelocity;
         this._lastUpdateFrame = frame;
     };
     Character2D.prototype.draw = function (viewport, frame) {
+        //const ctx = viewport.ctx;
+        //ctx.beginPath();
+        //ctx.strokeStyle = "black";
+        //ctx.lineWidth = 2;
+        //ctx.strokeRect(this.bounds.x, this.bounds.y, this.bounds.w, this.bounds.h);
+        //ctx.stroke();
     };
     return Character2D;
 }(Force));

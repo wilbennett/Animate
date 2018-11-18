@@ -22,6 +22,8 @@ var Radar = /** @class */ (function (_super) {
         _this._maxRotateVelocity = MathEx.TWO_PI;
         _this._rotateVelocityRequested = rotateVelocity;
         _this._rotateVelocity = rotateVelocity;
+        _this._width = _this._radius * 2;
+        _this._height = _this._width;
         _this._armManager = new Polar2D(_this._radius * 0.95, 0);
         return _this;
     }
@@ -54,6 +56,7 @@ var Radar = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Radar.prototype.createBounds = function () { return this.createBoundsFromRadius(this.radius); };
     Radar.prototype.applyForce = function (force) { };
     Radar.prototype.adjustRotateAcceleration = function () {
         this._rotateAcceleration = this._rotateVelocityRequested;

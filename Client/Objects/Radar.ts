@@ -13,6 +13,9 @@
         this._maxRotateVelocity = MathEx.TWO_PI;
         this._rotateVelocityRequested = rotateVelocity;
         this._rotateVelocity = rotateVelocity;
+        this._width = this._radius * 2;
+        this._height = this._width;
+
         this._armManager = new Polar2D(this._radius * 0.95, 0);
     }
 
@@ -27,6 +30,8 @@
 
         return this._armPos;
     }
+
+    protected createBounds() { return this.createBoundsFromRadius(this.radius); }
 
     applyForce(force: Force) { }
 

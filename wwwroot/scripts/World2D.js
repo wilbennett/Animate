@@ -208,9 +208,15 @@ var World2D = /** @class */ (function (_super) {
     World2D.prototype.moveViewportHorizontal = function (dx) {
         return this.setViewportTopLeft(this.viewport.left + dx, this.viewport.top);
     };
-    World2D.prototype.addForce = function (force) { this._forces.push(force); };
+    World2D.prototype.addForce = function (force) {
+        this._forces.push(force);
+        force.addedToWorld(this);
+    };
     World2D.prototype.removeForce = function (force) { this._forces.remove(force); };
-    World2D.prototype.addCharacter = function (character) { this._characters.push(character); };
+    World2D.prototype.addCharacter = function (character) {
+        this._characters.push(character);
+        character.addedToWorld(this);
+    };
     World2D.prototype.removeCharacter = function (character) { this._characters.remove(character); };
     World2D.prototype.update = function (frame, now, elapsedTime, timeScale) {
         var _this = this;

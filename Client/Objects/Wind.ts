@@ -6,7 +6,7 @@
         super(position, Vector2D.fromDegrees(degrees).mult(strength), 0);
 
         this._width = this._radius * 2;
-        this._height = this._radius * 2;
+        this._height = this._width;
 
         this._polar = new Polar2D(strength, MathEx.toRadians(degrees));
         this.polarUpdated();
@@ -33,6 +33,8 @@
         this._velocity = this._polar.vector.normalize();
     }
 
+    protected createBounds() { return this.createBoundsFromRadius(this._radius); }
+
     calculateForce() { }
 
     calculateForceForCharacter(character: Character2D): Vector2D {
@@ -51,6 +53,7 @@
     }
 
     draw(viewport: Viewport2D, frame: number) {
+        super.draw(viewport, frame);
         const ctx = viewport.ctx;
         let origAlpha = ctx.globalAlpha;
 
@@ -61,10 +64,10 @@
         ctx.closePath();
 
         let v = this._velocity.mult(this._polar.radius * 0.5);
-        v = v.add(this._position);
+        v = v.add(this.position);
         ctx.beginPath();
         ctx.strokeStyle = "purple";
-        ctx.moveTo(this._position.x, this._position.y);
+        ctx.moveTo(this.position.x, this.position.y);
         ctx.lineTo(v.x, v.y);
         ctx.stroke();
         ctx.closePath();

@@ -29,13 +29,12 @@ var Fluid = /** @class */ (function (_super) {
     });
     Fluid.prototype.calculateForce = function () { };
     Fluid.prototype.calculateForceForCharacter = function (character) {
-        if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y))
-            return Vector2D.emptyVector;
         return Physics.calcDrag(this.density, 1, this.dragCoefficient, character.velocity);
     };
     Fluid.prototype.update = function (frame, now, elapsedTime, timeScale, world) {
     };
     Fluid.prototype.draw = function (viewport, frame) {
+        _super.prototype.draw.call(this, viewport, frame);
         var ctx = viewport.ctx;
         var origAlpha = ctx.globalAlpha;
         ctx.globalAlpha = 0.5;

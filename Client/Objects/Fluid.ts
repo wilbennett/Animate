@@ -17,9 +17,6 @@
     calculateForce() { }
 
     calculateForceForCharacter(character: Character2D): Vector2D {
-        if (!Math2D.isPointInBounds(this.bounds, character.position.x, character.position.y))
-            return Vector2D.emptyVector;
-
         return Physics.calcDrag(this.density, 1, this.dragCoefficient, character.velocity);
     }
 
@@ -27,6 +24,8 @@
     }
 
     draw(viewport: Viewport2D, frame: number) {
+        super.draw(viewport, frame);
+
         const ctx = viewport.ctx;
 
         let origAlpha = ctx.globalAlpha;

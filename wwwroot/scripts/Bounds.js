@@ -39,6 +39,16 @@ var Bounds = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Bounds.prototype, "w", {
+        get: function () { return this._width; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Bounds.prototype, "h", {
+        get: function () { return this._height; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Bounds.prototype, "left", {
         get: function () { return this.x; },
         enumerable: true,
@@ -182,6 +192,10 @@ var Bounds = /** @class */ (function () {
     Bounds.prototype.isDown = function (y) { return y > 0; };
     Bounds.prototype.contains = function (point) {
         return point.x >= this.x && point.x <= this.maxX && point.y >= this.y && point.y <= this.maxY;
+    };
+    Bounds.prototype.intersectsWith = function (other) {
+        return this.x <= other.maxX && this.maxX >= other.x
+            && this.y <= other.maxY && this.maxY >= other.y;
     };
     return Bounds;
 }());

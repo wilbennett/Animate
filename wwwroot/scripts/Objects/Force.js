@@ -25,6 +25,16 @@ var Force = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Force.prototype, "w", {
+        get: function () { return this._width; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Force.prototype, "h", {
+        get: function () { return this._height; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Force.prototype, "force", {
         get: function () { return this._force; },
         enumerable: true,
@@ -40,22 +50,38 @@ var Force = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Force.prototype, "world", {
+        get: function () { return this._world; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Force.prototype, "bounds", {
         get: function () {
             if (!this._bounds)
-                this._bounds = new Bounds(this.position.x, this.position.y, this.width, this.height);
+                this._bounds = this.createBounds();
             return this._bounds;
         },
         enumerable: true,
         configurable: true
     });
-    Force.prototype.intersectsWithCharacter = function (character) { return true; };
+    Force.prototype.createBounds = function () {
+        return new Bounds(this.position.x, this.position.y, this.width, this.height);
+    };
+    Force.prototype.createBoundsFromRadius = function (radius) {
+        return this.world.orientation === WorldOrientation.Up
+            ? new Bounds(this.position.x - radius, this.position.y - radius, this.w, this.h)
+            : new Bounds(this.position.x - radius, this.position.y + radius, this.w, this.h);
+    };
+    Force.prototype.addedToWorld = function (world) { this._world = world; };
+    Force.prototype.intersectsWithCharacter = function (character) { return this.bounds.intersectsWith(character.bounds); };
     Force.prototype.calculateForce = function () {
         this._force = Physics.calcNetForce(this._mass, this._acceleration);
     };
     Force.prototype.calculateForceForCharacter = function (character) { return this._force; };
     Force.prototype.applyForceTo = function (character) {
         if (character === this)
+            return;
+        if (!this.intersectsWithCharacter(character))
             return;
         this._force = this.calculateForceForCharacter(character);
         character.applyForce(this);
