@@ -9,6 +9,7 @@
     private _radar: Radar;
     private _leftFan: Wind;
     private _rightFan: Wind;
+    private _centerFan: Wind;
     private _world: World2D;
     private _balls: Ball[] = [];
     private _ballsToRemove: Ball[] = [];
@@ -109,10 +110,13 @@
 
         this._leftFan = this.createFan(world.left, this._settings.LeftFan);
         this._rightFan = this.createFan(world.right, this._settings.RightFan);
+        this._centerFan = this.createFan(world.center.x, this._settings.RightFan);
+        this._centerFan.position = world.center;
         world.addForce(this._leftFan);
         world.addForce(this._rightFan);
+        world.addForce(this._centerFan);
         world.addCharacter(this._leftFan);
-        world.addCharacter(this._rightFan);
+        world.addCharacter(this._centerFan);
 
         this._settings.addEventListener("change", this._boundHandleSettingsChanged);
         this.handleSettingsChanged();
@@ -310,6 +314,11 @@
 
         if (this._balls.length === 0)
             this.createRandomBalls();
+
+        this._centerFan.degrees += this._radar.rotateVelocity;// * elapsedTime;
+
+        if (now % 5 === 0)
+            this._centerFan.speed = MathEx.random(5, 70);
 
         this._world.update(frame, now, elapsedTime, timeScale);
         this.processBallsToRemove();

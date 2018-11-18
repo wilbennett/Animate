@@ -72,10 +72,13 @@ var Game = /** @class */ (function () {
         world.addCharacter(this._radar);
         this._leftFan = this.createFan(world.left, this._settings.LeftFan);
         this._rightFan = this.createFan(world.right, this._settings.RightFan);
+        this._centerFan = this.createFan(world.center.x, this._settings.RightFan);
+        this._centerFan.position = world.center;
         world.addForce(this._leftFan);
         world.addForce(this._rightFan);
+        world.addForce(this._centerFan);
         world.addCharacter(this._leftFan);
-        world.addCharacter(this._rightFan);
+        world.addCharacter(this._centerFan);
         this._settings.addEventListener("change", this._boundHandleSettingsChanged);
         this.handleSettingsChanged();
     }
@@ -211,6 +214,9 @@ var Game = /** @class */ (function () {
         this.createBackgroundGradient();
         if (this._balls.length === 0)
             this.createRandomBalls();
+        this._centerFan.degrees += this._radar.rotateVelocity; // * elapsedTime;
+        if (now % 5 === 0)
+            this._centerFan.speed = MathEx.random(5, 70);
         this._world.update(frame, now, elapsedTime, timeScale);
         this.processBallsToRemove();
         this._liquid.position = new Vector2D(this._radar.armPos.x - this._liquid.bounds.width / 2, this._radar.armPos.y - this._liquid.bounds.height / 2);
