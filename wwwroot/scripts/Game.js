@@ -78,6 +78,7 @@ var Game = /** @class */ (function () {
         world.addForce(this._rightFan);
         world.addForce(this._centerFan);
         world.addCharacter(this._leftFan);
+        world.addCharacter(this._rightFan);
         world.addCharacter(this._centerFan);
         this._settings.addEventListener("change", this._boundHandleSettingsChanged);
         this.handleSettingsChanged();

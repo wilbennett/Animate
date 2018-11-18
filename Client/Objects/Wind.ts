@@ -21,10 +21,16 @@
     get density() { return this._density; }
 
     get degrees() { return this.velocity.degrees; }
-    set degrees(value: number) { this._velocity = Vector2D.fromDegrees(value).mult(this.velocity.mag); }
+    set degrees(value: number) {
+        this._velocity = Vector2D.fromDegrees(value).mult(this.velocity.mag);
+        this.createBoundary();
+    }
 
     get radians() { return this.velocity.radians; }
-    set radians(value: number) { this._velocity = Vector2D.fromRadians(value).mult(this.velocity.mag); }
+    set radians(value: number) {
+        this._velocity = Vector2D.fromRadians(value).mult(this.velocity.mag);
+        this.createBoundary();
+    }
 
     get speed() { return this.velocity.mag; }
 
@@ -34,6 +40,20 @@
     }
 
     protected createBounds() { return this.createBoundsFromRadius(this._radius); }
+
+    createBoundary() {
+        this._oppositeVelocityDir = this.velocity.normalizeMult(-1);
+        let position = this.position.add(this._oppositeVelocityDir);
+        let distToTarget = Math.abs(MathEx.calcDecayTime(this.speed, this._decayRate, this._minValue));
+        let radiusVector = this.velocity.normalizeMult(this._radius);
+        let baseStart = radiusVector.rotateDegrees(90).add(position);
+        let baseEnd = radiusVector.rotateDegrees(-90).add(position);
+        this._baseLine = new Ray2D(baseStart, baseEnd);
+        this._rightLine = new Ray2D(baseEnd, this.velocity, distToTarget);
+        this._frontLine = new Ray2D(this._rightLine.endPoint, this._baseLine.direction.mult(-1), this._baseLine.length);
+        this._leftLine = new Ray2D(this._frontLine.endPoint, this._oppositeVelocityDir, distToTarget);
+        this._positionSide = this._baseLine.pointSide(this.position);
+    }
 
     private intersectsWithPoint(point: Vector2D) {
         return this._baseLine.pointSide(point) === this._positionSide
@@ -69,20 +89,6 @@
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     }
 
-    createBoundary() {
-        this._oppositeVelocityDir = this.velocity.normalizeMult(-1);
-        let position = this.position.add(this._oppositeVelocityDir);
-        let distToTarget = Math.abs(MathEx.calcDecayTime(this.speed, this._decayRate, this._minValue));
-        let radiusVector = this.velocity.normalizeMult(this._radius);
-        let baseStart = radiusVector.rotateDegrees(90).add(position);
-        let baseEnd = radiusVector.rotateDegrees(-90).add(position);
-        this._baseLine = new Ray2D(baseStart, baseEnd);
-        this._rightLine = new Ray2D(baseEnd, this.velocity, distToTarget);
-        this._frontLine = new Ray2D(this._rightLine.endPoint, this._baseLine.direction.mult(-1), this._baseLine.length);
-        this._leftLine = new Ray2D(this._frontLine.endPoint, this._oppositeVelocityDir, distToTarget);
-        this._positionSide = this._baseLine.pointSide(this.position);
-    }
-
     draw(viewport: Viewport2D, frame: number) {
         super.draw(viewport, frame);
         const ctx = viewport.ctx;
@@ -108,9 +114,10 @@
         ctx.beginPath();
         ctx.globalAlpha = 0.6;
         ctx.globalAlpha = this._radiusPct;
+        let position = this.position;
         let radiusX = this._radius * this._radiusPct;
         let radiusY = radiusX;
-        ctx.ellipse(this.position.x, this.position.y, radiusX, radiusY, 0, startRadians, endRadians);
+        ctx.ellipse(position.x, position.y, radiusX, radiusY, 0, startRadians, endRadians);
         ctx.strokeStyle = "yellow";
         ctx.stroke();
         ctx.closePath();
