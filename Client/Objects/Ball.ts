@@ -92,10 +92,7 @@
         let radiusX = this.radius;
         let radiusY = this.radius;
 
-        ctx.save();
-
-        let polar = new Polar2D(this.radius, this.rotateRadians);
-        let highlightPos = polar.vector;
+        let highlightPos = Vector2D.fromRadians(this.rotateRadians).mult(this.radius);
         highlightPos = highlightPos.add(this.position);
 
         let gradient = ctx.createRadialGradient(
@@ -108,6 +105,8 @@
 
         gradient.addColorStop(0, "#bbbbbb");
         gradient.addColorStop(0.7, this._color);
+
+        ctx.save();
 
         ctx.globalAlpha = this._opacity;
         ctx.beginPath();

@@ -126,13 +126,12 @@ var Ball = /** @class */ (function (_super) {
         //*/
         var radiusX = this.radius;
         var radiusY = this.radius;
-        ctx.save();
-        var polar = new Polar2D(this.radius, this.rotateRadians);
-        var highlightPos = polar.vector;
+        var highlightPos = Vector2D.fromRadians(this.rotateRadians).mult(this.radius);
         highlightPos = highlightPos.add(this.position);
         var gradient = ctx.createRadialGradient(highlightPos.x, highlightPos.y, this.radius * 0.01, highlightPos.x, highlightPos.y, this.radius);
         gradient.addColorStop(0, "#bbbbbb");
         gradient.addColorStop(0.7, this._color);
+        ctx.save();
         ctx.globalAlpha = this._opacity;
         ctx.beginPath();
         ctx.ellipse(this.position.x, this.position.y, radiusX, radiusY, 0, 0, MathEx.TWO_PI);
