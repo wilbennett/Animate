@@ -14,48 +14,69 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Wind = /** @class */ (function (_super) {
     __extends(Wind, _super);
-    function Wind(degrees, strength, position, _radius) {
-        var _this = _super.call(this, position, Vector2D.fromDegrees(degrees).mult(strength), 0) || this;
+    function Wind(speed, degrees, position, _radius) {
+        var _this = _super.call(this, position, Vector2D.fromDegrees(degrees).mult(speed), 0) || this;
         _this._radius = _radius;
+        _this._decayRate = 0.039;
+        _this._minValue = 0.01;
         _this._radiusPct = 0.10;
         _this._width = _this._radius * 2;
         _this._height = _this._width;
-        _this._polar = new Polar2D(strength, MathEx.toRadians(degrees));
-        _this.polarUpdated();
+        _this.createBoundary();
+        _this.logDecayTime();
         return _this;
     }
+    Wind.prototype.logDecayTime = function () {
+        var decayTime = MathEx.calcDecayTime(this.speed, this._decayRate, this._minValue);
+        decayTime = Math.abs(decayTime);
+        console.log("speed: " + this.speed + ", rate: " + this._decayRate + ".  Distance to " + this._minValue.toFixed(2) + ": " + decayTime.toFixed(2));
+        console.log(MathEx.calcDecay(this.speed, this._decayRate, decayTime).toFixed(2));
+        for (var i = 0; i < decayTime; i += 15) {
+            console.log(i + ": " + MathEx.calcDecay(this.speed, this._decayRate, i).toFixed(2));
+        }
+    };
     Object.defineProperty(Wind.prototype, "degrees", {
-        get: function () { return this._polar.degrees; },
-        set: function (value) { this.radians = MathEx.toRadians(value); },
+        get: function () { return this.velocity.degrees; },
+        set: function (value) { this._velocity = Vector2D.fromDegrees(value).mult(this.velocity.mag); },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Wind.prototype, "radians", {
-        get: function () { return this._polar.radians; },
+        get: function () { return this.velocity.radians; },
+        set: function (value) { this._velocity = Vector2D.fromRadians(value).mult(this.velocity.mag); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Wind.prototype, "speed", {
+        get: function () { return this.velocity.mag; },
         set: function (value) {
-            this._polar = this._polar.withRadians(value);
-            this.polarUpdated();
+            this._velocity = this.velocity.normalizeMult(value);
+            this.createBoundary();
+            this.logDecayTime();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Wind.prototype, "strength", {
-        get: function () { return this._polar.radius; },
-        set: function (value) {
-            this._polar = new Polar2D(value, this.radians);
-            this.polarUpdated();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Wind.prototype.polarUpdated = function () {
-        this._velocity = this._polar.vector.normalize();
-    };
     Wind.prototype.createBounds = function () { return this.createBoundsFromRadius(this._radius); };
+    Wind.prototype.intersectsWithPoint = function (point) {
+        var pointRay = new Ray2D(point, this.position);
+        return !pointRay.getInstersection(this._frontLine)
+            && !pointRay.getInstersection(this._leftLine)
+            && !pointRay.getInstersection(this._rightLine)
+            && !pointRay.getInstersection(this._baseLine);
+    };
+    Wind.prototype.intersectsWithCharacter = function (character) {
+        var bounds = character.bounds;
+        // NOTE: Does not consider where the edges overlap but no corner is inside.
+        return this.intersectsWithPoint(bounds.topLeft)
+            || this.intersectsWithPoint(bounds.bottomLeft)
+            || this.intersectsWithPoint(bounds.bottomRight)
+            || this.intersectsWithPoint(bounds.topRight);
+    };
     Wind.prototype.calculateForce = function () { };
     Wind.prototype.calculateForceForCharacter = function (character) {
         var pos = character.position.subtract(this.position);
-        if (pos.mag > this._polar.radius)
+        if (pos.mag > this._radius)
             return Vector2D.emptyVector;
         var force = this._velocity.mult(pos.magSquared * 0.01);
         return force.div(character.velocity.mag);
@@ -64,16 +85,31 @@ var Wind = /** @class */ (function (_super) {
         //super.update(frame, now, elapsedTime, timeScale, world);
         this._radiusPct = (this._radiusPct + 0.01) % 0.9 + 0.10;
     };
+    Wind.prototype.createBoundary = function () {
+        this._oppositeVelocityDir = this.velocity.normalizeMult(-1);
+        var position = this.position.add(this._oppositeVelocityDir);
+        var distToTarget = Math.abs(MathEx.calcDecayTime(this.speed, this._decayRate, this._minValue));
+        var radiusVector = this.velocity.normalizeMult(this._radius);
+        var baseStart = radiusVector.rotateDegrees(90).add(position);
+        var baseEnd = radiusVector.rotateDegrees(-90).add(position);
+        this._baseLine = new Line2D(baseStart, baseEnd);
+        this._leftLine = new Line2D(baseStart, this.velocity, distToTarget);
+        this._rightLine = new Line2D(baseEnd, this.velocity, distToTarget);
+        this._frontLine = new Line2D(this._rightLine.endPoint, this._leftLine.endPoint);
+    };
     Wind.prototype.draw = function (viewport, frame) {
+        var _this = this;
         _super.prototype.draw.call(this, viewport, frame);
         var ctx = viewport.ctx;
         var origAlpha = ctx.globalAlpha;
+        var startRadians = MathEx.toRadians(this.velocity.degrees - 90);
+        var endRadians = MathEx.toRadians(this.velocity.degrees + 90);
         ctx.beginPath();
-        ctx.ellipse(this.position.x, this.position.y, 10, 10, 0, 0, MathEx.TWO_PI);
+        ctx.ellipse(this.position.x, this.position.y, 10, 10, 0, startRadians, endRadians);
         ctx.fillStyle = "purple";
         ctx.fill();
         ctx.closePath();
-        var v = this._velocity.mult(this._polar.radius * 0.5);
+        var v = this._velocity.normalizeMult(this._radius * 0.5);
         v = v.add(this.position);
         ctx.beginPath();
         ctx.strokeStyle = "purple";
@@ -84,11 +120,40 @@ var Wind = /** @class */ (function (_super) {
         ctx.beginPath();
         ctx.globalAlpha = 0.6;
         ctx.globalAlpha = this._radiusPct;
-        ctx.arc(this.position.x, this.position.y, this._polar.radius * this._radiusPct, 0, MathEx.TWO_PI);
+        var radiusX = this._radius * this._radiusPct;
+        var radiusY = radiusX;
+        ctx.ellipse(this.position.x, this.position.y, radiusX, radiusY, 0, startRadians, endRadians);
         ctx.strokeStyle = "yellow";
         ctx.stroke();
         ctx.closePath();
         ctx.globalAlpha = origAlpha;
+        this._baseLine.draw(ctx, 2, "white");
+        this._leftLine.draw(ctx, 2, "black");
+        this._rightLine.draw(ctx, 2, "green");
+        this._frontLine.draw(ctx, 2, "purple");
+        var dist = 0;
+        var pos = this.world.offsetAbove(this.position.y, dist + 15);
+        var speed = this.speed;
+        ctx.save();
+        ctx.translate(this.position.x, this.position.y);
+        ctx.rotate(-this.velocity.radians);
+        ctx.translate(-this.position.x, -this.position.y);
+        //ctx.translate(0, this.position.y + (this.world.screenHeight - 1) / 3);
+        //ctx.scale(1, -1);
+        ctx.font = "12px Arial";
+        while (speed > this._minValue) {
+            speed = MathEx.calcDecay(this.speed, this._decayRate, dist);
+            ctx.fillText(speed.toFixed(2), this.position.x + 15, pos);
+            dist += 15;
+            pos = this.world.offsetAbove(this.position.y, dist + 15);
+        }
+        ctx.restore();
+        this.world.characters.forEach(function (character) {
+            if (_this.intersectsWithCharacter(character)) {
+                var charRay = new Ray2D(character.position, _this.position);
+                charRay.draw(ctx, 1, "yellow");
+            }
+        }, this);
     };
     return Wind;
 }(Character2D));

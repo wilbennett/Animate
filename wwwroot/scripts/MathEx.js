@@ -33,6 +33,18 @@ var MathEx = /** @class */ (function () {
         var value = Math.random() * max + min;
         return array ? array[Math.floor(value)] : value;
     };
+    MathEx.calcGrowth = function (startValue, growthRate, time) {
+        return startValue * Math.pow(1 + growthRate, time);
+    };
+    MathEx.calcDecay = function (startValue, decayRate, time) {
+        return startValue * Math.pow(1 - decayRate, time);
+    };
+    MathEx.calcGrowthTime = function (startValue, decayRate, targetValue) {
+        return Math.log(startValue / targetValue) / Math.log(1 + decayRate);
+    };
+    MathEx.calcDecayTime = function (startValue, decayRate, targetValue) {
+        return Math.log(startValue / targetValue) / Math.log(1 - decayRate);
+    };
     MathEx.TWO_PI = 2 * Math.PI;
     MathEx.RADIANS_RATIO = Math.PI / 180;
     MathEx.DEGREES_RATIO = 180 / Math.PI;

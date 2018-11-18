@@ -43,4 +43,20 @@
         let value = Math.random() * max + min;
         return array ? array[Math.floor(value)] : value;
     }
+
+    static calcGrowth(startValue: number, growthRate: number, time: number) {
+        return startValue * Math.pow(1 + growthRate, time);
+    }
+
+    static calcDecay(startValue: number, decayRate: number, time: number) {
+        return startValue * Math.pow(1 - decayRate, time);
+    }
+
+    static calcGrowthTime(startValue: number, decayRate: number, targetValue: number) {
+        return Math.log(startValue / targetValue) / Math.log(1 + decayRate);
+    }
+
+    static calcDecayTime(startValue: number, decayRate: number, targetValue: number) {
+        return Math.log(startValue / targetValue) / Math.log(1 - decayRate);
+    }
 }

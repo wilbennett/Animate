@@ -70,12 +70,12 @@ var Game = /** @class */ (function () {
         world.addForce(this._liquid);
         world.addCharacter(this._liquid);
         world.addCharacter(this._radar);
-        this._leftFan = this.createFan(world.left, this._settings.LeftFan);
+        this._leftFan = this.createFan(world.center.x, this._settings.LeftFan);
         this._rightFan = this.createFan(world.right, this._settings.RightFan);
         world.addForce(this._leftFan);
-        world.addForce(this._rightFan);
+        //world.addForce(this._rightFan);
         world.addCharacter(this._leftFan);
-        world.addCharacter(this._rightFan);
+        //world.addCharacter(this._rightFan);
         this._settings.addEventListener("change", this._boundHandleSettingsChanged);
         this.handleSettingsChanged();
     }
@@ -101,7 +101,8 @@ var Game = /** @class */ (function () {
         var fanPos = settings.position;
         var fanAngle = settings.angle;
         var fanRadius = settings.strength;
-        return new Wind(world.localizeDegrees(fanAngle), fanRadius, new Vector2D(x, world.bottomOffsetAbove(world.height * fanPos)), fanRadius);
+        var fanSpeed = 5;
+        return new Wind(fanSpeed, world.localizeDegrees(fanAngle), new Vector2D(x, world.bottomOffsetAbove(world.height * fanPos)), fanRadius);
     };
     Game.prototype.createRandomBalls = function () {
         var colors = this._settings.Balls.colors || ['blue', 'green', 'red', 'black', 'white'];
@@ -183,7 +184,7 @@ var Game = /** @class */ (function () {
         var fanRadius = settings.strength;
         fan.position = fan.position.withY(world.bottomOffsetAbove(world.height * fanPos));
         fan.degrees = world.localizeDegrees(fanAngle);
-        fan.strength = fanRadius;
+        fan.speed = 10;
     };
     Game.prototype.paintRadarAngle = function () {
         var _this = this;

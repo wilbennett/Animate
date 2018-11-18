@@ -107,12 +107,12 @@
         world.addCharacter(this._liquid);
         world.addCharacter(this._radar);
 
-        this._leftFan = this.createFan(world.left, this._settings.LeftFan);
+        this._leftFan = this.createFan(world.center.x, this._settings.LeftFan);
         this._rightFan = this.createFan(world.right, this._settings.RightFan);
         world.addForce(this._leftFan);
-        world.addForce(this._rightFan);
+        //world.addForce(this._rightFan);
         world.addCharacter(this._leftFan);
-        world.addCharacter(this._rightFan);
+        //world.addCharacter(this._rightFan);
 
         this._settings.addEventListener("change", this._boundHandleSettingsChanged);
         this.handleSettingsChanged();
@@ -146,10 +146,11 @@
         let fanPos = settings.position;
         let fanAngle = settings.angle;
         let fanRadius = settings.strength;
+        let fanSpeed = 5;
 
         return new Wind(
+            fanSpeed,
             world.localizeDegrees(fanAngle),
-            fanRadius,
             new Vector2D(x, world.bottomOffsetAbove(world.height * fanPos)),
             fanRadius);
     }
@@ -278,7 +279,7 @@
 
         fan.position = fan.position.withY(world.bottomOffsetAbove(world.height * fanPos));
         fan.degrees = world.localizeDegrees(fanAngle);
-        fan.strength = fanRadius;
+        fan.speed = 10;
     }
 
     private paintRadarAngle() {
