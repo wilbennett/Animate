@@ -65,8 +65,42 @@
 
     add(other: Vector2D): Vector2D { return new Vector2D(this.x + other.x, this.y + other.y); }
     subtract(other: Vector2D): Vector2D { return new Vector2D(this.x - other.x, this.y - other.y); }
-    mult(scale: number): Vector2D { return new Vector2D(this.x * scale, this.y * scale); }
-    normalizeMult(scale: number): Vector2D { return this.normalize().mult(scale); }
+
+    mult(scale: Point2D): Vector2D;
+    mult(scale: number): Vector2D;
+    mult(scaleX: number, scaleY: number): Vector2D;
+    mult(param1: any, param2?: any): Vector2D {
+        let scaleX: number;
+        let scaleY: number;
+
+        if (param1 instanceof Point2D) {
+            scaleX = param1.x;
+            scaleY = param1.y;
+        }
+        else if (!param2) {
+            scaleX = param1;
+            scaleY = param1;
+        }
+        else {
+            scaleX = param1;
+            scaleY = param2;
+        }
+
+        return new Vector2D(this.x * scaleX, this.y * scaleY);
+    }
+
+    normalizeMult(scale: Point2D): Vector2D;
+    normalizeMult(scale: number): Vector2D;
+    normalizeMult(scaleX: number, scaleY: number): Vector2D;
+    normalizeMult(scaleX: any, scaleY?: any): Vector2D {
+        if (scaleX instanceof Point2D)
+            return this.normalize().mult(scaleX);
+
+        if (!scaleY)
+            return this.normalize().mult(scaleX);
+
+        return this.normalize().mult(scaleX, scaleY);
+    }
 
     div(scale: number): Vector2D {
         return scale !== 0 ? new Vector2D(this.x / scale, this.y / scale) : Vector2D.emptyVector;

@@ -91,8 +91,30 @@ var Vector2D = /** @class */ (function (_super) {
     });
     Vector2D.prototype.add = function (other) { return new Vector2D(this.x + other.x, this.y + other.y); };
     Vector2D.prototype.subtract = function (other) { return new Vector2D(this.x - other.x, this.y - other.y); };
-    Vector2D.prototype.mult = function (scale) { return new Vector2D(this.x * scale, this.y * scale); };
-    Vector2D.prototype.normalizeMult = function (scale) { return this.normalize().mult(scale); };
+    Vector2D.prototype.mult = function (param1, param2) {
+        var scaleX;
+        var scaleY;
+        if (param1 instanceof Point2D) {
+            scaleX = param1.x;
+            scaleY = param1.y;
+        }
+        else if (!param2) {
+            scaleX = param1;
+            scaleY = param1;
+        }
+        else {
+            scaleX = param1;
+            scaleY = param2;
+        }
+        return new Vector2D(this.x * scaleX, this.y * scaleY);
+    };
+    Vector2D.prototype.normalizeMult = function (scaleX, scaleY) {
+        if (scaleX instanceof Point2D)
+            return this.normalize().mult(scaleX);
+        if (!scaleY)
+            return this.normalize().mult(scaleX);
+        return this.normalize().mult(scaleX, scaleY);
+    };
     Vector2D.prototype.div = function (scale) {
         return scale !== 0 ? new Vector2D(this.x / scale, this.y / scale) : Vector2D.emptyVector;
     };
