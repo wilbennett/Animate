@@ -9,7 +9,7 @@
     "sourceMap": true,
     "allowJs": true,
     "outDir": "wwwroot/scripts",
-    "target": "es2017",
+    "target": "es2017"
   },
   "include": [
     "Client"

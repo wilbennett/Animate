@@ -121,6 +121,40 @@
     }
     //*/
 
+    //*
+    private A: number;
+    private B: number;
+    private C: number;
+
+    pointSide(point: Vector2D) {
+        if (!this.A) { // Standard form.
+            const origin = this.origin;
+            const end = this.endPoint;
+            this.A = end.y - origin.y;
+            this.B = origin.x - end.x;
+            this.C = this.A * origin.x + this.B * origin.y;
+        }
+
+        return MathEx.sign(this.A * point.x + this.B * point.y - this.C);
+    }
+    /*/
+    private _slopeX: number;
+    private _slopeY: number;
+
+    pointSide(point: Vector2D) {
+        const origin = this.origin;
+        const end = this.endPoint;
+
+        if (!this._slopeX) {
+            this._slopeX = end.x - origin.x;
+            this._slopeY = end.y - origin.y;
+        }
+
+        const p = point;
+        return MathEx.sign(this._slopeX * (p.y - origin.y) - this._slopeY * (p.x - origin.x));
+    }
+    //*/
+
     protected drawLine(ctx: CanvasRenderingContext2D, lineWidth: number, color: string, bounds?: OrientedBounds): void {
         let origin = this.origin;
         let endPoint = this.endPoint;

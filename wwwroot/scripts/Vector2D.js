@@ -72,7 +72,8 @@ var Vector2D = /** @class */ (function (_super) {
     Object.defineProperty(Vector2D.prototype, "normal", {
         get: function () {
             if (!this._normal) {
-                this._normal = new Vector2D(this.y, -this.x);
+                this._normal = new Vector2D(-this.y, this.x);
+                //this._normal = new Vector2D(this.y, -this.x);
             }
             return this._normal;
         },
@@ -89,6 +90,7 @@ var Vector2D = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Vector2D.prototype.normalize = function () { return this.div(this.mag); };
     Vector2D.prototype.add = function (other) { return new Vector2D(this.x + other.x, this.y + other.y); };
     Vector2D.prototype.subtract = function (other) { return new Vector2D(this.x - other.x, this.y - other.y); };
     Vector2D.prototype.mult = function (param1, param2) {
@@ -116,15 +118,10 @@ var Vector2D = /** @class */ (function (_super) {
         return this.normalize().mult(scaleX, scaleY);
     };
     Vector2D.prototype.div = function (scale) {
-        return scale !== 0 ? new Vector2D(this.x / scale, this.y / scale) : Vector2D.emptyVector;
+        return scale !== 0 ? new Vector2D(this.x / scale, this.y / scale) : this;
     };
     Vector2D.prototype.dot = function (other) { return Math2D.dot(this.x, this.y, other.x, other.y); };
-    Vector2D.prototype.normalize = function () {
-        var m = this.mag;
-        if (m <= 0)
-            return this;
-        return this.div(m);
-    };
+    Vector2D.prototype.dotPerp = function (other) { return Math2D.dotPerp(this.x, this.y, other.x, other.y); };
     Vector2D.prototype.decay = function (decayRate, time) {
         return new Vector2D(MathEx.calcDecay(this.x, decayRate, time), MathEx.calcDecay(this.y, decayRate, time));
     };

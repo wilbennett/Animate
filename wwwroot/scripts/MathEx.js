@@ -16,6 +16,9 @@ var MathEx = /** @class */ (function () {
             return max;
         return value;
     };
+    MathEx.sign = function (value) {
+        return ((value > 0) - (value < 0)) || +value;
+    };
     MathEx.random = function (min, max, array) {
         if (typeof min === "object") {
             array = min;

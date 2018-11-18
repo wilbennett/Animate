@@ -19,6 +19,10 @@
         return value;
     }
 
+    static sign(value: number) {
+        return (<any>(value > 0) - <any>(value < 0)) || +value;
+    }
+
     static random(min: number, max: number): number;
     static random(max: number): number;
     static random(): number;

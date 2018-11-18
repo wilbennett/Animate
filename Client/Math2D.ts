@@ -1,5 +1,6 @@
 ﻿class Math2D {
     static dot(x1: number, y1: number, x2: number, y2: number) { return x1 * x2 + y1 * y2; }
+    static dotPerp(x1: number, y1: number, x2: number, y2: number) { return x1 * y2 - y1 * x2; }
 
     static magnitudeSquared(x: number, y: number) { return Math2D.dot(x, y, x, y); }
     static magnitude(x: number, y: number) { return Math.sqrt(Math2D.magnitudeSquared(x, y)); }

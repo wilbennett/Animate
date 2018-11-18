@@ -88,29 +88,31 @@ var Ray2D = /** @class */ (function () {
         //if (t2 < 0 || t2 > target.length) return null;
         return this.getPointAt(t1);
     };
+    Ray2D.prototype.pointSide = function (point) {
+        if (!this.A) { // Standard form.
+            var origin = this.origin;
+            var end = this.endPoint;
+            this.A = end.y - origin.y;
+            this.B = origin.x - end.x;
+            this.C = this.A * origin.x + this.B * origin.y;
+        }
+        return MathEx.sign(this.A * point.x + this.B * point.y - this.C);
+    };
     /*/
-    getInstersection(target: Ray2D): Vector2D | null {
-        let a1 = this.endPoint.y - this.origin.y;
-        let b1 = this.origin.x - this.endPoint.x;
-        let c1 = a1 * this.origin.x + b1 * this.origin.y;
-        let a2 = target.endPoint.y - target.origin.y;
-        let b2 = target.origin.x - target.endPoint.x;
-        let c2 = a2 * target.origin.x + b2 * target.origin.y;
+    private _slopeX: number;
+    private _slopeY: number;
 
-        let det = a1 * b2 - a2 * b1;
+    pointSide(point: Vector2D) {
+        const origin = this.origin;
+        const end = this.endPoint;
 
-        if (det === 0) return null;
+        if (!this._slopeX) {
+            this._slopeX = end.x - origin.x;
+            this._slopeY = end.y - origin.y;
+        }
 
-        let x = (b2 * c1 - b1 * c2) / det;
-        let y = (a1 * c2 - a2 * c1) / det;
-
-        if (x < Math.min(this.origin.x, this.endPoint.x) || x > Math.max(this.origin.x, this.endPoint.x)) return null;
-        if (y < Math.min(this.origin.y, this.endPoint.y) || y > Math.max(this.origin.y, this.endPoint.y)) return null;
-
-        //if (x < Math.min(target.origin.x, target.endPoint.x) || x > Math.max(target.origin.x, target.endPoint.x)) return null;
-        //if (y < Math.min(target.origin.y, target.endPoint.y) || y > Math.max(target.origin.y, target.endPoint.y)) return null;
-
-        return new Vector2D(x, y);
+        const p = point;
+        return MathEx.sign(this._slopeX * (p.y - origin.y) - this._slopeY * (p.x - origin.x));
     }
     //*/
     Ray2D.prototype.drawLine = function (ctx, lineWidth, color, bounds) {

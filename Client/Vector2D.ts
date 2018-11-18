@@ -48,7 +48,8 @@
 
     get normal() {
         if (!this._normal) {
-            this._normal = new Vector2D(this.y, -this.x);
+            this._normal = new Vector2D(-this.y, this.x);
+            //this._normal = new Vector2D(this.y, -this.x);
         }
 
         return this._normal;
@@ -63,6 +64,7 @@
         return this._emptyVector;
     }
 
+    normalize(): Vector2D { return this.div(this.mag); }
     add(other: Vector2D): Vector2D { return new Vector2D(this.x + other.x, this.y + other.y); }
     subtract(other: Vector2D): Vector2D { return new Vector2D(this.x - other.x, this.y - other.y); }
 
@@ -103,18 +105,11 @@
     }
 
     div(scale: number): Vector2D {
-        return scale !== 0 ? new Vector2D(this.x / scale, this.y / scale) : Vector2D.emptyVector;
+        return scale !== 0 ? new Vector2D(this.x / scale, this.y / scale) : this;
     }
 
     dot(other: Vector2D): number { return Math2D.dot(this.x, this.y, other.x, other.y); }
-
-    normalize(): Vector2D {
-        let m = this.mag;
-
-        if (m <= 0) return this;
-
-        return this.div(m);
-    }
+    dotPerp(other: Vector2D): number { return Math2D.dotPerp(this.x, this.y, other.x, other.y); }
 
     decay(decayRate: number, time: number): Vector2D {
         return new Vector2D(MathEx.calcDecay(this.x, decayRate, time), MathEx.calcDecay(this.y, decayRate, time));

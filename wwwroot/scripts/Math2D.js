@@ -3,6 +3,7 @@ var Math2D = /** @class */ (function () {
     function Math2D() {
     }
     Math2D.dot = function (x1, y1, x2, y2) { return x1 * x2 + y1 * y2; };
+    Math2D.dotPerp = function (x1, y1, x2, y2) { return x1 * y2 - y1 * x2; };
     Math2D.magnitudeSquared = function (x, y) { return Math2D.dot(x, y, x, y); };
     Math2D.magnitude = function (x, y) { return Math.sqrt(Math2D.magnitudeSquared(x, y)); };
     Math2D.radians = function (x, y) {

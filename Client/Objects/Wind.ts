@@ -4,10 +4,11 @@
     private _minValue: number = 1.1;
     private _radiusPct: number = 0.10;
     private _oppositeVelocityDir: Vector2D;
-    private _baseLine: Line2D;
-    private _leftLine: Line2D;
-    private _rightLine: Line2D;
-    private _frontLine: Line2D;
+    private _baseLine: Ray2D;
+    private _leftLine: Ray2D;
+    private _rightLine: Ray2D;
+    private _frontLine: Ray2D;
+    private _positionSide: number;
 
     constructor(speed: number, degrees: number, position: Vector2D, private readonly _radius: number) {
         super(position, Vector2D.fromDegrees(degrees).mult(speed), 0);
@@ -34,14 +35,23 @@
 
     protected createBounds() { return this.createBoundsFromRadius(this._radius); }
 
+    //*
     private intersectsWithPoint(point: Vector2D) {
+        return this._baseLine.pointSide(point) === this._positionSide
+            && this._rightLine.pointSide(point) === this._positionSide
+            && this._frontLine.pointSide(point) === this._positionSide
+            && this._leftLine.pointSide(point) === this._positionSide;
+    }
+    /*/
+        private intersectsWithPoint(point: Vector2D) {
         let pointRay = new Ray2D(point, this.position);
 
-        return !pointRay.getInstersection(this._frontLine)
-            && !pointRay.getInstersection(this._leftLine)
+        return !pointRay.getInstersection(this._baseLine)
             && !pointRay.getInstersection(this._rightLine)
-            && !pointRay.getInstersection(this._baseLine);
+            && !pointRay.getInstersection(this._frontLine)
+            && !pointRay.getInstersection(this._leftLine);
     }
+    //*/
 
     intersectsWithCharacter(character: Character2D) {
         let bounds = character.bounds;
@@ -77,10 +87,16 @@
         let radiusVector = this.velocity.normalizeMult(this._radius);
         let baseStart = radiusVector.rotateDegrees(90).add(position);
         let baseEnd = radiusVector.rotateDegrees(-90).add(position);
-        this._baseLine = new Line2D(baseStart, baseEnd);
-        this._leftLine = new Line2D(baseStart, this.velocity, distToTarget);
-        this._rightLine = new Line2D(baseEnd, this.velocity, distToTarget);
-        this._frontLine = new Line2D(this._rightLine.endPoint, this._leftLine.endPoint);
+        this._baseLine = new Ray2D(baseStart, baseEnd);
+        this._rightLine = new Ray2D(baseEnd, this.velocity, distToTarget);
+        this._frontLine = new Ray2D(this._rightLine.endPoint, this._baseLine.direction.mult(-1), this._baseLine.length);
+        this._leftLine = new Ray2D(this._frontLine.endPoint, this._oppositeVelocityDir, distToTarget);
+        this._positionSide = this._baseLine.pointSide(this.position);
+        console.log(".");
+        console.log("pointSign base: " + this._baseLine.pointSide(this.position));
+        console.log("pointSign left: " + this._leftLine.pointSide(this.position));
+        console.log("pointSign right: " + this._rightLine.pointSide(this.position));
+        console.log("pointSign front: " + this._frontLine.pointSide(this.position));
     }
 
     draw(viewport: Viewport2D, frame: number) {
@@ -117,7 +133,7 @@
 
         ctx.globalAlpha = origAlpha;
 
-        /*
+        //*
         this._baseLine.draw(ctx, 2, "white");
         this._leftLine.draw(ctx, 2, "black");
         this._rightLine.draw(ctx, 2, "green");
@@ -145,7 +161,7 @@
         ctx.restore();
         //*/
 
-        /*
+        //*
         this.world.characters.forEach(character => {
             if (this.intersectsWithCharacter(character)) {
                 let charRay = new Ray2D(character.position, this.position);
