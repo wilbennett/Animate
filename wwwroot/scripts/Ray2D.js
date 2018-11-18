@@ -1,10 +1,19 @@
 "use strict";
 var Ray2D = /** @class */ (function () {
-    function Ray2D(_origin, direction, _length) {
-        this._origin = _origin;
-        this._length = _length;
-        this._direction = direction.normalize();
-        this._endPoint = this.getPointAt(this._length);
+    function Ray2D(origin, direction, length) {
+        this._origin = origin;
+        if (length) {
+            this._direction = direction.normalize();
+            this._length = length;
+            this._endPoint = this.getPointAt(this._length);
+        }
+        else {
+            var end = direction;
+            var dir = this._origin.directionTo(end);
+            this._direction = dir.normalize();
+            this._length = dir.mag;
+            this._endPoint = end;
+        }
     }
     Object.defineProperty(Ray2D.prototype, "origin", {
         get: function () { return this._origin; },
@@ -148,10 +157,6 @@ var Ray2D = /** @class */ (function () {
         ctx.lineTo(triangleRight.x, triangleRight.y);
         ctx.fill();
         ctx.stroke();
-    };
-    Ray2D.fromPoints = function (start, end) {
-        var direction = start.directionTo(end);
-        return new Ray2D(start, direction, direction.mag);
     };
     return Ray2D;
 }());

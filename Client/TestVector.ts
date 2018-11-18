@@ -188,7 +188,7 @@ class TestVector {
         this._rRayR2 = this._rRayR;
 
         box.moveDown();
-        this._lLineR = Line2D.fromDirection(box.center, new Vector2D(1, 0), box.radius);
+        this._lLineR = new Line2D(box.center, new Vector2D(1, 0), box.radius);
         this._lLineR2 = this._lLineR;
 
         box.moveUpRight();
@@ -203,12 +203,12 @@ class TestVector {
 
         box.moveUpRight();
         this._lViewportRUp = new Viewport2D(this._ctx, WorldOrientation.Up, -box.radius, -box.radius, box.w, box.h, box.x, box.y);
-        this._lLineRVU = Line2D.fromDirection(center0, new Vector2D(1, 0), box.radius);
+        this._lLineRVU = new Line2D(center0, new Vector2D(1, 0), box.radius);
         this._lLineRVU2 = this._lLineRVU;
 
         box.moveDown();
         this._lViewportRDown = new Viewport2D(this._ctx, WorldOrientation.Down, -box.radius, -box.radius, box.w, box.h, box.x, box.y);
-        this._lLineRVD = Line2D.fromDirection(center0, new Vector2D(1, 0), box.radius);
+        this._lLineRVD = new Line2D(center0, new Vector2D(1, 0), box.radius);
         this._lLineRVD2 = this._lLineRVD;
 
         box.reset();
@@ -216,8 +216,8 @@ class TestVector {
         box.moveDown();
         this._rCenterRA = box.center;
         this._rRadiusRA = box.radius;
-        this._rRayRA = Ray2D.fromPoints(new Vector2D(box.x, this._rCenterRA.y), new Vector2D(this._rCenterRA.x, box.y + box.h));
-        this._rRayRA2 = Ray2D.fromPoints(new Vector2D(box.x + 5, this._rCenterRA.y), new Vector2D(this._rCenterRA.x, this._rCenterRA.y));
+        this._rRayRA = new Ray2D(new Vector2D(box.x, this._rCenterRA.y), new Vector2D(this._rCenterRA.x, box.y + box.h));
+        this._rRayRA2 = new Ray2D(new Vector2D(box.x + 5, this._rCenterRA.y), new Vector2D(this._rCenterRA.x, this._rCenterRA.y));
 
         box.moveDown();
         this._lCenterRA = box.center;
@@ -229,15 +229,15 @@ class TestVector {
         this._rViewportRAUp = new Viewport2D(this._ctx, WorldOrientation.Up, -box.radius, -box.radius, box.w, box.h, box.x, box.y);
         this._rCenterRAU = center0;
         this._rRadiusRAU = box.radius;
-        this._rRayRAU = Ray2D.fromPoints(new Vector2D(-box.radius, center0.y), new Vector2D(center0.x, box.radius));
-        this._rRayRAU2 = Ray2D.fromPoints(new Vector2D(-box.radius + 5, center0.y), new Vector2D(center0.x, center0.y));
+        this._rRayRAU = new Ray2D(new Vector2D(-box.radius, center0.y), new Vector2D(center0.x, box.radius));
+        this._rRayRAU2 = new Ray2D(new Vector2D(-box.radius + 5, center0.y), new Vector2D(center0.x, center0.y));
 
         box.moveDown();
         this._rViewportRADown = new Viewport2D(this._ctx, WorldOrientation.Down, -box.radius, -box.radius, box.w, box.h, box.x, box.y);
         this._rCenterRAD = center0;
         this._rRadiusRAD = box.radius;
-        this._rRayRAD = Ray2D.fromPoints(new Vector2D(-box.radius, center0.y), new Vector2D(center0.x, box.radius));
-        this._rRayRAD2 = Ray2D.fromPoints(new Vector2D(-box.radius + 5, center0.y), new Vector2D(center0.x, center0.y));
+        this._rRayRAD = new Ray2D(new Vector2D(-box.radius, center0.y), new Vector2D(center0.x, box.radius));
+        this._rRayRAD2 = new Ray2D(new Vector2D(-box.radius + 5, center0.y), new Vector2D(center0.x, center0.y));
 
         box.moveUpRight();
         this._lViewportRAUp = new Viewport2D(this._ctx, WorldOrientation.Up, -box.radius, -box.radius, box.w, box.h, box.x, box.y);
@@ -326,11 +326,11 @@ class TestVector {
 
         this.circleOutline(center, radius, viewport);
 
-        let line = Line2D.fromDirection(lineStart, lineStart.directionTo(center), radius * 2);
+        let line = new Line2D(lineStart, lineStart.directionTo(center), radius * 2);
         let lineIn = new Line2D(lineInStart, center);
 
         let lineReflect: Line2D = line.reflect(lineIn);
-        let lineNormal = Line2D.fromDirection(center, line.normal, radius);
+        let lineNormal = new Line2D(center, line.normal, radius);
 
         line.draw(ctx, 5, "blue", viewport);
         lineNormal.draw(ctx, 3, "red", viewport);

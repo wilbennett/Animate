@@ -1,8 +1,19 @@
 ﻿class Line2D extends Ray2D {
 
-    constructor(start: Vector2D, end: Vector2D) {
-        let direction = start.directionTo(end);
-        super(start, direction, direction.mag);
+    constructor(ray: Ray2D);
+    constructor(start: Vector2D, end: Vector2D);
+    constructor(origin: Vector2D, direction: Vector2D, length: number);
+    constructor(origin: any, direction?: Vector2D, length?: number) {
+        if (origin instanceof Ray2D) {
+            let ray = origin;
+            super(ray.origin, ray.direction, ray.length);
+        } else if (length && direction) {
+            super(origin, direction, length);
+        }
+        else if (direction) {
+            let end = direction;
+            super(origin, end);
+        }
     }
 
     rotateRadians(angle: number): Line2D {
@@ -36,19 +47,9 @@
         return source.reflectViaNormal(this.normal);
     }
 
-    toRay(): Ray2D {
-        return new Ray2D(this.origin, this.direction, this.length);
-    }
+    toRay(): Ray2D { return new Ray2D(this.origin, this.direction, this.length); }
 
     draw(ctx: CanvasRenderingContext2D, width: number, color: string, bounds?: OrientedBounds): void {
         super.drawLine(ctx, width, color, bounds);
-    }
-
-    static fromRay(ray: Ray2D): Line2D {
-        return new Line2D(ray.origin, ray.endPoint);
-    }
-
-    static fromDirection(origin: Vector2D, direction: Vector2D, length: number) {
-        return this.fromRay(new Ray2D(origin, direction, length));
     }
 }

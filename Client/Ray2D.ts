@@ -1,11 +1,26 @@
 ﻿class Ray2D {
+    private readonly _origin: Vector2D;
     private readonly _direction: Vector2D;
+    private readonly _length: number;
     private readonly _endPoint: Vector2D;
 
-    constructor(private readonly _origin: Vector2D, direction: Vector2D, private readonly _length: number) {
-        this._direction = direction.normalize();
+    constructor(start: Vector2D, end: Vector2D);
+    constructor(origin: Vector2D, direction: Vector2D, length: number);
+    constructor(origin: Vector2D, direction: Vector2D, length?: number) {
+        this._origin = origin;
 
-        this._endPoint = this.getPointAt(this._length);
+        if (length) {
+            this._direction = direction.normalize();
+            this._length = length;
+            this._endPoint = this.getPointAt(this._length);
+        }
+        else {
+            let end = direction;
+            let dir = this._origin.directionTo(end);
+            this._direction = dir.normalize();
+            this._length = dir.mag;
+            this._endPoint = end;
+        }
     }
 
     get origin() { return this._origin; }
@@ -158,10 +173,5 @@
         ctx.lineTo(triangleRight.x, triangleRight.y);
         ctx.fill();
         ctx.stroke();
-    }
-
-    static fromPoints(start: Vector2D, end: Vector2D) {
-        let direction = start.directionTo(end);
-        return new Ray2D(start, direction, direction.mag);
     }
 }
