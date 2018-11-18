@@ -14,11 +14,12 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Wind = /** @class */ (function (_super) {
     __extends(Wind, _super);
-    function Wind(speed, degrees, position, _radius) {
+    function Wind(speed, degrees, position, _radius, _decayRate) {
+        if (_decayRate === void 0) { _decayRate = 0.01; }
         var _this = _super.call(this, position, Vector2D.fromDegrees(degrees).mult(speed), 0) || this;
         _this._radius = _radius;
+        _this._decayRate = _decayRate;
         _this._density = 1.229;
-        _this._decayRate = 0.01;
         _this._minValue = 1.1;
         _this._radiusPct = 0.10;
         _this._width = _this._radius * 2;

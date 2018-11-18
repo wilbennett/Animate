@@ -1,6 +1,5 @@
 ﻿class Wind extends Character2D {
     private _density: number = 1.229;
-    private _decayRate: number = 0.01;
     private _minValue: number = 1.1;
     private _radiusPct: number = 0.10;
     private _oppositeVelocityDir: Vector2D;
@@ -10,7 +9,12 @@
     private _frontLine: Ray2D;
     private _positionSide: number;
 
-    constructor(speed: number, degrees: number, position: Vector2D, private readonly _radius: number) {
+    constructor(
+        speed: number,
+        degrees: number,
+        position: Vector2D,
+        private readonly _radius: number,
+        private _decayRate: number = 0.01) {
         super(position, Vector2D.fromDegrees(degrees).mult(speed), 0);
 
         this._width = this._radius * 2;
