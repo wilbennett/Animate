@@ -66,16 +66,16 @@ var Game = /** @class */ (function () {
         this._output = document.getElementById("output");
         this._friction = new Friction(world.origin, world.width, world.height);
         this._liquid = new Fluid(2, 100, new Vector2D(world.x, world.bottomOffsetAbove(200)), world.width / 8, 90);
-        this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", MathEx.TWO_PI / 60 * 3);
+        this._radar = new Radar(world.center, Math.min(worldWidth, worldHeight) / 2 * 0.90, "purple", MathEx.TWO_PI / 60 * 2);
         world.addForce(this._liquid);
         world.addCharacter(this._liquid);
         world.addCharacter(this._radar);
-        this._leftFan = this.createFan(world.center.x, this._settings.LeftFan);
+        this._leftFan = this.createFan(world.left, this._settings.LeftFan);
         this._rightFan = this.createFan(world.right, this._settings.RightFan);
         world.addForce(this._leftFan);
-        //world.addForce(this._rightFan);
+        world.addForce(this._rightFan);
         world.addCharacter(this._leftFan);
-        //world.addCharacter(this._rightFan);
+        world.addCharacter(this._rightFan);
         this._settings.addEventListener("change", this._boundHandleSettingsChanged);
         this.handleSettingsChanged();
     }
@@ -100,8 +100,8 @@ var Game = /** @class */ (function () {
         var world = this._world;
         var fanPos = settings.position;
         var fanAngle = settings.angle;
-        var fanRadius = settings.strength;
-        var fanSpeed = 5;
+        var fanSpeed = settings.speed;
+        var fanRadius = settings.radius;
         return new Wind(fanSpeed, world.localizeDegrees(fanAngle), new Vector2D(x, world.bottomOffsetAbove(world.height * fanPos)), fanRadius);
     };
     Game.prototype.createRandomBalls = function () {
@@ -181,10 +181,10 @@ var Game = /** @class */ (function () {
         var world = this._world;
         var fanPos = settings.position;
         var fanAngle = settings.angle;
-        var fanRadius = settings.strength;
+        var fanSpeed = settings.speed;
         fan.position = fan.position.withY(world.bottomOffsetAbove(world.height * fanPos));
         fan.degrees = world.localizeDegrees(fanAngle);
-        fan.speed = 10;
+        fan.speed = fanSpeed;
     };
     Game.prototype.paintRadarAngle = function () {
         var _this = this;

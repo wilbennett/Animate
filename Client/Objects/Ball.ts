@@ -19,7 +19,7 @@
 
         this._width = this._radius * 2;
         this._height = this._width;
-        this._maxRotateVelocity = 0.1;
+        this._maxRotateVelocity = MathEx.toRadians(90);
     }
 
     get radius() { return this._radius; }
@@ -29,7 +29,7 @@
     protected createBounds() { return this.createBoundsFromRadius(this.radius); }
 
     protected adjustRotateAcceleration() {
-        this.applyRotateForce(this.acceleration.x / 5);
+        this.applyRotateForce(this.acceleration.x * 10);
 
         super.adjustRotateAcceleration();
     }
@@ -136,6 +136,11 @@
         //*/
 
         ctx.restore();
+
+        //if (frame % 60 === 0)
+        //    console.log("acceleration: " + this.acceleration
+        //        + ", rotate acceleration: " + MathEx.toDegrees(this.rotateAcceleration).toFixed(2)
+        //        + ", rotate velocity: " + MathEx.toDegrees(this.rotateVelocity).toFixed(2))
     }
     /*/
     draw(ctx: CanvasRenderingContext2D, frame: number) {

@@ -26,6 +26,16 @@ var Physics = /** @class */ (function () {
         // f = cn
         return normalForce.mult(coeffecient);
     };
+    Physics.calcWindForce = function (density, area, velocity) {
+        // air mass (Am) = density * area
+        // acceleration (a) = windspeed * windspeed
+        // F = Am * a
+        var airMass = density * area;
+        var acceleration = velocity.magSquared;
+        var magnitude = airMass * acceleration;
+        var force = velocity.normalizeMult(magnitude);
+        return force;
+    };
     Physics.calcNetForce = function (mass, acceleration) {
         // f = ma
         return acceleration.mult(mass);

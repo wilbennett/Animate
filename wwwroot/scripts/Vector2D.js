@@ -125,6 +125,9 @@ var Vector2D = /** @class */ (function (_super) {
             return this;
         return this.div(m);
     };
+    Vector2D.prototype.decay = function (decayRate, time) {
+        return new Vector2D(MathEx.calcDecay(this.x, decayRate, time), MathEx.calcDecay(this.y, decayRate, time));
+    };
     Vector2D.prototype.directionTo = function (target) { return target.subtract(this); };
     Vector2D.prototype.radiansBetween = function (target) {
         var result = target.radians - this.radians;

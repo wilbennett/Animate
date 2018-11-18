@@ -116,6 +116,10 @@
         return this.div(m);
     }
 
+    decay(decayRate: number, time: number): Vector2D {
+        return new Vector2D(MathEx.calcDecay(this.x, decayRate, time), MathEx.calcDecay(this.y, decayRate, time));
+    }
+
     directionTo(target: Vector2D): Vector2D { return target.subtract(this); }
 
     radiansBetween(target: Vector2D): number {

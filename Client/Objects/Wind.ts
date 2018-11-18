@@ -1,6 +1,7 @@
 ﻿class Wind extends Character2D {
-    private _decayRate: number = 0.039;
-    private _minValue: number = 0.01;
+    private _density: number = 1.229;
+    private _decayRate: number = 0.01;
+    private _minValue: number = 1.1;
     private _radiusPct: number = 0.10;
     private _oppositeVelocityDir: Vector2D;
     private _baseLine: Line2D;
@@ -14,20 +15,9 @@
         this._width = this._radius * 2;
         this._height = this._width;
         this.createBoundary();
-        this.logDecayTime();
     }
 
-    logDecayTime() {
-        let decayTime = MathEx.calcDecayTime(this.speed, this._decayRate, this._minValue);
-        decayTime = Math.abs(decayTime);
-        console.log("speed: " + this.speed + ", rate: " + this._decayRate + ".  Distance to " + this._minValue.toFixed(2) + ": " + decayTime.toFixed(2));
-        console.log(MathEx.calcDecay(this.speed, this._decayRate, decayTime).toFixed(2));
-
-        for (var i = 0; i < decayTime; i += 15)
-        {
-            console.log(i + ": " + MathEx.calcDecay(this.speed, this._decayRate, i).toFixed(2));
-        }
-    }
+    get density() { return this._density; }
 
     get degrees() { return this.velocity.degrees; }
     set degrees(value: number) { this._velocity = Vector2D.fromDegrees(value).mult(this.velocity.mag); }
@@ -36,10 +26,10 @@
     set radians(value: number) { this._velocity = Vector2D.fromRadians(value).mult(this.velocity.mag); }
 
     get speed() { return this.velocity.mag; }
+
     set speed(value: number) {
         this._velocity = this.velocity.normalizeMult(value);
         this.createBoundary();
-        this.logDecayTime();
     }
 
     protected createBounds() { return this.createBoundsFromRadius(this._radius); }
@@ -66,12 +56,12 @@
     calculateForce() { }
 
     calculateForceForCharacter(character: Character2D): Vector2D {
-        let pos = character.position.subtract(this.position);
+        let charRay = new Ray2D(character.position, this.position);
+        let velocity = this.velocity.decay(this._decayRate, charRay.length);
 
-        if (pos.mag > this._radius) return Vector2D.emptyVector;
-
-        let force = this._velocity.mult(pos.magSquared * 0.01);
-        return force.div(character.velocity.mag);
+        let area = 1; // TODO: Calculate proper impact area.
+        let force = Physics.calcWindForce(this.density, area, velocity);
+        return force;
     }
 
     update(frame: number, now: number, elapsedTime: number, timeScale: number, world: World2D) {
@@ -127,14 +117,14 @@
 
         ctx.globalAlpha = origAlpha;
 
+        /*
         this._baseLine.draw(ctx, 2, "white");
         this._leftLine.draw(ctx, 2, "black");
         this._rightLine.draw(ctx, 2, "green");
         this._frontLine.draw(ctx, 2, "purple");
+        //*/
 
-        let dist = 0;
-        let pos = this.world.offsetAbove(this.position.y, dist + 15);
-        let speed = this.speed;
+        /*
         ctx.save();
         ctx.translate(this.position.x, this.position.y);
         ctx.rotate(-this.velocity.radians);
@@ -142,6 +132,9 @@
         //ctx.translate(0, this.position.y + (this.world.screenHeight - 1) / 3);
         //ctx.scale(1, -1);
         ctx.font = "12px Arial";
+        let dist = 0;
+        let pos = this.world.offsetAbove(this.position.y, dist + 15);
+        let speed = this.speed;
 
         while (speed > this._minValue) {
             speed = MathEx.calcDecay(this.speed, this._decayRate, dist);
@@ -150,12 +143,15 @@
             pos = this.world.offsetAbove(this.position.y, dist + 15);
         }
         ctx.restore();
+        //*/
 
+        /*
         this.world.characters.forEach(character => {
             if (this.intersectsWithCharacter(character)) {
                 let charRay = new Ray2D(character.position, this.position);
                 charRay.draw(ctx, 1, "yellow");
             }
         }, this);
+        //*/
     }
 }

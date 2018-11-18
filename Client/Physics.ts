@@ -48,6 +48,18 @@ class Physics {
         return normalForce.mult(coeffecient);
     }
 
+    static calcWindForce(density: number, area: number, velocity: Vector2D) {
+        // air mass (Am) = density * area
+        // acceleration (a) = windspeed * windspeed
+        // F = Am * a
+        let airMass = density * area;
+        let acceleration = velocity.magSquared;
+        let magnitude = airMass * acceleration;
+        let force = velocity.normalizeMult(magnitude);
+
+        return force;
+    }
+
     static calcNetForce(mass: number, acceleration: Vector2D) {
         // f = ma
         return acceleration.mult(mass);
