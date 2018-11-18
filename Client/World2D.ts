@@ -258,9 +258,6 @@
 
         this._characters.forEach(character => {
             character.update(frame, now, elapsedTime, timeScale, this);
-        }, this);
-
-        this._characters.forEach(character => {
             character.postUpdate(frame, now, elapsedTime, timeScale, this);
         }, this);
     }

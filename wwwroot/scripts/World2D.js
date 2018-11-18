@@ -228,8 +228,6 @@ var World2D = /** @class */ (function (_super) {
         }, this);
         this._characters.forEach(function (character) {
             character.update(frame, now, elapsedTime, timeScale, _this);
-        }, this);
-        this._characters.forEach(function (character) {
             character.postUpdate(frame, now, elapsedTime, timeScale, _this);
         }, this);
     };
