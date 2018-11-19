@@ -23,6 +23,7 @@ var Character2D = /** @class */ (function (_super) {
         _this._lastUpdateFrame = -1;
         _this._maxSpeed = -1;
         _this._rotateRadians = 0;
+        _this._priorRotateRadians = 0;
         _this._rotateAcceleration = 0;
         _this._rotateVelocity = 0;
         _this._priorRotateVelocity = 0;
@@ -67,6 +68,11 @@ var Character2D = /** @class */ (function (_super) {
     });
     Object.defineProperty(Character2D.prototype, "rotateRadians", {
         get: function () { return this._rotateRadians; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Character2D.prototype, "priorRotateRadians", {
+        get: function () { return this._priorRotateRadians; },
         enumerable: true,
         configurable: true
     });
@@ -136,6 +142,10 @@ var Character2D = /** @class */ (function (_super) {
         this._acceleration = Vector2D.emptyVector;
         this._appliedRotateForce = 0;
         this._rotateAcceleration = 0;
+        this._priorPosition = this.position;
+        this._priorVelocity = this.velocity;
+        this._priorRotateVelocity = this.rotateVelocity;
+        this._priorRotateRadians = this.rotateRadians;
     };
     Character2D.prototype.adjustAcceleration = function () {
         //console.log("**** " + this.getName(this) + " calc acceleration with force: "
@@ -170,7 +180,7 @@ var Character2D = /** @class */ (function (_super) {
     /*/
     // Using displacement. Takes care of time differences and the need to scale gravity when working in seconds.
     Character2D.prototype.adjustVelocity = function (elapsedTime) {
-        var newVelocity = Physics.calcFinalVelocity(elapsedTime, this.priorVelocity, this.acceleration);
+        var newVelocity = Physics.calcFinalVelocity(elapsedTime, this.velocity, this.acceleration);
         if (this.maxSpeed < 0 || newVelocity.mag < this.maxSpeed)
             this._velocity = newVelocity;
     };
@@ -213,9 +223,6 @@ var Character2D = /** @class */ (function (_super) {
         this.resetParams();
     };
     Character2D.prototype.postUpdate = function (frame, now, elapsedTime, timeScale, world) {
-        this._priorPosition = this.position;
-        this._priorVelocity = this.velocity;
-        this._priorRotateVelocity = this.rotateVelocity;
         this._lastUpdateFrame = frame;
     };
     Character2D.prototype.draw = function (viewport, frame) {

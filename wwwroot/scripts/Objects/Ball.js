@@ -64,7 +64,7 @@ var Ball = /** @class */ (function (_super) {
         _this.restitutionCoefficient = restitution;
         _this._width = _this._radius * 2;
         _this._height = _this._width;
-        _this._maxRotateVelocity = MathEx.toRadians(90);
+        _this._maxRotateVelocity = MathEx.toRadians(360);
         return _this;
     }
     Object.defineProperty(Ball.prototype, "radius", {
@@ -79,7 +79,7 @@ var Ball = /** @class */ (function (_super) {
     });
     Ball.prototype.createBounds = function () { return this.createBoundsFromRadius(this.radius); };
     Ball.prototype.adjustRotateAcceleration = function () {
-        this.applyRotateForce(this.acceleration.x * 10);
+        this.applyRotateForce(this.acceleration.x * 1);
         _super.prototype.adjustRotateAcceleration.call(this);
     };
     Ball.prototype.update = function (frame, now, elapsedTime, timeScale, world) {
@@ -156,10 +156,6 @@ var Ball = /** @class */ (function (_super) {
         ctx.stroke();
         //*/
         ctx.restore();
-        //if (frame % 60 === 0)
-        //    console.log("acceleration: " + this.acceleration
-        //        + ", rotate acceleration: " + MathEx.toDegrees(this.rotateAcceleration).toFixed(2)
-        //        + ", rotate velocity: " + MathEx.toDegrees(this.rotateVelocity).toFixed(2))
     };
     Ball.prototype.checkBoundary = function (gravity) {
         var boundary = this._boundary;

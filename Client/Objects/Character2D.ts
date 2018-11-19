@@ -7,6 +7,7 @@
     protected _lastUpdateFrame: number = -1;
     protected _maxSpeed: number = -1;
     protected _rotateRadians: number = 0;
+    protected _priorRotateRadians: number = 0;
     protected _rotateAcceleration: number = 0;
     protected _rotateVelocity: number = 0;
     protected _priorRotateVelocity: number = 0;
@@ -35,6 +36,7 @@
     get rotateVelocity() { return this._rotateVelocity; }
     get priorRotateVelocity() { return this._priorRotateVelocity; }
     get rotateRadians() { return this._rotateRadians; }
+    get priorRotateRadians() { return this._priorRotateRadians; }
 
     get maxRotateVelocity() { return this._maxRotateVelocity; }
     set maxRotateVelocity(value) { this._maxRotateVelocity = value; }
@@ -77,6 +79,11 @@
         this._acceleration = Vector2D.emptyVector;
         this._appliedRotateForce = 0;
         this._rotateAcceleration = 0;
+
+        this._priorPosition = this.position;
+        this._priorVelocity = this.velocity;
+        this._priorRotateVelocity = this.rotateVelocity;
+        this._priorRotateRadians = this.rotateRadians;
     }
 
     protected adjustAcceleration() {
@@ -113,7 +120,7 @@
     /*/
     // Using displacement. Takes care of time differences and the need to scale gravity when working in seconds.
     protected adjustVelocity(elapsedTime: number) {
-        let newVelocity = Physics.calcFinalVelocity(elapsedTime, this.priorVelocity, this.acceleration);
+        let newVelocity = Physics.calcFinalVelocity(elapsedTime, this.velocity, this.acceleration);
 
         if (this.maxSpeed < 0 || newVelocity.mag < this.maxSpeed)
             this._velocity = newVelocity;
@@ -169,9 +176,6 @@
     }
 
     postUpdate(frame: number, now: number, elapsedTime: number, timeScale: number, world: World2D) {
-        this._priorPosition = this.position;
-        this._priorVelocity = this.velocity;
-        this._priorRotateVelocity = this.rotateVelocity;
         this._lastUpdateFrame = frame;
     }
 
