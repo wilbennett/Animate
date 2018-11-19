@@ -170,11 +170,13 @@ var Ball = /** @class */ (function (_super) {
             this.position = this.position.withX(boundary.leftOffset(this.radius));
             reflectVelocity = boundary.reflectLeft(priorVelocity);
             reflectVelocity = reflectVelocity.withX(reflectVelocity.x * this.restitutionCoefficient);
+            this._rotateVelocity = this.rotateVelocity * this.restitutionCoefficient;
         }
         else if (rightPenetration > 0) {
             this.position = this.position.withX(boundary.rightOffset(this.radius));
             reflectVelocity = boundary.reflectRight(priorVelocity);
             reflectVelocity = reflectVelocity.withX(reflectVelocity.x * this.restitutionCoefficient);
+            this._rotateVelocity = this.rotateVelocity * this.restitutionCoefficient;
         }
         if (reflectVelocity)
             priorVelocity = reflectVelocity;
@@ -182,6 +184,7 @@ var Ball = /** @class */ (function (_super) {
             this.position = this.position.withY(boundary.topOffsetBelow(this.radius));
             reflectVelocity = boundary.reflectTop(priorVelocity);
             reflectVelocity = reflectVelocity.withY(reflectVelocity.y * this.restitutionCoefficient);
+            this._rotateVelocity = this.rotateVelocity * this.restitutionCoefficient;
         }
         else if (bottomPenetration > 0) {
             var preV = this.velocity.mag;
@@ -190,10 +193,12 @@ var Ball = /** @class */ (function (_super) {
             this.position = this.position.withY(boundary.bottomOffsetAbove(this.radius));
             reflectVelocity = boundary.reflectBottom(priorVelocity);
             reflectVelocity = reflectVelocity.withY(reflectVelocity.y * this.restitutionCoefficient);
+            this._rotateVelocity = this.rotateVelocity * this.restitutionCoefficient;
             var postV = reflectVelocity.mag;
             //console.log("Pre bounce: " + preV.toFixed(2) + ", post bounce: " + postV.toFixed(2) + " " + reflectVelocity + ", " + (preV - postV).toFixed(2));
             if (Math.abs(reflectVelocity.y) < 0.01) {
                 reflectVelocity = reflectVelocity.withY(0);
+                this._rotateVelocity = 0;
                 this._allowBounce = false;
             }
         }
