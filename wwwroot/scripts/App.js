@@ -67,9 +67,9 @@ var App = /** @class */ (function () {
                 }
                 _this._deltaUpdate += deltaUpdates;
                 deltaUpdatesRaw += deltaUpdates;
-                if (_this._settings.App.interpolate) {
+                if (_this._settings.App.interpolate && _this._timeStepDelta > 0) {
                     var nowElapsed = (_this._timeStepDelta / _this._timeStep) / 1000;
-                    now = timestamp / 1000 - nowElapsed;
+                    now = timestamp / 1000; // - nowElapsed;
                     startTime = performance.now();
                     _this._game.update(_this._frame, now, nowElapsed, _this._timeStepDelta / _this._timeStep);
                     updateTime = performance.now() - startTime;
@@ -78,7 +78,7 @@ var App = /** @class */ (function () {
             }
             else {
                 var now = timestamp / 1000;
-                var nowElapsed = (_this._timeStepDelta / _this._timeStep) / 1000;
+                var nowElapsed = now - priorNow;
                 var delta = _this._settings.App.interpolate ? _this._timeStepDelta / _this._timeStep : 1;
                 startTime = performance.now();
                 _this._game.update(_this._frame, now, nowElapsed, delta);

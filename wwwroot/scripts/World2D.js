@@ -221,6 +221,11 @@ var World2D = /** @class */ (function (_super) {
     World2D.prototype.update = function (frame, now, elapsedTime, timeScale) {
         var _this = this;
         timeScale = elapsedTime;
+        //if (elapsedTime < 0 || now % 3 <= 0.01) {
+        //    console.log("*** now: " + now.toFixed(5)
+        //        + ", elapsed: " + elapsedTime.toFixed(5)
+        //    );
+        //}
         this._characters.forEach(function (character) { return character.preUpdate(frame, now, elapsedTime, timeScale, _this); }, this);
         this._forces.forEach(function (force) {
             force.calculateForce();

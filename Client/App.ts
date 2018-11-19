@@ -200,9 +200,9 @@
             this._deltaUpdate += deltaUpdates;
             deltaUpdatesRaw += deltaUpdates;
 
-            if (this._settings.App.interpolate) {
+            if (this._settings.App.interpolate && this._timeStepDelta > 0) {
                 let nowElapsed = (this._timeStepDelta / this._timeStep) / 1000;
-                now = timestamp / 1000 - nowElapsed;
+                now = timestamp / 1000;// - nowElapsed;
                 startTime = performance.now();
                 this._game.update(this._frame, now, nowElapsed, this._timeStepDelta / this._timeStep);
                 updateTime = performance.now() - startTime;
@@ -210,7 +210,7 @@
             }
         } else {
             let now = timestamp / 1000;
-            let nowElapsed = (this._timeStepDelta / this._timeStep) / 1000;
+            let nowElapsed = now - priorNow;
             let delta = this._settings.App.interpolate ? this._timeStepDelta / this._timeStep : 1;
             startTime = performance.now();
             this._game.update(this._frame, now, nowElapsed, delta);

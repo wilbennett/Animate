@@ -248,6 +248,11 @@
 
     update(frame: number, now: number, elapsedTime: number, timeScale: number) {
         timeScale = elapsedTime;
+        //if (elapsedTime < 0 || now % 3 <= 0.01) {
+        //    console.log("*** now: " + now.toFixed(5)
+        //        + ", elapsed: " + elapsedTime.toFixed(5)
+        //    );
+        //}
 
         this._characters.forEach(character => character.preUpdate(frame, now, elapsedTime, timeScale, this), this);
 
