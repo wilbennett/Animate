@@ -81,15 +81,6 @@ var Vector2D = /** @class */ (function (_super) {
         configurable: true
     });
     Vector2D.prototype.toString = function () { return "(" + this.x.toFixed(3) + ", " + this.y.toFixed(3) + ")"; };
-    Object.defineProperty(Vector2D, "emptyVector", {
-        get: function () {
-            if (!this._emptyVector)
-                this._emptyVector = new Vector2D(0, 0);
-            return this._emptyVector;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Vector2D.prototype.normalize = function () { return this.div(this.mag); };
     Vector2D.prototype.add = function (other) { return new Vector2D(this.x + other.x, this.y + other.y); };
     Vector2D.prototype.subtract = function (other) { return new Vector2D(this.x - other.x, this.y - other.y); };
@@ -168,6 +159,24 @@ var Vector2D = /** @class */ (function (_super) {
     };
     Vector2D.prototype.withX = function (x) { return new Vector2D(x, this.y); };
     Vector2D.prototype.withY = function (y) { return new Vector2D(this.x, y); };
+    Object.defineProperty(Vector2D, "emptyVector", {
+        get: function () {
+            if (!this._emptyVector)
+                this._emptyVector = new Vector2D(0, 0);
+            return this._emptyVector;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Vector2D, "unitVector", {
+        get: function () {
+            if (!this._unitVector)
+                this._unitVector = new Vector2D(1, 0);
+            return this._unitVector;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Vector2D.fromRadians = function (angle) { return new Vector2D(Math.cos(angle), Math.sin(angle)); };
     Vector2D.fromDegrees = function (angle) { return this.fromRadians(MathEx.toRadians(angle)); };
     return Vector2D;

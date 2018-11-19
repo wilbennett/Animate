@@ -118,11 +118,10 @@ class Physics {
         return v.reflectViaNormal(normal);
     }
 
-    static calcFriction(coeffecient: number, normal: number, velocity: Vector2D) {
-        let magnitude = coeffecient * normal;
-
-        let friction = velocity.mult(-1); // Friction applies in the opposite direction of motion.
-        friction = friction.normalizeMult(magnitude);
+    static calcFriction(coeffecient: number, normal: Vector2D, velocity: Vector2D) {
+        // F = -1 * c * N * vNormal
+        let magnitude = coeffecient * normal.mag;
+        let friction = velocity.normalizeMult(-magnitude); // Friction applies in the opposite direction of motion.
         return friction;
     }
 

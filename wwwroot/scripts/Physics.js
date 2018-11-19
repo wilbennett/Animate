@@ -84,9 +84,9 @@ var Physics = /** @class */ (function () {
         return v.reflectViaNormal(normal);
     };
     Physics.calcFriction = function (coeffecient, normal, velocity) {
-        var magnitude = coeffecient * normal;
-        var friction = velocity.mult(-1); // Friction applies in the opposite direction of motion.
-        friction = friction.normalizeMult(magnitude);
+        // F = -1 * c * N * vNormal
+        var magnitude = coeffecient * normal.mag;
+        var friction = velocity.normalizeMult(-magnitude); // Friction applies in the opposite direction of motion.
         return friction;
     };
     Physics.calcDrag = function (density, area, coeffecient, velocity) {

@@ -6,6 +6,7 @@
     private _polar: Polar2D | null = null;
     private _normal: Vector2D | null = null;
     private static _emptyVector: Vector2D;
+    private static _unitVector: Vector2D;
 
     constructor(x: number, y: number) {
         super(x, y);
@@ -56,13 +57,6 @@
     }
 
     toString() { return "(" + this.x.toFixed(3) + ", " + this.y.toFixed(3) + ")"; }
-
-    static get emptyVector() {
-        if (!this._emptyVector)
-            this._emptyVector = new Vector2D(0, 0);
-
-        return this._emptyVector;
-    }
 
     normalize(): Vector2D { return this.div(this.mag); }
     add(other: Vector2D): Vector2D { return new Vector2D(this.x + other.x, this.y + other.y); }
@@ -172,6 +166,20 @@
 
     withX(x: number) { return new Vector2D(x, this.y); }
     withY(y: number) { return new Vector2D(this.x, y); }
+
+    static get emptyVector() {
+        if (!this._emptyVector)
+            this._emptyVector = new Vector2D(0, 0);
+
+        return this._emptyVector;
+    }
+
+    static get unitVector() {
+        if (!this._unitVector)
+            this._unitVector = new Vector2D(1, 0);
+
+        return this._unitVector;
+    }
 
     static fromRadians(angle: number) { return new Vector2D(Math.cos(angle), Math.sin(angle)); }
     static fromDegrees(angle: number) { return this.fromRadians(MathEx.toRadians(angle)); }
